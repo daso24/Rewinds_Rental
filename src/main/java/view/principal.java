@@ -13,6 +13,10 @@ public class principal extends JFrame {
         setSize(1000, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
+        
+        //icono esquina de ventana
+        Image icono = new ImageIcon(getClass().getResource("/img/logo3.png")).getImage();
+        this.setIconImage(icono);
 
         // BARRA AZUL LATERAL
         JPanel barraLat = new JPanel();

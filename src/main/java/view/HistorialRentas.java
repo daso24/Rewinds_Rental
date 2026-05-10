@@ -15,6 +15,10 @@ public class HistorialRentas extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(null);
+        
+        //icono esquina de ventana
+        Image icono = new ImageIcon(getClass().getResource("/img/logo3.png")).getImage();
+        this.setIconImage(icono);
 
         // BARRA LATERAL
         JPanel sidebar = new JPanel();
@@ -23,7 +27,7 @@ public class HistorialRentas extends JFrame {
         sidebar.setLayout(null);
         add(sidebar);
 
-        // Carga de iconos (CORREGIDO)
+        // Carga de iconos
         ImageIcon inicioIcono = crearIcono("/img/gravity-ui_house-fill.png");
         ImageIcon operacionesIcono = crearIcono("/img/ic_baseline-plus.png");
         ImageIcon clientesIcono = crearIcono("/img/material-symbols_person.png");

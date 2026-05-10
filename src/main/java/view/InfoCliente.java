@@ -15,6 +15,10 @@ public class InfoCliente extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(null);
+        
+        //icono esquina de ventana
+        Image icono = new ImageIcon(getClass().getResource("/img/logo3.png")).getImage();
+        this.setIconImage(icono);
 
         // BARRA LATERAL
         JPanel sidebar = new JPanel();

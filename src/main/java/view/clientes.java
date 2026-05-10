@@ -19,15 +19,19 @@ public class clientes extends JFrame {
         setResizable(false); 
         setLocationRelativeTo(null);
         setLayout(null);
+        
+        //icono esquina de ventana
+        Image icono = new ImageIcon(getClass().getResource("/img/logo3.png")).getImage();
+        this.setIconImage(icono);
 
-        // PANEL LATERAL (160px)
+        // panel lateral
         JPanel sidebar = new JPanel();
         sidebar.setBounds(0, 0, 160, 650);
         sidebar.setBackground(new Color(0, 51, 102));
         sidebar.setLayout(null);
         add(sidebar);
 
-        // Carga de iconos para el menú
+        // Carga de iconos para el menu
         ImageIcon inicioIcono = new ImageIcon(new ImageIcon(getClass().getResource("/img/gravity-ui_house-fill.png")).getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH));
         ImageIcon operacionesIcono = new ImageIcon(new ImageIcon(getClass().getResource("/img/ic_baseline-plus.png")).getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH));
         ImageIcon clientesIcono = new ImageIcon(new ImageIcon(getClass().getResource("/img/material-symbols_person.png")).getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH));
@@ -40,14 +44,14 @@ public class clientes extends JFrame {
         Menu(sidebar, "Videojuegos", 370, videojuegosIcono);
         Menu(sidebar, "Peliculas", 480, peliculasIcono);
 
-        // PANEL PRINCIPAL
+        // panel principal
         JPanel mainPanel = new JPanel();
         mainPanel.setBounds(160, 0, 840, 650);
         mainPanel.setBackground(new Color(245, 245, 245));
         mainPanel.setLayout(null);
         add(mainPanel);
 
-        // BOTONES SUPERIORES
+        // botones superiores
         JButton btnAgregar = new JButton("+ Añadir cliente");
         btnAgregar.setBounds(600, 20, 210, 35);
         btnAgregar.setBackground(new Color(0, 170, 255));
@@ -63,7 +67,7 @@ public class clientes extends JFrame {
         titulo.setBounds(340, 20, 200, 30);
         mainPanel.add(titulo);
 
-        // BARRA DE BÚSQUEDA
+        // barra de buesqueda
         JPanel searchPanel = new JPanel();
         searchPanel.setBounds(20, 80, 790, 60);
         searchPanel.setLayout(null);

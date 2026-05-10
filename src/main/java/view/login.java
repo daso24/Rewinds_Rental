@@ -19,6 +19,10 @@ public class login extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(null);
         this.setLocationRelativeTo(null);
+        
+        //icono esquina de ventana
+        Image icono = new ImageIcon(getClass().getResource("/img/logo3.png")).getImage();
+        this.setIconImage(icono);
 
         Font inter = new Font("Inter", Font.PLAIN, 14);
         Font interBold = new Font("Inter", Font.BOLD, 14);
@@ -96,7 +100,7 @@ public class login extends JFrame {
         popup.setBounds(170, 80, 360, 180);
         popup.setBackground(Color.LIGHT_GRAY);
         popup.setVisible(false);
-        JButton ok = new JButton("OK");
+        JButton ok = new JButton("ok");
         ok.addActionListener(e -> popup.setVisible(false));
         popup.add(ok);
 
