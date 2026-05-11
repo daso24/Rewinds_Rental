@@ -4,12 +4,9 @@ import models.AuthModel;
 import view.login;
 import view.principal; 
 import view.registro;
-
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
-import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 
@@ -27,7 +24,6 @@ public class AuthController {
             String password = new String(vista.passField.getPassword());
             boolean hayError = false;
 
-         
             if (usuario.isEmpty()) {
                 vista.userField.setBorder(new LineBorder(Color.RED, 2));
                 hayError = true;
@@ -43,23 +39,19 @@ public class AuthController {
             }
 
             if (hayError) {
-                
                 vista.mostrarMensajeError("Llene los campos marcados en rojo.");
                 return; 
             }
-
             if (modelo.validarUsuario(usuario, password)) {
-               
-                vista.mostrarMensajeExito("Ha iniciado sesión con éxito.");
+            
+                vista.mostrarLoginExitoso("Ha iniciado sesión con éxito.");
                 
+             
                 vista.dispose(); 
-                principal ventanaMenu = new principal();
-                ventanaMenu.setVisible(true); 
-            } else {
-                vista.mostrarMensajeError("El usuario o la contraseña son incorrectos.");
+                new view.principal().setVisible(true); 
             }
         });
-
+        
         this.vista.registerLink.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -69,7 +61,5 @@ public class AuthController {
                 vistaReg.setVisible(true);          
             }
         });
-        
     }
-    
 }
