@@ -94,20 +94,16 @@ public class registro extends JFrame {
         dialogo.setUndecorated(true); 
         dialogo.setSize(350, 240);
         dialogo.setLocationRelativeTo(this);
-       
         JPanel panelPrincipal = new JPanel(new BorderLayout());
         panelPrincipal.setBackground(new Color(209, 209, 209)); 
         dialogo.setContentPane(panelPrincipal);
-
         JLabel lblTitulo = new JLabel("ERROR", SwingConstants.CENTER);
         lblTitulo.setFont(new Font("Arial", Font.BOLD, 22));
         lblTitulo.setBorder(BorderFactory.createEmptyBorder(15, 0, 5, 0));
         panelPrincipal.add(lblTitulo, BorderLayout.NORTH);
-
         JPanel centro = new JPanel();
         centro.setOpaque(false);
         centro.setLayout(new BoxLayout(centro, BoxLayout.Y_AXIS));
-
         JLabel iconoX = new JLabel("×", SwingConstants.CENTER) {
             @Override
             protected void paintComponent(Graphics g) {
@@ -124,61 +120,41 @@ public class registro extends JFrame {
         iconoX.setForeground(Color.WHITE);
         iconoX.setFont(new Font("Arial", Font.PLAIN, 50));
         iconoX.setAlignmentX(Component.CENTER_ALIGNMENT);
-
         JLabel lblMsg = new JLabel("<html><body style='text-align: center;'>" + mensaje + "</body></html>", SwingConstants.CENTER);
         lblMsg.setFont(new Font("Arial", Font.BOLD, 15));
         lblMsg.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblMsg.setBorder(BorderFactory.createEmptyBorder(15, 25, 15, 25));
-
         centro.add(iconoX);
         centro.add(lblMsg);
         panelPrincipal.add(centro, BorderLayout.CENTER);
-
         JButton btnOk = new JButton("OK");
         btnOk.setBackground(new Color(0, 179, 255)); 
         btnOk.setForeground(Color.WHITE);
         btnOk.setFont(new Font("Arial", Font.BOLD, 14));
         btnOk.addActionListener(e -> dialogo.dispose());
-
         JPanel sur = new JPanel(new BorderLayout());
         sur.setOpaque(false);
         sur.setBorder(BorderFactory.createEmptyBorder(0, 45, 20, 45));
         sur.add(btnOk);
-
         panelPrincipal.add(sur, BorderLayout.SOUTH);
         dialogo.setVisible(true);
     }
 
-    private JTextField crearCampo(JPanel p, String txt, int x, int y) {
-        return crearCampo(p, txt, x, y, false);
-    }
-
-    private JTextField crearCampo(JPanel p, String txt, int x, int y, boolean isPass) {
-        JLabel l = new JLabel(txt); l.setBounds(x, y - 25, 150, 20);
-        JTextField t = isPass ? new JPasswordField() : new JTextField();
-        t.setBounds(x, y, 250, 30);
-        p.add(l); p.add(t);
-        return t;
-    }
     public void mostrarMensajeExito(String mensaje) {
         JDialog dialogo = new JDialog(this, "Éxito", true);
         dialogo.setUndecorated(true); 
         dialogo.setSize(350, 240);
         dialogo.setLocationRelativeTo(this);
-       
         JPanel panelPrincipal = new JPanel(new BorderLayout());
         panelPrincipal.setBackground(new Color(209, 209, 209)); 
         dialogo.setContentPane(panelPrincipal);
-
         JLabel lblTitulo = new JLabel("ÉXITO", SwingConstants.CENTER);
         lblTitulo.setFont(new Font("Arial", Font.BOLD, 22));
         lblTitulo.setBorder(BorderFactory.createEmptyBorder(15, 0, 5, 0));
         panelPrincipal.add(lblTitulo, BorderLayout.NORTH);
-
         JPanel centro = new JPanel();
         centro.setOpaque(false);
         centro.setLayout(new BoxLayout(centro, BoxLayout.Y_AXIS));
-
         JLabel iconoCheck = new JLabel("✓", SwingConstants.CENTER) {
             @Override
             protected void paintComponent(Graphics g) {
@@ -195,28 +171,35 @@ public class registro extends JFrame {
         iconoCheck.setForeground(Color.WHITE);
         iconoCheck.setFont(new Font("Arial", Font.PLAIN, 40));
         iconoCheck.setAlignmentX(Component.CENTER_ALIGNMENT);
-
         JLabel lblMsg = new JLabel("<html><body style='text-align: center;'>" + mensaje + "</body></html>", SwingConstants.CENTER);
         lblMsg.setFont(new Font("Arial", Font.BOLD, 15));
         lblMsg.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblMsg.setBorder(BorderFactory.createEmptyBorder(15, 25, 15, 25));
-
         centro.add(iconoCheck);
         centro.add(lblMsg);
         panelPrincipal.add(centro, BorderLayout.CENTER);
-
         JButton btnOk = new JButton("OK");
         btnOk.setBackground(new Color(40, 167, 69)); 
         btnOk.setForeground(Color.WHITE);
         btnOk.setFont(new Font("Arial", Font.BOLD, 14));
         btnOk.addActionListener(e -> dialogo.dispose());
-
         JPanel sur = new JPanel(new BorderLayout());
         sur.setOpaque(false);
         sur.setBorder(BorderFactory.createEmptyBorder(0, 45, 20, 45));
         sur.add(btnOk);
-
         panelPrincipal.add(sur, BorderLayout.SOUTH);
         dialogo.setVisible(true);
+    }
+
+    private JTextField crearCampo(JPanel p, String txt, int x, int y) {
+        return crearCampo(p, txt, x, y, false);
+    }
+
+    private JTextField crearCampo(JPanel p, String txt, int x, int y, boolean isPass) {
+        JLabel l = new JLabel(txt); l.setBounds(x, y - 25, 150, 20);
+        JTextField t = isPass ? new JPasswordField() : new JTextField();
+        t.setBounds(x, y, 250, 30);
+        p.add(l); p.add(t);
+        return t;
     }
 }
