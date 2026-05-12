@@ -42,13 +42,15 @@ public class AuthController {
                 vista.mostrarMensajeError("Llene los campos marcados en rojo.");
                 return; 
             }
+
             if (modelo.validarUsuario(usuario, password)) {
-            
                 vista.mostrarLoginExitoso("Ha iniciado sesión con éxito.");
                 
-             
                 vista.dispose(); 
-                new view.principal().setVisible(true); 
+                
+                principal vistaMenu = new principal();
+                new PrincipalController(vistaMenu); 
+                vistaMenu.setVisible(true); 
             }
         });
         

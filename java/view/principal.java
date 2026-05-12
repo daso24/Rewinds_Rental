@@ -1,44 +1,41 @@
 package view;
-import javax.swing.*;
 
+import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.geom.Ellipse2D;
+import java.awt.event.ActionListener;
 
 public class principal extends JFrame {
 
-    public principal() {
+    public JLabel btnInicio, btnOperacion, btnClientes, btnVideojuegos, btnPeliculas, logoutBtn;
+    public JButton btnVerClientes, btnVerRentas, btnVerJuegosComprados, btnVerJuegosRentados, btnVerPelisCompradas, btnVerPelisRentadas;
 
+    public principal() {
         setTitle("Principal");
         setSize(1000, 600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setLayout(null);
         
-        // Icono esquina de ventana
-        Image icono = new ImageIcon(getClass().getResource("/img/logo3.png")).getImage();
-        this.setIconImage(icono);
+        try {
+            Image icono = new ImageIcon(getClass().getResource("/img/logo3.png")).getImage();
+            this.setIconImage(icono);
+        } catch(Exception e) {}
 
-        // BARRA AZUL LATERAL
+        // BARRA LATERAL
         JPanel barraLat = new JPanel();
         barraLat.setBackground(new Color(0, 51, 102));
         barraLat.setBounds(0, 0, 160, 600);
         barraLat.setLayout(null);
         
-        ImageIcon inicioIcono = new ImageIcon(new ImageIcon(getClass().getResource("/img/gravity-ui_house-fill.png")).getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH));
-        ImageIcon operacionesIcono = new ImageIcon(new ImageIcon(getClass().getResource("/img/ic_baseline-plus.png")).getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH));
-        ImageIcon clientesIcono = new ImageIcon(new ImageIcon(getClass().getResource("/img/material-symbols_person.png")).getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH));
-        ImageIcon videojuegosIcono = new ImageIcon(new ImageIcon(getClass().getResource("/img/carbon_game-console.png")).getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH));
-        ImageIcon peliculasIcono = new ImageIcon(new ImageIcon(getClass().getResource("/img/fluent_movies-and-tv-16-filled.png")).getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH));
-        
-        Menu(barraLat, "Inicio", 80, inicioIcono);
-        Menu(barraLat, "Operación", 150, operacionesIcono);
-        Menu(barraLat, "Clientes", 260, clientesIcono);
-        Menu(barraLat, "Videojuegos", 370, videojuegosIcono);
-        Menu(barraLat, "Peliculas", 480, peliculasIcono);
+        btnInicio = Menu(barraLat, "Inicio", 80, "/img/gravity-ui_house-fill.png");
+        btnOperacion = Menu(barraLat, "Operación", 150, "/img/ic_baseline-plus.png");
+        btnClientes = Menu(barraLat, "Clientes", 260, "/img/material-symbols_person.png");
+        btnVideojuegos = Menu(barraLat, "Videojuegos", 370, "/img/carbon_game-console.png");
+        btnPeliculas = Menu(barraLat, "Peliculas", 480, "/img/fluent_movies-and-tv-16-filled.png");
 
-        // HEADER GRIS 
+        // HEADER
         JPanel header = new JPanel() {
+            @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g;
@@ -51,38 +48,40 @@ public class principal extends JFrame {
         header.setBounds(170, 10, 800, 100); 
         header.setLayout(null);
 
-        JLabel logoLabel = new JLabel(new ImageIcon(new ImageIcon(principal.class.getResource("/img/logo0.png")).getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH)));
+        JLabel logoLabel = new JLabel(new ImageIcon(new ImageIcon(getClass().getResource("/img/logo0.png")).getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH)));
         logoLabel.setBounds(30, 10, 80, 80); 
 
         JLabel user = new JLabel("Bienvenido Usuario", SwingConstants.CENTER); 
         user.setFont(new Font("Inter", Font.BOLD, 18)); 
         user.setBounds(0, 35, 800, 30); 
 
-        // BOTÓN SALIR IMAGEN
-        ImageIcon exitIcon = new ImageIcon(new ImageIcon(getClass().getResource("/img/material-symbols_logout-sharp.png")).getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
-        JLabel logoutBtn = new JLabel(exitIcon);
+        logoutBtn = new JLabel(new ImageIcon(new ImageIcon(getClass().getResource("/img/material-symbols_logout-sharp.png")).getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH)));
         logoutBtn.setBounds(720, 30, 40, 40);
         logoutBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        logoutBtn.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) { mostrarConfirmacionSalir(); }
-        });
 
         header.add(logoLabel); header.add(user); header.add(logoutBtn);
 
-        // CARDS 
+        // CARDS
         JPanel card1 = Card("Clientes", "1000"); card1.setBounds(260, 160, 220, 140);
+        btnVerClientes = (JButton) card1.getComponent(2);
+
         JPanel card2 = Card("Rentas y Ventas", "1500"); card2.setBounds(550, 160, 220, 140);
+        btnVerRentas = (JButton) card2.getComponent(2);
+
         JPanel card3 = crearCardDoble("Peliculas"); card3.setBounds(260, 340, 220, 150);
+        btnVerPelisCompradas = (JButton) card3.getComponent(3);
+        btnVerPelisRentadas = (JButton) card3.getComponent(4);
+
         JPanel card4 = crearCardDoble("Videojuegos"); card4.setBounds(550, 340, 220, 150);
+        btnVerJuegosComprados = (JButton) card4.getComponent(3);
+        btnVerJuegosRentados = (JButton) card4.getComponent(4);
 
         add(barraLat); add(header); add(card1); add(card2); add(card3); add(card4);
-
         setLocationRelativeTo(null);
-        setVisible(true);
     }
 
-    public void mostrarConfirmacionSalir() {
+    
+    public void mostrarConfirmacionSalir(ActionListener accionSi, ActionListener accionNo) {
         JDialog dialogo = new JDialog(this, "Confirmar", true);
         dialogo.setUndecorated(true);
         dialogo.setSize(350, 280); 
@@ -94,19 +93,15 @@ public class principal extends JFrame {
         panelPrincipal.setLayout(new BoxLayout(panelPrincipal, BoxLayout.Y_AXIS));
         dialogo.setContentPane(panelPrincipal);
 
-    
         panelPrincipal.add(Box.createVerticalStrut(20));
 
-      
         JLabel lblMsg = new JLabel("<html><body style='text-align: center;'>¿Estás seguro que quieres<br>cerrar sesión?</body></html>", SwingConstants.CENTER);
         lblMsg.setFont(new Font("Inter", Font.BOLD, 16));
         lblMsg.setAlignmentX(Component.CENTER_ALIGNMENT);
         panelPrincipal.add(lblMsg);
 
-    
         panelPrincipal.add(Box.createVerticalGlue());
 
-      
         ImageIcon imagenAlerta = new ImageIcon(new ImageIcon(getClass().getResource("/img/mingcute_warning-fill.png"))
                 .getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH));
         
@@ -114,10 +109,8 @@ public class principal extends JFrame {
         iconoCentro.setAlignmentX(Component.CENTER_ALIGNMENT);
         panelPrincipal.add(iconoCentro);
 
-        
         panelPrincipal.add(Box.createVerticalGlue());
 
-       
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
         panelBotones.setOpaque(false);
         panelBotones.setMaximumSize(new Dimension(350, 50));
@@ -128,44 +121,35 @@ public class principal extends JFrame {
         btnSi.setFocusPainted(false);
         btnSi.addActionListener(e -> {
             dialogo.dispose();
-            dispose();
-            Rewinds_Rental.Main.main(null);
+            accionSi.actionPerformed(e);
         });
 
         JButton btnNo = new JButton("Cancelar");
         btnNo.setBackground(new Color(150, 150, 150));
         btnNo.setForeground(Color.WHITE);
         btnNo.setFocusPainted(false);
-        btnNo.addActionListener(e -> dialogo.dispose());
+        btnNo.addActionListener(e -> {
+            dialogo.dispose();
+            accionNo.actionPerformed(e);
+        });
 
         panelBotones.add(btnSi);
         panelBotones.add(btnNo);
         panelPrincipal.add(panelBotones);
 
-    
         panelPrincipal.add(Box.createVerticalStrut(20));
 
         dialogo.setVisible(true);
     }
-    public void Menu(JPanel panel, String texto, int y, Icon icono) {
-        JLabel iconLabel = new JLabel(icono); iconLabel.setBounds(15, y, 25, 30);
+
+    public JLabel Menu(JPanel panel, String texto, int y, String rutaIcono) {
+        ImageIcon icon = new ImageIcon(new ImageIcon(getClass().getResource(rutaIcono)).getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH));
+        JLabel iconLabel = new JLabel(icon); iconLabel.setBounds(15, y, 25, 30);
         JLabel label = new JLabel(texto);
         label.setForeground(Color.WHITE); label.setFont(new Font("Inter", Font.PLAIN, 15));
         label.setBounds(50, y, 120, 30); label.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        label.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                JFrame ventana = null;
-                switch (texto) {
-                    case "Inicio": return; 
-                    case "Videojuegos": ventana = new videojuegos(); break;
-                    case "Clientes": ventana = new clientes(); break;
-                    case "Operación": ventana = new operaciones(); break;
-                    case "Peliculas": ventana = new peliculas(); break;
-                }
-                if (ventana != null) { dispose(); ventana.setVisible(true); }
-            }
-        });
         panel.add(iconLabel); panel.add(label);
+        return label;
     }
 
     private JPanel Card(String titulo, String numero) {
@@ -182,11 +166,6 @@ public class principal extends JFrame {
         JLabel t = new JLabel(titulo, SwingConstants.CENTER); t.setFont(new Font("Inter", Font.BOLD, 18)); t.setBounds(0, 15, 220, 25);
         JLabel n = new JLabel(numero, SwingConstants.CENTER); n.setFont(new Font("Inter", Font.BOLD, 26)); n.setBounds(0, 45, 220, 35);
         JButton btn = new JButton("Ver"); btn.setBounds(70, 95, 80, 30);
-        btn.addActionListener(e -> {
-            dispose(); // CIERRA VENTANA ACTUAL
-            if (titulo.equals("Clientes")) new clientes().setVisible(true);
-            else if (titulo.equals("Rentas y Ventas")) new operaciones().setVisible(true);
-        });
         panel.add(t); panel.add(n); panel.add(btn);
         return panel;
     }
@@ -207,18 +186,7 @@ public class principal extends JFrame {
         JLabel m2 = new JLabel("Más rentado"); m2.setFont(new Font("Inter", Font.PLAIN, 12)); m2.setBounds(120, 50, 100, 20);
         JButton b1 = new JButton("Ver"); b1.setBounds(20, 90, 80, 30);
         JButton b2 = new JButton("Ver"); b2.setBounds(120, 90, 80, 30);
-        
-      
-        java.awt.event.ActionListener accion = e -> {
-            dispose(); // CIERRA VENTANA ACTUAL
-            if (titulo.equals("Videojuegos")) new juegomas_rentado().setVisible(true);
-            else if (titulo.equals("Peliculas")) new peliculamas_rentada().setVisible(true);
-        };
-        b1.addActionListener(accion); b2.addActionListener(accion);
-
         panel.add(t); panel.add(m1); panel.add(m2); panel.add(b1); panel.add(b2);
         return panel;
     }
-
-    public static void main(String[] args) { SwingUtilities.invokeLater(() -> new principal()); }
 }
