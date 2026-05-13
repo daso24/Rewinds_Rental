@@ -1,14 +1,15 @@
 package view;
-import javax.swing.*;
-import javax.swing.border.Border;
 
+import javax.swing.*;
+import javax.swing.border.*;
 import java.awt.*;
-import java.awt.event.*;
 
 public class AgregarJuego extends JFrame {
 
-    private JTextField txtNombre, txtId, txtVenta, txtRenta, txtDescuento;
-    private JComboBox<String> cbPlataforma, cbStockVenta, cbStockRenta, cbClasif, cbAnio;
+    public JTextField txtNombre, txtId, txtVenta, txtRenta, txtDescuento;
+    public JComboBox<String> cbPlataforma, cbStockVenta, cbStockRenta, cbClasif, cbAnio;
+    public JButton btnAgregar, btnAtras;
+    public JLabel lblInicio, lblOperacion, lblClientes, lblVideojuegos, lblPeliculas;
 
     public AgregarJuego() {
         setTitle("Añadir videojuego");
@@ -17,9 +18,10 @@ public class AgregarJuego extends JFrame {
         setLocationRelativeTo(null);
         setLayout(null);
         
-        //icono esquina de ventana
-        Image icono = new ImageIcon(getClass().getResource("/img/logo3.png")).getImage();
-        this.setIconImage(icono);
+        try {
+            Image icono = new ImageIcon(getClass().getResource("/img/logo3.png")).getImage();
+            this.setIconImage(icono);
+        } catch(Exception e) {}
 
         // BARRA LATERAL AZUL
         JPanel barraLat = new JPanel();
@@ -28,12 +30,11 @@ public class AgregarJuego extends JFrame {
         barraLat.setLayout(null);
         add(barraLat);
 
-        // Iconos 
-        Menu(barraLat, "Inicio", 80, crearIcono("/img/gravity-ui_house-fill.png"));
-        Menu(barraLat, "Operación", 150, crearIcono("/img/ic_baseline-plus.png"));
-        Menu(barraLat, "Clientes", 260, crearIcono("/img/material-symbols_person.png"));
-        Menu(barraLat, "Videojuegos", 370, crearIcono("/img/carbon_game-console.png"));
-        Menu(barraLat, "Peliculas", 480, crearIcono("/img/fluent_movies-and-tv-16-filled.png"));
+        lblInicio = Menu(barraLat, "Inicio", 80, "/img/gravity-ui_house-fill.png");
+        lblOperacion = Menu(barraLat, "Operación", 150, "/img/ic_baseline-plus.png");
+        lblClientes = Menu(barraLat, "Clientes", 260, "/img/material-symbols_person.png");
+        lblVideojuegos = Menu(barraLat, "Videojuegos", 370, "/img/carbon_game-console.png");
+        lblPeliculas = Menu(barraLat, "Peliculas", 480, "/img/fluent_movies-and-tv-16-filled.png");
 
         // PANEL PRINCIPAL
         JPanel mainPanel = new JPanel();
@@ -43,12 +44,8 @@ public class AgregarJuego extends JFrame {
         add(mainPanel);
 
         // CABECERA 
-        JButton btnAtras = new JButton("Atrás");
+        btnAtras = new JButton("Atrás");
         btnAtras.setBounds(20, 20, 100, 30);
-        btnAtras.addActionListener(e -> {
-            new videojuegos(); 
-            dispose();
-        });
         mainPanel.add(btnAtras);
 
         JLabel lblTitulo = new JLabel("Añadir videojuego", SwingConstants.CENTER);
@@ -56,7 +53,7 @@ public class AgregarJuego extends JFrame {
         lblTitulo.setBounds(200, 20, 440, 30);
         mainPanel.add(lblTitulo);
 
-        // FORMULARIO 
+        // FORMULARIO ORIGINAL
         crearLabel(mainPanel, "Nombre del producto:", 30, 80);
         txtNombre = crearField(mainPanel, "", 30, 105, 200);
 
@@ -77,27 +74,20 @@ public class AgregarJuego extends JFrame {
         crearLabel(mainPanel, "Descuento:", 30, 450);
         txtDescuento = crearField(mainPanel, "0%", 30, 475, 180);
 
-        // FORMULARIO 
         crearLabel(mainPanel, "Precio de renta (por 14 días):", 250, 345);
         txtRenta = crearField(mainPanel, "$ 0.00", 250, 375, 180);
 
         crearLabel(mainPanel, "Stock:", 30, 520);
-        String[] stockVentaItems = {"Disponibles para Venta", "1", "5", "10", "20"};
-        cbStockVenta = crearCombo(mainPanel, stockVentaItems, 30, 545, 180);
+        cbStockVenta = crearCombo(mainPanel, new String[]{"Disponibles para Venta", "1", "5", "10"}, 30, 545, 180);
+        cbStockRenta = crearCombo(mainPanel, new String[]{"Disponibles para Renta", "1", "5", "10"}, 250, 545, 180);
 
-        String[] stockRentaItems = {"Disponibles para Renta", "1", "5", "10", "20"};
-        cbStockRenta = crearCombo(mainPanel, stockRentaItems, 250, 545, 180);
-
-        // FORMULARIO
         crearLabel(mainPanel, "Clasificación:", 450, 430);
-        String[] clasifItems = {"C", "E", "E+10", "T", "M"};
-        cbClasif = crearCombo(mainPanel, clasifItems, 450, 455, 160);
+        cbClasif = crearCombo(mainPanel, new String[]{"C", "E", "T", "M"}, 450, 455, 160);
 
         crearLabel(mainPanel, "Año de lanzamiento:", 650, 430);
-        String[] anioItems = {"2024", "2025", "2026"};
-        cbAnio = crearCombo(mainPanel, anioItems, 650, 455, 150);
+        cbAnio = crearCombo(mainPanel, new String[]{"2024", "2025", "2026"}, 650, 455, 150);
 
-        // ÁREA DE IMAGEN 
+     
         JLabel lblProducto = new JLabel("Producto:", SwingConstants.CENTER);
         lblProducto.setFont(new Font("Arial", Font.BOLD, 14));
         lblProducto.setBounds(500, 80, 220, 20);
@@ -107,58 +97,77 @@ public class AgregarJuego extends JFrame {
         panelFoto.setBounds(500, 105, 220, 300);
         panelFoto.setBackground(new Color(240, 240, 240));
         panelFoto.setLayout(new BorderLayout());
+        panelFoto.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         
         JLabel iconSubir = new JLabel("Subir foto de videojuego", SwingConstants.CENTER);
         iconSubir.setForeground(Color.GRAY);
         panelFoto.add(iconSubir, BorderLayout.CENTER);
         mainPanel.add(panelFoto);
 
-        // BOTÓN 
-        JButton btnAgregar = new JButton("Agregar Videojuego");
+        // BOTÓN AGREGAR
+        btnAgregar = new JButton("Agregar Videojuego");
         btnAgregar.setBounds(330, 610, 200, 40);
         btnAgregar.setBackground(new Color(0, 170, 255));
         btnAgregar.setForeground(Color.WHITE);
         btnAgregar.setFont(new Font("Arial", Font.BOLD, 14));
-        
-        btnAgregar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                validarYMostrarPopUp();
-            }
-        });
-        
         mainPanel.add(btnAgregar);
-
-        setVisible(true);
     }
 
-    private void validarYMostrarPopUp() {
-        if (txtNombre.getText().isEmpty() || txtId.getText().isEmpty() || cbPlataforma.getSelectedIndex() == 0) {
-            JOptionPane.showMessageDialog(this, 
-                "Error: Debes ingresar el nombre, ID y seleccionar una plataforma.", 
-                "Error de Registro", 
-                JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+    
+    public void mostrarError(String mensaje) {
+        mostrarPopUpGris(mensaje, new Color(220, 50, 50), "/img/mingcute_warning-fill.png");
+    }
+
+    public void mostrarExito(String mensaje) {
+        mostrarPopUpGris(mensaje, new Color(50, 180, 50), "/img/ic_baseline-plus.png");
+    }
+
+    private void mostrarPopUpGris(String mensaje, Color colorBoton, String rutaIcono) {
+        JDialog dialogo = new JDialog(this, true);
+        dialogo.setUndecorated(true);
+        dialogo.setSize(350, 280);
+        dialogo.setLocationRelativeTo(this);
+
+        JPanel contenedor = new JPanel(new BorderLayout());
+        contenedor.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
+        contenedor.setBackground(new Color(209, 209, 209));
+
+        JPanel contenido = new JPanel();
+        contenido.setOpaque(false);
+        contenido.setLayout(new BoxLayout(contenido, BoxLayout.Y_AXIS));
+        contenido.add(Box.createVerticalStrut(25));
+
+        JLabel lblMsg = new JLabel("<html><div style='text-align: center; width: 250px;'>" + mensaje + "</div></html>", SwingConstants.CENTER);
+        lblMsg.setFont(new Font("Arial", Font.BOLD, 16));
+        lblMsg.setAlignmentX(Component.CENTER_ALIGNMENT);
+        contenido.add(lblMsg);
+
+        contenido.add(Box.createVerticalGlue());
 
         try {
-            Double.parseDouble(txtVenta.getText().replace("$", "").trim());
-            Double.parseDouble(txtRenta.getText().replace("$", "").trim());
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, 
-                "Error: Los precios deben ser valores numéricos.", 
-                "Formato Inválido", 
-                JOptionPane.WARNING_MESSAGE);
-            return;
-        }
+            ImageIcon img = new ImageIcon(new ImageIcon(getClass().getResource(rutaIcono))
+                    .getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH));
+            JLabel lblIcono = new JLabel(img);
+            lblIcono.setAlignmentX(Component.CENTER_ALIGNMENT);
+            contenido.add(lblIcono);
+        } catch (Exception e) {}
 
-        JOptionPane.showMessageDialog(this, 
-            "¡Videojuego registrado con éxito!", 
-            "Operación Exitosa", 
-            JOptionPane.INFORMATION_MESSAGE);
-        
-        new videojuegos();
-        dispose();
+        contenido.add(Box.createVerticalGlue());
+
+        JPanel pBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 15));
+        pBotones.setOpaque(false);
+        JButton btnOk = new JButton("Aceptar");
+        btnOk.setPreferredSize(new Dimension(120, 35));
+        btnOk.setBackground(colorBoton);
+        btnOk.setForeground(Color.WHITE);
+        btnOk.setFocusPainted(false);
+        btnOk.addActionListener(e -> dialogo.dispose());
+        pBotones.add(btnOk);
+
+        contenedor.add(contenido, BorderLayout.CENTER);
+        contenedor.add(pBotones, BorderLayout.SOUTH);
+        dialogo.add(contenedor);
+        dialogo.setVisible(true);
     }
 
     private void crearLabel(JPanel p, String t, int x, int y) {
@@ -184,46 +193,15 @@ public class AgregarJuego extends JFrame {
         return c;
     }
 
-    private ImageIcon crearIcono(String ruta) {
-        try {
-            return new ImageIcon(new ImageIcon(getClass().getResource(ruta))
-                    .getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH));
-        } catch (Exception e) { return null; }
-    }
-
-    // MENÚ LATERAL
-    public void Menu(JPanel panel, String texto, int y, Icon icono) {
-        JLabel iconLabel = new JLabel(icono);
+    public JLabel Menu(JPanel panel, String texto, int y, String ruta) {
+        JLabel iconLabel = new JLabel(new ImageIcon(new ImageIcon(getClass().getResource(ruta)).getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));
         iconLabel.setBounds(15, y, 25, 30);
-
         JLabel label = new JLabel(texto);
         label.setForeground(Color.WHITE);
         label.setFont(new Font("Arial", Font.PLAIN, 15));
         label.setBounds(50, y, 120, 30);
         label.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-        label.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                JFrame ventana = null;
-                switch (texto) {
-                    case "Inicio": ventana = new principal(); break;
-                    case "Videojuegos": ventana = new videojuegos(); break;
-                    case "Clientes": ventana = new clientes(); break;
-                    case "Operación": ventana = new operaciones(); break;
-                    case "Peliculas": ventana = new peliculas(); break;
-                }
-                if (ventana != null) {
-                    ventana.setVisible(true);
-                    dispose();
-                }
-            }
-        });
-
-        panel.add(iconLabel);
-        panel.add(label);
-    }
-
-    public static void main(String[] args) {
-        new AgregarJuego();
+        panel.add(iconLabel); panel.add(label);
+        return label;
     }
 }

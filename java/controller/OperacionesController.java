@@ -13,8 +13,6 @@ public class OperacionesController {
     }
 
     private void initEvents() {
-
-
         // Botón Inicio
         vista.btnInicio.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
@@ -70,49 +68,39 @@ public class OperacionesController {
             }
         });
 
-
-
+     
         vista.btnAgregar.addActionListener(e -> {
             vista.dispose();
-            new AñadirOperacion().setVisible(true);
-           
+            AñadirOperacion vAdd = new AñadirOperacion();
+            new AñadirOperacionController(vAdd);
+            vAdd.setVisible(true);
         });
 
         vista.btnBuscar.addActionListener(e -> {
             String texto = vista.buscador.getText().trim();
-            
             if (texto.isEmpty()) {
-           
                 vista.sorter.setRowFilter(null);
             } else {
-                // Filtra sin importar mayúsculas/minúsculas (?i)
                 try {
                     vista.sorter.setRowFilter(RowFilter.regexFilter("(?i)" + texto));
                 } catch (java.util.regex.PatternSyntaxException ex) {
-                   
                     System.err.println("Error en la búsqueda: " + ex.getMessage());
                 }
             }
         });
 
-   
         vista.btnEliminar.addActionListener(e -> {
-           
             vista.mostrarConfirmacionEliminar("¿Seguro que quieres eliminar<br>esta operación?", eSi -> {
-                
-                
                 int fila = vista.tabla.getSelectedRow();
                 if (fila != -1) {
-                    vista.modeloTabla.removeRow(fila);
-                    System.out.println("Operación eliminada de la tabla");
+                    vista.modeloTabla.removeRow(vista.tabla.convertRowIndexToModel(fila));
                 } else {
-                    JOptionPane.showMessageDialog(vista, "Selecciona una fila primero");
+                   
+                    System.out.println("Selecciona una fila primero");
                 }
-                
             });
         });
 
-   
         vista.tabla.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
@@ -127,5 +115,86 @@ public class OperacionesController {
 
     private void abrirVentanaEditar(int fila) {
      
+    }
+
+ 
+    private class AñadirOperacionController {
+        private AñadirOperacion vAdd;
+
+        public AñadirOperacionController(AñadirOperacion vAdd) {
+            this.vAdd = vAdd;
+            initAddEvents();
+        }
+
+        private void initAddEvents() {
+            vAdd.btnAtras.addActionListener(e -> regresar());
+            vAdd.btnGuardar.addActionListener(e -> validarYGuardar());
+            vAdd.btnDescargar.addActionListener(e -> vAdd.mostrarAlerta("Generando ficha PDF...", false));
+
+      
+            vAdd.lblInicio.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    vAdd.dispose();
+                    principal p = new principal();
+                    new PrincipalController(p);
+                    p.setVisible(true);
+                }
+            });
+
+            vAdd.lblClientes.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    vAdd.dispose();
+                    clientes c = new clientes();
+                    new ClienteController(c);
+                    c.setVisible(true);
+                }
+            });
+
+            vAdd.lblVideojuegos.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    vAdd.dispose();
+                    videojuegos v = new videojuegos();
+                    new VideojuegosController(v);
+                    v.setVisible(true);
+                }
+            });
+
+            vAdd.lblPeliculas.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    vAdd.dispose();
+                    peliculas p = new peliculas();
+                    new PeliculasController(p);
+                    p.setVisible(true);
+                }
+            });
+            
+            vAdd.lblOperacion.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    regresar(); 
+                }
+            });
+        }
+
+        private void validarYGuardar() {
+            
+            if (vAdd.txtNombreCli.getText().trim().isEmpty() || vAdd.txtIdOp.getText().trim().isEmpty()) {
+                vAdd.mostrarAlerta("Error: Existen campos obligatorios vacíos.", true);
+            } else {
+                vAdd.mostrarAlerta("Operación guardada con éxito.", false);
+                regresar();
+            }
+        }
+
+        private void regresar() {
+            vAdd.dispose();
+            operaciones op = new operaciones();
+            new OperacionesController(op);
+            op.setVisible(true);
+        }
     }
 }
