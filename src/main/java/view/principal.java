@@ -15,13 +15,13 @@ public class principal extends JFrame {
         
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setLayout(null);
+        getContentPane().setBackground(Color.WHITE);
         
         try {
             Image icono = new ImageIcon(getClass().getResource("/img/logo3.png")).getImage();
             this.setIconImage(icono);
         } catch(Exception e) {}
 
-        // BARRA LATERAL
         JPanel barraLat = new JPanel();
         barraLat.setBackground(new Color(0, 51, 102));
         barraLat.setBounds(0, 0, 160, 600);
@@ -33,14 +33,13 @@ public class principal extends JFrame {
         btnVideojuegos = Menu(barraLat, "Videojuegos", 370, "/img/carbon_game-console.png");
         btnPeliculas = Menu(barraLat, "Peliculas", 480, "/img/fluent_movies-and-tv-16-filled.png");
 
-        // HEADER
         JPanel header = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(new Color(200, 200, 200));
+                g2.setColor(new Color(225, 225, 225));
                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), 45, 45);
             }
         };
@@ -52,7 +51,7 @@ public class principal extends JFrame {
         logoLabel.setBounds(30, 10, 80, 80); 
 
         JLabel user = new JLabel("Bienvenido Usuario", SwingConstants.CENTER); 
-        user.setFont(new Font("Inter", Font.BOLD, 18)); 
+        user.setFont(new Font("Inter", Font.BOLD, 22)); 
         user.setBounds(0, 35, 800, 30); 
 
         logoutBtn = new JLabel(new ImageIcon(new ImageIcon(getClass().getResource("/img/material-symbols_logout-sharp.png")).getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH)));
@@ -61,14 +60,13 @@ public class principal extends JFrame {
 
         header.add(logoLabel); header.add(user); header.add(logoutBtn);
 
-        // CARDS
         JPanel card1 = Card("Clientes", "1000"); card1.setBounds(260, 160, 220, 140);
         btnVerClientes = (JButton) card1.getComponent(2);
 
         JPanel card2 = Card("Rentas y Ventas", "1500"); card2.setBounds(550, 160, 220, 140);
         btnVerRentas = (JButton) card2.getComponent(2);
 
-        JPanel card3 = crearCardDoble("Peliculas"); card3.setBounds(260, 340, 220, 150);
+        JPanel card3 = crearCardDoble("Películas"); card3.setBounds(260, 340, 220, 150);
         btnVerPelisCompradas = (JButton) card3.getComponent(3);
         btnVerPelisRentadas = (JButton) card3.getComponent(4);
 
@@ -80,9 +78,8 @@ public class principal extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    
     public void mostrarConfirmacionSalir(ActionListener accionSi, ActionListener accionNo) {
-        JDialog dialogo = new JDialog(this, "Confirmar", true);
+        JDialog dialogo = new JDialog(this, true);
         dialogo.setUndecorated(true);
         dialogo.setSize(350, 280); 
         dialogo.setLocationRelativeTo(this);
@@ -102,12 +99,13 @@ public class principal extends JFrame {
 
         panelPrincipal.add(Box.createVerticalGlue());
 
-        ImageIcon imagenAlerta = new ImageIcon(new ImageIcon(getClass().getResource("/img/mingcute_warning-fill.png"))
-                .getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH));
-        
-        JLabel iconoCentro = new JLabel(imagenAlerta);
-        iconoCentro.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panelPrincipal.add(iconoCentro);
+        try {
+            ImageIcon imagenAlerta = new ImageIcon(new ImageIcon(getClass().getResource("/img/mingcute_warning-fill.png"))
+                    .getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH));
+            JLabel iconoCentro = new JLabel(imagenAlerta);
+            iconoCentro.setAlignmentX(Component.CENTER_ALIGNMENT);
+            panelPrincipal.add(iconoCentro);
+        } catch(Exception e) {}
 
         panelPrincipal.add(Box.createVerticalGlue());
 
@@ -115,19 +113,15 @@ public class principal extends JFrame {
         panelBotones.setOpaque(false);
         panelBotones.setMaximumSize(new Dimension(350, 50));
 
-        JButton btnSi = new JButton("Sí, Salir");
-        btnSi.setBackground(new Color(220, 50, 50));
-        btnSi.setForeground(Color.WHITE);
-        btnSi.setFocusPainted(false);
+        JButton btnSi = crearBotonRedondo("Sí, Salir", new Color(220, 50, 50));
+        btnSi.setPreferredSize(new Dimension(110, 35));
         btnSi.addActionListener(e -> {
             dialogo.dispose();
             accionSi.actionPerformed(e);
         });
 
-        JButton btnNo = new JButton("Cancelar");
-        btnNo.setBackground(new Color(150, 150, 150));
-        btnNo.setForeground(Color.WHITE);
-        btnNo.setFocusPainted(false);
+        JButton btnNo = crearBotonRedondo("Cancelar", new Color(130, 130, 130));
+        btnNo.setPreferredSize(new Dimension(110, 35));
         btnNo.addActionListener(e -> {
             dialogo.dispose();
             accionNo.actionPerformed(e);
@@ -136,7 +130,6 @@ public class principal extends JFrame {
         panelBotones.add(btnSi);
         panelBotones.add(btnNo);
         panelPrincipal.add(panelBotones);
-
         panelPrincipal.add(Box.createVerticalStrut(20));
 
         dialogo.setVisible(true);
@@ -154,39 +147,69 @@ public class principal extends JFrame {
 
     private JPanel Card(String titulo, String numero) {
         JPanel panel = new JPanel(null) {
+            @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(new Color(210, 210, 210));
+                g2.setColor(new Color(215, 215, 215));
                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), 35, 35);
             }
         };
         panel.setOpaque(false);
         JLabel t = new JLabel(titulo, SwingConstants.CENTER); t.setFont(new Font("Inter", Font.BOLD, 18)); t.setBounds(0, 15, 220, 25);
         JLabel n = new JLabel(numero, SwingConstants.CENTER); n.setFont(new Font("Inter", Font.BOLD, 26)); n.setBounds(0, 45, 220, 35);
-        JButton btn = new JButton("Ver"); btn.setBounds(70, 95, 80, 30);
+        
+        JButton btn = crearBotonRedondo("Ver", new Color(0, 51, 102));
+        btn.setBounds(70, 95, 80, 30);
+        btn.setFont(new Font("Inter", Font.BOLD, 12));
+        
         panel.add(t); panel.add(n); panel.add(btn);
         return panel;
     }
 
     private JPanel crearCardDoble(String titulo) {
         JPanel panel = new JPanel(null) {
+            @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(new Color(210, 210, 210));
+                g2.setColor(new Color(215, 215, 215));
                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), 35, 35);
             }
         }; 
         panel.setOpaque(false);
         JLabel t = new JLabel(titulo, SwingConstants.CENTER); t.setFont(new Font("Inter", Font.BOLD, 18)); t.setBounds(0, 10, 220, 25);
-        JLabel m1 = new JLabel("Más comprado"); m1.setFont(new Font("Inter", Font.PLAIN, 12)); m1.setBounds(20, 50, 100, 20);
-        JLabel m2 = new JLabel("Más rentado"); m2.setFont(new Font("Inter", Font.PLAIN, 12)); m2.setBounds(120, 50, 100, 20);
-        JButton b1 = new JButton("Ver"); b1.setBounds(20, 90, 80, 30);
-        JButton b2 = new JButton("Ver"); b2.setBounds(120, 90, 80, 30);
+        
+        JLabel m1 = new JLabel("Más comprado", SwingConstants.CENTER); m1.setFont(new Font("Inter", Font.PLAIN, 11)); m1.setBounds(10, 50, 100, 20);
+        JLabel m2 = new JLabel("Más rentado", SwingConstants.CENTER); m2.setFont(new Font("Inter", Font.PLAIN, 11)); m2.setBounds(110, 50, 100, 20);
+        
+        JButton b1 = crearBotonRedondo("Ver", new Color(0, 51, 102)); b1.setBounds(20, 90, 80, 30);
+        JButton b2 = crearBotonRedondo("Ver", new Color(0, 51, 102)); b2.setBounds(120, 90, 80, 30);
+        
         panel.add(t); panel.add(m1); panel.add(m2); panel.add(b1); panel.add(b2);
         return panel;
+    }
+
+    private JButton crearBotonRedondo(String texto, Color colorFondo) {
+        JButton boton = new JButton(texto) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(colorFondo);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        boton.setForeground(Color.WHITE);
+        boton.setFont(new Font("Inter", Font.BOLD, 12));
+        boton.setContentAreaFilled(false);
+        boton.setBorderPainted(false);
+        boton.setFocusPainted(false);
+        boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return boton;
     }
 }

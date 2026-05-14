@@ -41,8 +41,15 @@ public class AñadirClientes extends JFrame {
         mainPanel.setLayout(null);
         add(mainPanel);
 
-        btnAtras = new JButton("Atrás");
-        btnAtras.setBounds(20, 20, 100, 30);
+        try {
+            JLabel logoEsq = new JLabel(new ImageIcon(new ImageIcon(getClass().getResource("/img/logo3.png"))
+                    .getImage().getScaledInstance(60, 50, Image.SCALE_SMOOTH)));
+            logoEsq.setBounds(750, 10, 60, 50);
+            mainPanel.add(logoEsq);
+        } catch(Exception e) {}
+
+        btnAtras = crearBotonRedondo("Atrás", new Color(180, 180, 180), Color.BLACK);
+        btnAtras.setBounds(20, 20, 100, 35);
         mainPanel.add(btnAtras);
 
         JLabel lblTituloSuperior = new JLabel("Información de cliente", SwingConstants.CENTER);
@@ -60,18 +67,38 @@ public class AñadirClientes extends JFrame {
         card.setBounds(30, 230, 780, 360);
         card.setBackground(Color.WHITE);
         card.setLayout(null);
-        card.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)));
+        card.setBorder(new RoundedBorder(30));
         mainPanel.add(card);
 
         txtId = CampoEditable(card, "ID del Cliente:", "12345", 50, 70, 180);
         txtFecha = CampoEditable(card, "Fecha de nacimiento:", "01/01/2000", 300, 70, 180);
         txtTelefono = CampoEditable(card, "Teléfono:", "1234567891", 550, 70, 180);
 
-        btnEditar = new JButton("Agregar Cliente");
-        btnEditar.setBounds(340, 610, 160, 35);
-        btnEditar.setBackground(new Color(0, 170, 255));
-        btnEditar.setForeground(Color.WHITE);
+        btnEditar = crearBotonRedondo("Agregar Cliente", new Color(0, 170, 255), Color.WHITE);
+        btnEditar.setBounds(340, 610, 160, 40);
         mainPanel.add(btnEditar);
+    }
+
+    private JButton crearBotonRedondo(String texto, Color bg, Color fg) {
+        JButton btn = new JButton(texto) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(getBackground());
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20);
+                super.paintComponent(g2);
+                g2.dispose();
+            }
+        };
+        btn.setBackground(bg);
+        btn.setForeground(fg);
+        btn.setFocusPainted(false);
+        btn.setContentAreaFilled(false);
+        btn.setBorderPainted(false);
+        btn.setFont(new Font("Inter", Font.BOLD, 13));
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return btn;
     }
 
     private JTextField CampoEditable(JPanel panel, String titulo, String valor, int x, int y, int w) {
@@ -83,7 +110,6 @@ public class AñadirClientes extends JFrame {
         txt.setBounds(x, y + 25, w, 35);
         txt.setHorizontalAlignment(JTextField.CENTER);
         txt.setFont(new Font("Arial", Font.PLAIN, 14));
-   
         txt.setBorder(BorderFactory.createCompoundBorder(
                 new RoundedBorder(15), 
                 BorderFactory.createEmptyBorder(0, 10, 0, 10)));
@@ -125,17 +151,16 @@ public class AñadirClientes extends JFrame {
 
         JPanel contenedor = new JPanel(new BorderLayout());
         contenedor.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
-        contenedor.setBackground(new Color(209, 209, 209));
+        contenedor.setBackground(new Color(240, 240, 240));
         dialogo.setContentPane(contenedor);
 
         JPanel panelContenido = new JPanel();
         panelContenido.setOpaque(false);
         panelContenido.setLayout(new BoxLayout(panelContenido, BoxLayout.Y_AXIS));
-        
         panelContenido.add(Box.createVerticalStrut(25));
 
-        JLabel lblMsg = new JLabel("<html><div style='text-align: center; width: 250px;'>" + mensaje + "</div></html>", SwingConstants.CENTER);
-        lblMsg.setFont(new Font("Inter", Font.BOLD, 16));
+        JLabel lblMsg = new JLabel("<html><center>" + mensaje + "</center></html>", SwingConstants.CENTER);
+        lblMsg.setFont(new Font("Inter", Font.BOLD, 15));
         lblMsg.setAlignmentX(Component.CENTER_ALIGNMENT);
         panelContenido.add(lblMsg);
 
@@ -143,7 +168,7 @@ public class AñadirClientes extends JFrame {
 
         try {
             ImageIcon imagenAlerta = new ImageIcon(new ImageIcon(getClass().getResource(rutaIcono))
-                    .getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH));
+                    .getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH));
             JLabel iconoCentro = new JLabel(imagenAlerta);
             iconoCentro.setAlignmentX(Component.CENTER_ALIGNMENT);
             panelContenido.add(iconoCentro);
@@ -154,11 +179,8 @@ public class AñadirClientes extends JFrame {
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 15));
         panelBotones.setOpaque(false);
 
-        JButton btnOk = new JButton("Aceptar");
+        JButton btnOk = crearBotonRedondo("Aceptar", colorBoton, Color.WHITE);
         btnOk.setPreferredSize(new Dimension(120, 35));
-        btnOk.setBackground(colorBoton);
-        btnOk.setForeground(Color.WHITE);
-        btnOk.setFocusPainted(false);
         btnOk.addActionListener(e -> dialogo.dispose());
         panelBotones.add(btnOk);
 
@@ -176,7 +198,7 @@ public class AñadirClientes extends JFrame {
         public void paintBorder(Component c, Graphics g, int x, int y, int w, int h) {
             Graphics2D g2 = (Graphics2D) g;
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2.setColor(new Color(150, 150, 150)); 
+            g2.setColor(new Color(180, 180, 180)); 
             g2.drawRoundRect(x, y, w - 1, h - 1, r, r);
         }
     }

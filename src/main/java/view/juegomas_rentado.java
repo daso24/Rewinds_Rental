@@ -1,11 +1,12 @@
 package view;
+
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class juegomas_rentado extends JFrame {
-    
+
     public JButton btnAtras, btnEditar, btnDescargar;
     public JLabel btnInicio, btnOperacion, btnClientes, btnVideojuegos, btnPeliculas;
 
@@ -15,9 +16,11 @@ public class juegomas_rentado extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
         getContentPane().setBackground(Color.WHITE);
-        
-        Image icono = new ImageIcon(getClass().getResource("/img/logo3.png")).getImage();
-        this.setIconImage(icono);
+
+        try {
+            Image icono = new ImageIcon(getClass().getResource("/img/logo3.png")).getImage();
+            this.setIconImage(icono);
+        } catch (Exception e) {}
 
         JPanel barraLat = new JPanel();
         barraLat.setBackground(new Color(0, 51, 102));
@@ -30,20 +33,27 @@ public class juegomas_rentado extends JFrame {
         btnVideojuegos = crearItemMenu(barraLat, "Videojuegos", 400, "/img/carbon_game-console.png");
         btnPeliculas = crearItemMenu(barraLat, "Peliculas", 510, "/img/fluent_movies-and-tv-16-filled.png");
 
-        JPanel panel = new JPanel();
-        panel.setBackground(new Color(230, 230, 230));
+        JPanel panel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(230, 230, 230));
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
+            }
+        };
+        panel.setOpaque(false);
         panel.setBounds(220, 40, 830, 530);
         panel.setLayout(null);
-        panel.setBorder(new LineBorder(Color.GRAY));
 
         JLabel titulo = new JLabel("Información del videojuego");
         titulo.setFont(new Font("Inter", Font.BOLD, 22));
         titulo.setBounds(300, 20, 350, 30);
 
-        btnAtras = new JButton("←  Atrás");
+        btnAtras = crearBotonRedondo("←  Atrás", new Color(200, 200, 200), Color.BLACK);
         btnAtras.setFont(new Font("Inter", Font.PLAIN, 13));
         btnAtras.setBounds(30, 20, 120, 30);
-        btnAtras.setFocusPainted(false);
 
         JLabel nombre = new JLabel("Nombre del videojuego:");
         nombre.setFont(new Font("Inter", Font.BOLD, 15));
@@ -155,19 +165,13 @@ public class juegomas_rentado extends JFrame {
         generoTxt.setBounds(350, 255, 130, 30);
         generoTxt.setEditable(false);
 
-        btnEditar = new JButton("Editar videojuego");
+        btnEditar = crearBotonRedondo("Editar videojuego", new Color(52, 73, 94), Color.WHITE);
         btnEditar.setFont(new Font("Inter", Font.BOLD, 14));
-        btnEditar.setBackground(new Color(52, 73, 94));
-        btnEditar.setForeground(Color.WHITE);
         btnEditar.setBounds(50, 470, 200, 40);
-        btnEditar.setFocusPainted(false);
 
-        btnDescargar = new JButton("Descargar Reporte PDF");
+        btnDescargar = crearBotonRedondo("Descargar Reporte PDF", new Color(0, 170, 255), Color.WHITE);
         btnDescargar.setFont(new Font("Inter", Font.BOLD, 14));
-        btnDescargar.setBackground(new Color(0, 170, 255));
-        btnDescargar.setForeground(Color.WHITE);
         btnDescargar.setBounds(280, 470, 200, 40);
-        btnDescargar.setFocusPainted(false);
 
         add(barraLat);
         add(panel);
@@ -189,8 +193,28 @@ public class juegomas_rentado extends JFrame {
         setLocationRelativeTo(null);
     }
 
+    private JButton crearBotonRedondo(String texto, Color bg, Color fg) {
+        JButton btn = new JButton(texto) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(bg);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        btn.setForeground(fg);
+        btn.setContentAreaFilled(false);
+        btn.setBorderPainted(false);
+        btn.setFocusPainted(false);
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return btn;
+    }
+
     public void mostrarConfirmacion(String mensaje, ActionListener accionSi) {
-        JDialog dialogo = new JDialog(this, "Confirmación", true);
+        JDialog dialogo = new JDialog(this, true);
         dialogo.setUndecorated(true);
         dialogo.setSize(380, 300);
         dialogo.setLocationRelativeTo(this);
@@ -214,18 +238,14 @@ public class juegomas_rentado extends JFrame {
         JPanel panelBtns = new JPanel(new FlowLayout(FlowLayout.CENTER, 25, 20));
         panelBtns.setOpaque(false);
 
-        JButton btnSi = new JButton("Confirmar");
+        JButton btnSi = crearBotonRedondo("Confirmar", new Color(0, 51, 102), Color.WHITE);
         btnSi.setFont(new Font("Inter", Font.BOLD, 14));
         btnSi.setPreferredSize(new Dimension(120, 38));
-        btnSi.setBackground(new Color(0, 51, 102));
-        btnSi.setForeground(Color.WHITE);
         btnSi.addActionListener(e -> { dialogo.dispose(); accionSi.actionPerformed(e); });
 
-        JButton btnNo = new JButton("Cancelar");
+        JButton btnNo = crearBotonRedondo("Cancelar", new Color(130, 130, 130), Color.WHITE);
         btnNo.setFont(new Font("Inter", Font.BOLD, 14));
         btnNo.setPreferredSize(new Dimension(120, 38));
-        btnNo.setBackground(new Color(130, 130, 130));
-        btnNo.setForeground(Color.WHITE);
         btnNo.addActionListener(e -> dialogo.dispose());
 
         panelBtns.add(btnSi); panelBtns.add(btnNo);

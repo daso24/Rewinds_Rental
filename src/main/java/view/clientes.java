@@ -48,15 +48,28 @@ public class clientes extends JFrame {
         mainPanel.setLayout(null);
         add(mainPanel);
 
-        btnAgregar = new JButton("+ Añadir cliente");
+        btnAgregar = new JButton("+ Añadir cliente") {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(0, 170, 255));
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
         btnAgregar.setBounds(590, 20, 220, 35);
-        btnAgregar.setBackground(new Color(0, 170, 255));
         btnAgregar.setForeground(Color.WHITE);
+        btnAgregar.setFont(new Font("Inter", Font.BOLD, 14));
+        btnAgregar.setContentAreaFilled(false);
+        btnAgregar.setFocusPainted(false);
+        btnAgregar.setBorderPainted(false);
         mainPanel.add(btnAgregar);
 
-        JLabel titulo = new JLabel("Clientes");
-        titulo.setFont(new Font("Inter", Font.BOLD, 24));
-        titulo.setBounds(340, 20, 200, 30);
+        JLabel titulo = new JLabel("Clientes", SwingConstants.CENTER);
+        titulo.setFont(new Font("Inter", Font.BOLD, 26));
+        titulo.setBounds(0, 20, 840, 35);
         mainPanel.add(titulo);
 
         // BUSCADOR
@@ -68,22 +81,47 @@ public class clientes extends JFrame {
         mainPanel.add(searchPanel);
         
         JLabel lupa = new JLabel("Buscar:");
+        lupa.setFont(new Font("Inter", Font.BOLD, 13));
         lupa.setBounds(15, 15, 60, 30);
         searchPanel.add(lupa);
         
         buscador = new JTextField();
         buscador.setBounds(80, 15, 550, 30);
+        buscador.setFont(new Font("Inter", Font.PLAIN, 13));
         searchPanel.add(buscador);
 
-        btnBuscar = new JButton("Buscar");
+        btnBuscar = new JButton("Buscar") {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(45, 59, 72));
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
         btnBuscar.setBounds(650, 15, 110, 30);
+        btnBuscar.setForeground(Color.WHITE);
+        btnBuscar.setFont(new Font("Inter", Font.BOLD, 13));
+        btnBuscar.setContentAreaFilled(false);
+        btnBuscar.setFocusPainted(false);
+        btnBuscar.setBorderPainted(false);
         searchPanel.add(btnBuscar);
 
         // TABLA CON DATOS
-        String[] columnas = {"", "Nombre", "Cédula/ID", "Teléfono", "Correo", "Estado", "Acción"};
+        String[] columnas = {"", "Nombre", "ID", "Rentas activas", "Última compra", "Última renta", "Acción"};
+
         Object[][] datos = {
-            {false, "Juan Pérez", "12345678", "099887766", "juan@mail.com", "Activo", "Ver info"},
-            {false, "María López", "87654321", "099112233", "maria@mail.com", "Activo", "Ver info"}
+            {false, "Mateo Valeriano Soler", "482915", "3", "08 / 07 / 2025", "19 / 03 / 2026", "Ver info"},
+            
+            {false, "Lucía Fernanda Mondragón", "730642", "5", "02 / 02 / 2026", "23 / 03 / 2026", "Ver info"},
+            
+            {false, "Adrián Celis Olavarría", "105422", "2", "20 / 01 / 2026", "20 / 03 / 2026", "Ver info"},
+            
+            {false, "Elena Beatriz Iturbide", "195873", "1", "08 / 07 / 2025", "22 / 03 / 2026", "Ver info"},
+            
+            {false, "Tobías Martínez", "627104", "2", "08 / 11 / 2025", "24 / 03 / 2026", "Ver info"}
         };
 
         modelo = new DefaultTableModel(datos, columnas) {
@@ -95,6 +133,7 @@ public class clientes extends JFrame {
 
         tabla = new JTable(modelo);
         tabla.setRowHeight(40);
+        tabla.setFont(new Font("Inter", Font.PLAIN, 13));
         sorter = new TableRowSorter<>(modelo);
         tabla.setRowSorter(sorter);
 
@@ -102,15 +141,28 @@ public class clientes extends JFrame {
         scroll.setBounds(20, 170, 790, 340);
         mainPanel.add(scroll);
 
-        btnEliminar = new JButton("Eliminar seleccionado");
-        btnEliminar.setBounds(320, 540, 200, 35);
-        btnEliminar.setBackground(new Color(255, 87, 34));
+        btnEliminar = new JButton("Eliminar seleccionado") {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(220, 50, 50));
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        btnEliminar.setBounds(320, 540, 240, 40);
         btnEliminar.setForeground(Color.WHITE);
+        btnEliminar.setFont(new Font("Inter", Font.BOLD, 14));
+        btnEliminar.setContentAreaFilled(false);
+        btnEliminar.setFocusPainted(false);
+        btnEliminar.setBorderPainted(false);
         mainPanel.add(btnEliminar);
     }
 
     public void mostrarConfirmacionEliminar(String mensaje, java.awt.event.ActionListener accionSi) {
-        JDialog dialogo = new JDialog(this, "Confirmar", true);
+        JDialog dialogo = new JDialog(this, true);
         dialogo.setUndecorated(true);
         dialogo.setSize(350, 280); 
         dialogo.setLocationRelativeTo(this);
@@ -145,19 +197,45 @@ public class clientes extends JFrame {
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 15));
         panelBotones.setOpaque(false);
 
-        JButton btnSi = new JButton("Eliminar");
-        btnSi.setPreferredSize(new Dimension(100, 35));
-        btnSi.setBackground(new Color(220, 50, 50));
+        JButton btnSi = new JButton("Eliminar") {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(220, 50, 50));
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        btnSi.setPreferredSize(new Dimension(110, 35));
         btnSi.setForeground(Color.WHITE);
+        btnSi.setFont(new Font("Inter", Font.BOLD, 13));
+        btnSi.setContentAreaFilled(false);
+        btnSi.setFocusPainted(false);
+        btnSi.setBorderPainted(false);
         btnSi.addActionListener(e -> {
             dialogo.dispose();
             accionSi.actionPerformed(e);
         });
 
-        JButton btnNo = new JButton("Cancelar");
-        btnNo.setPreferredSize(new Dimension(100, 35));
-        btnNo.setBackground(new Color(150, 150, 150));
+        JButton btnNo = new JButton("Cancelar") {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(130, 130, 130));
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        btnNo.setPreferredSize(new Dimension(110, 35));
         btnNo.setForeground(Color.WHITE);
+        btnNo.setFont(new Font("Inter", Font.BOLD, 13));
+        btnNo.setContentAreaFilled(false);
+        btnNo.setFocusPainted(false);
+        btnNo.setBorderPainted(false);
         btnNo.addActionListener(e -> dialogo.dispose());
 
         panelBotones.add(btnSi); panelBotones.add(btnNo);
@@ -171,7 +249,7 @@ public class clientes extends JFrame {
         iconLabel.setBounds(15, y, 25, 30);
         JLabel label = new JLabel(texto);
         label.setForeground(Color.WHITE);
-        label.setFont(new Font("Arial", Font.PLAIN, 15));
+        label.setFont(new Font("Inter", Font.PLAIN, 15));
         label.setBounds(50, y, 120, 30);
         label.setCursor(new Cursor(Cursor.HAND_CURSOR));
         panel.add(iconLabel); panel.add(label);
@@ -182,6 +260,10 @@ public class clientes extends JFrame {
         int r; RoundedBorder(int r) { this.r = r; }
         public Insets getBorderInsets(Component c) { return new Insets(r, r, r, r); }
         public boolean isBorderOpaque() { return false; }
-        public void paintBorder(Component c, Graphics g, int x, int y, int w, int h) { g.drawRoundRect(x, y, w - 1, h - 1, r, r); }
+        public void paintBorder(Component c, Graphics g, int x, int y, int w, int h) { 
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2d.drawRoundRect(x, y, w - 1, h - 1, r, r); 
+        }
     }
 }
