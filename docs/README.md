@@ -30,5 +30,4 @@ La interfaz de usuario se está implementando bajo los siguientes parámetros es
 - Lenguaje: Java
 - IDE: Eclipse
 - Control de Versiones: Git / GitHub
-
-Diseño: Figma
+- Diseño: Figma
