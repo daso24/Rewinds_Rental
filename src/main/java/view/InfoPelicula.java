@@ -5,17 +5,17 @@ import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-public class InfoJuego extends JFrame {
+public class InfoPelicula extends JFrame {
 
     public JLabel btnInicio, btnOperacion, btnClientes, btnVideojuegos, btnPeliculas;
     public JTextField txtNombreCli, txtIdCli, txtIdOp, txtFechaOp, txtMonto, txtDescuento;
-    public JTextField txtNomProd, txtIdProd, txtPlataforma;
+    public JTextField txtNomProd, txtIdProd, txtFormato, txtGenero;
     public JRadioButton rbRenta, rbVenta;
     public JButton btnAtras, btnDescargar, btnGuardar, btnEditar;
-    public JLabel lblImagenProducto;
+    public JLabel lblImagenPelicula;
 
-    public InfoJuego() {
-        setTitle("Información de Operación");
+    public InfoPelicula() {
+        setTitle("Información de Película / Operación");
         setSize(1000, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -48,60 +48,70 @@ public class InfoJuego extends JFrame {
         btnAtras.setBounds(20, 20, 100, 30);
         mainPanel.add(btnAtras);
 
-        JLabel lblTitulo = new JLabel("Detalles de renta o compra", SwingConstants.CENTER);
+        JLabel lblTitulo = new JLabel("Detalles de Película", SwingConstants.CENTER);
         lblTitulo.setFont(new Font("Arial", Font.BOLD, 22));
         lblTitulo.setBounds(200, 20, 440, 30);
         mainPanel.add(lblTitulo);
 
         crearLabel(mainPanel, "Nombre del cliente:", 30, 75);
-        txtNombreCli = crearField(mainPanel, "Adrián Celis Olavarría", 30, 100, 280);
+        txtNombreCli = crearField(mainPanel, "", 30, 100, 280);
 
         crearLabel(mainPanel, "ID de cliente:", 30, 145);
-        txtIdCli = crearField(mainPanel, "105422", 30, 170, 180);
+        txtIdCli = crearField(mainPanel, "", 30, 170, 180);
 
         crearLabel(mainPanel, "ID de la operación:", 30, 215);
-        txtIdOp = crearField(mainPanel, "00045621", 30, 240, 180);
+        txtIdOp = crearField(mainPanel, "", 30, 240, 180);
 
+        crearLabel(mainPanel, "Tipo de Trámite:", 30, 285);
+        rbRenta = new JRadioButton("Renta");
+        rbRenta.setBounds(30, 310, 70, 30);
+        rbRenta.setOpaque(false);
+        rbVenta = new JRadioButton("Venta", true);
+        rbVenta.setBounds(105, 310, 70, 30);
+        rbVenta.setOpaque(false);
+        ButtonGroup grupo = new ButtonGroup();
+        grupo.add(rbRenta); grupo.add(rbVenta);
+        mainPanel.add(rbRenta); mainPanel.add(rbVenta);
 
         crearLabel(mainPanel, "Fecha de operación:", 30, 360);
-        txtFechaOp = crearField(mainPanel, "24 / 09 / 2026", 30, 385, 180);
+        txtFechaOp = crearField(mainPanel, "", 30, 385, 180);
 
-        crearLabel(mainPanel, "Monto:", 30, 435);
-        txtMonto = crearField(mainPanel, "$ 250.00", 30, 460, 120);
+        crearLabel(mainPanel, "Monto total:", 30, 435);
+        txtMonto = crearField(mainPanel, "$ 0.00", 30, 460, 120);
 
-        crearLabel(mainPanel, "Descuento:", 170, 435);
+        crearLabel(mainPanel, "Descuento aplicado:", 170, 435);
         txtDescuento = crearField(mainPanel, "0%", 170, 460, 100);
 
-        lblImagenProducto = new JLabel();
-        lblImagenProducto.setBounds(550, 85, 230, 260); 
-        lblImagenProducto.setBackground(Color.DARK_GRAY);
-        lblImagenProducto.setOpaque(true);
-        lblImagenProducto.setBorder(new LineBorder(Color.GRAY, 2));
-        mainPanel.add(lblImagenProducto);
+        lblImagenPelicula = new JLabel();
+        lblImagenPelicula.setBounds(550, 85, 230, 260); 
+        lblImagenPelicula.setBackground(Color.DARK_GRAY);
+        lblImagenPelicula.setOpaque(true);
+        lblImagenPelicula.setBorder(new LineBorder(Color.GRAY, 2));
+        mainPanel.add(lblImagenPelicula);
 
-        crearLabel(mainPanel, "Nombre del producto:", 530, 360);
-        txtNomProd = crearField(mainPanel, "halo", 530, 385, 270);
+        crearLabel(mainPanel, "Título de la película:", 530, 360);
+        txtNomProd = crearField(mainPanel, "", 530, 385, 270);
 
-        crearLabel(mainPanel, "ID Producto:", 530, 430);
-        txtIdProd = crearField(mainPanel, "PEL-10024", 530, 455, 130);
+        crearLabel(mainPanel, "ID Película:", 530, 430);
+        txtIdProd = crearField(mainPanel, "", 530, 455, 130);
 
-        crearLabel(mainPanel, "Plataforma:", 675, 430);
-        txtPlataforma = crearField(mainPanel, "Xbox", 675, 455, 125);
+        crearLabel(mainPanel, "Formato:", 675, 430);
+        txtFormato = crearField(mainPanel, "", 675, 455, 125);
 
-        btnGuardar = new JButton("Guardar Operación");
+        btnGuardar = new JButton("Confirmar Operación");
         btnGuardar.setBounds(50, 560, 220, 45);
         btnGuardar.setBackground(Color.BLACK);
         btnGuardar.setForeground(Color.WHITE);
         btnGuardar.setFont(new Font("Arial", Font.BOLD, 14));
         mainPanel.add(btnGuardar);
 
-        btnEditar = new JButton("Editar Producto");
+        btnEditar = new JButton("Modificar Película");
         btnEditar.setBounds(300, 560, 200, 45);
         btnEditar.setBackground(new Color(60, 60, 60));
         btnEditar.setForeground(Color.WHITE);
         mainPanel.add(btnEditar);
 
-        btnDescargar = new JButton("Descargar Ficha PDF");
+        btnDescargar = new JButton("Generar Recibo PDF");
         btnDescargar.setBounds(530, 560, 250, 45);
         btnDescargar.setBackground(new Color(0, 170, 255));
         btnDescargar.setForeground(Color.WHITE);
@@ -149,19 +159,15 @@ public class InfoJuego extends JFrame {
         dialogo.setUndecorated(true);
         dialogo.setSize(350, 250);
         dialogo.setLocationRelativeTo(this);
-        
         JPanel p = new JPanel(new BorderLayout());
         p.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
         p.setBackground(new Color(230, 230, 230));
-
         JLabel msg = new JLabel("<html><center>" + mensaje + "</center></html>", SwingConstants.CENTER);
         msg.setFont(new Font("Arial", Font.BOLD, 15));
-        
         JButton btn = new JButton("Aceptar");
         btn.setBackground(esError ? new Color(200, 50, 50) : new Color(0, 102, 204));
         btn.setForeground(Color.WHITE);
         btn.addActionListener(e -> dialogo.dispose());
-
         p.add(msg, BorderLayout.CENTER);
         p.add(btn, BorderLayout.SOUTH);
         dialogo.add(p);
@@ -173,21 +179,16 @@ public class InfoJuego extends JFrame {
         dialogo.setUndecorated(true);
         dialogo.setSize(350, 200);
         dialogo.setLocationRelativeTo(this);
-
         JPanel p = new JPanel(new BorderLayout());
         p.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
         p.setBackground(new Color(240, 240, 240));
-
         JLabel msg = new JLabel("<html><center>" + mensaje + "</center></html>", SwingConstants.CENTER);
         msg.setFont(new Font("Arial", Font.BOLD, 14));
-
         JPanel pBotones = new JPanel(new FlowLayout());
         JButton si = new JButton("Confirmar");
         JButton no = new JButton("Cancelar");
-        
         si.addActionListener(e -> { dialogo.dispose(); accionSi.actionPerformed(e); });
         no.addActionListener(e -> dialogo.dispose());
-
         pBotones.add(si); pBotones.add(no);
         p.add(msg, BorderLayout.CENTER);
         p.add(pBotones, BorderLayout.SOUTH);

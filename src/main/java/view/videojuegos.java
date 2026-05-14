@@ -1,29 +1,31 @@
 package view;
+
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.table.*;
-
-import view.AgregarJuego;
-import view.principal;
-
 import java.awt.*;
-import java.awt.event.*;
 
 public class videojuegos extends JFrame {
 
-    public videojuegos() {
+    public JLabel btnInicio, btnOperacion, btnClientes, btnVideojuegos, btnPeliculas;
+    public JButton btnAgregar, btnBuscar, btnEliminar, btnFiltrar;
+    public JTextField buscador;
+    public JTable tabla;
+    public DefaultTableModel modelo;
+    public TableRowSorter<DefaultTableModel> sorter;
 
-        setTitle("Videojuegos");
+    public videojuegos() {
+        setTitle("Catálogo de Videojuegos");
         setSize(1000, 650);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(false);
         setLocationRelativeTo(null);
         setLayout(null);
-        
-        //icono esquina de ventana
-        Image icono = new ImageIcon(getClass().getResource("/img/logo3.png")).getImage();
-        this.setIconImage(icono);
 
-        // BARRA LATERAL
+        try {
+            Image icono = new ImageIcon(getClass().getResource("/img/logo3.png")).getImage();
+            this.setIconImage(icono);
+        } catch(Exception e) {}
 
         JPanel sidebar = new JPanel();
         sidebar.setBounds(0, 0, 160, 650);
@@ -31,43 +33,11 @@ public class videojuegos extends JFrame {
         sidebar.setLayout(null);
         add(sidebar);
 
-        ImageIcon inicioIcono = new ImageIcon(
-                new ImageIcon(getClass().getResource("/img/gravity-ui_house-fill.png"))
-                        .getImage()
-                        .getScaledInstance(25, 25, Image.SCALE_SMOOTH)
-        );
-
-        ImageIcon operacionesIcono = new ImageIcon(
-                new ImageIcon(getClass().getResource("/img/ic_baseline-plus.png"))
-                        .getImage()
-                        .getScaledInstance(25, 25, Image.SCALE_SMOOTH)
-        );
-
-        ImageIcon clientesIcono = new ImageIcon(
-                new ImageIcon(getClass().getResource("/img/material-symbols_person.png"))
-                        .getImage()
-                        .getScaledInstance(25, 25, Image.SCALE_SMOOTH)
-        );
-
-        ImageIcon videojuegosIcono = new ImageIcon(
-                new ImageIcon(getClass().getResource("/img/carbon_game-console.png"))
-                        .getImage()
-                        .getScaledInstance(25, 25, Image.SCALE_SMOOTH)
-        );
-
-        ImageIcon peliculasIcono= new ImageIcon(
-                new ImageIcon(getClass().getResource("/img/fluent_movies-and-tv-16-filled.png"))
-                        .getImage()
-                        .getScaledInstance(25, 25, Image.SCALE_SMOOTH)
-        );
-        
-        Menu(sidebar, "Inicio", 80, inicioIcono);
-        Menu(sidebar, "Operación", 150, operacionesIcono);
-        Menu(sidebar, "Clientes", 260, clientesIcono);
-        Menu(sidebar, "Videojuegos", 370, videojuegosIcono);
-        Menu(sidebar, "Peliculas", 480, peliculasIcono);
-
-        // PANEL PRINCIPAL
+        btnInicio = crearItemMenu(sidebar, "Inicio", 80, "/img/gravity-ui_house-fill.png");
+        btnOperacion = crearItemMenu(sidebar, "Operación", 150, "/img/ic_baseline-plus.png");
+        btnClientes = crearItemMenu(sidebar, "Clientes", 260, "/img/material-symbols_person.png");
+        btnVideojuegos = crearItemMenu(sidebar, "Videojuegos", 370, "/img/carbon_game-console.png");
+        btnPeliculas = crearItemMenu(sidebar, "Peliculas", 480, "/img/fluent_movies-and-tv-16-filled.png");
 
         JPanel mainPanel = new JPanel();
         mainPanel.setBounds(160, 0, 840, 650);
@@ -75,21 +45,15 @@ public class videojuegos extends JFrame {
         mainPanel.setLayout(null);
         add(mainPanel);
 
-        JButton btnAgregar = new JButton("+ Añadir un videojuego");
-        btnAgregar.setBounds(570, 20, 240, 35);
+        btnAgregar = new JButton("+ Añadir Videojuego");
+        btnAgregar.setBounds(600, 20, 210, 35);
         btnAgregar.setBackground(new Color(0, 170, 255));
         btnAgregar.setForeground(Color.WHITE);
         mainPanel.add(btnAgregar);
-        btnAgregar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                new AgregarJuego().setVisible(true);
-                dispose();
-            }
-        });
 
         JLabel titulo = new JLabel("Videojuegos");
-        titulo.setFont(new Font("Arial", Font.BOLD, 24));
-        titulo.setBounds(340, 20, 200, 30);
+        titulo.setFont(new Font("Inter", Font.BOLD, 24));
+        titulo.setBounds(20, 20, 300, 30);
         mainPanel.add(titulo);
 
         JPanel searchPanel = new JPanel();
@@ -98,321 +62,168 @@ public class videojuegos extends JFrame {
         searchPanel.setBackground(new Color(220, 220, 220));
         searchPanel.setBorder(new RoundedBorder(20));
         mainPanel.add(searchPanel);
-
+        
         JLabel lupa = new JLabel("Buscar:");
         lupa.setBounds(15, 15, 60, 30);
         searchPanel.add(lupa);
 
-        JTextField buscador = new JTextField();
-        buscador.setBounds(80, 15, 470, 30);
-        buscador.setBackground(Color.WHITE);
-        buscador.setOpaque(true);
-
-        buscador.setBorder(
-                BorderFactory.createCompoundBorder(
-                        new RoundedBorder(15),
-                        BorderFactory.createEmptyBorder(5, 10, 5, 10)
-                )
-        );
-
-        buscador.addFocusListener(new FocusAdapter() {
-
-            @Override
-            public void focusGained(FocusEvent e) {
-                buscador.setBackground(new Color(235, 245, 255));
-                buscador.setBorder(
-                        BorderFactory.createCompoundBorder(
-                                new LineBorder(new Color(0, 170, 255), 2, true),
-                                BorderFactory.createEmptyBorder(5, 10, 5, 10)
-                        )
-                );
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                buscador.setBackground(Color.WHITE);
-                buscador.setBorder(
-                        BorderFactory.createCompoundBorder(
-                                new RoundedBorder(15),
-                                BorderFactory.createEmptyBorder(5, 10, 5, 10)
-                        )
-                );
-            }
-        });
-
+        buscador = new JTextField();
+        buscador.setBounds(80, 15, 450, 30);
+        buscador.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(Color.GRAY, 1), 
+            BorderFactory.createEmptyBorder(5, 10, 5, 10)
+        ));
         searchPanel.add(buscador);
 
-        JButton btnBuscar = new JButton("Buscar");
+        btnBuscar = new JButton("Buscar");
         btnBuscar.setBounds(540, 15, 110, 30);
         searchPanel.add(btnBuscar);
 
-        JButton btnFiltrar = new JButton("Filtrar");
+        btnFiltrar = new JButton("Filtrar");
         btnFiltrar.setBounds(660, 15, 100, 30);
         searchPanel.add(btnFiltrar);
-        
-        ImageIcon img1 = new ImageIcon(
-                new ImageIcon(getClass().getResource("/img/EGS_Octopus_InsomniacGamesNixxesSoftware_S1_2560x1440-f27da78f484626718d1e22e7d6950ca5.jpg"))
-                        .getImage()
-                        .getScaledInstance(50, 50, Image.SCALE_SMOOTH)
-        );
-        
-        ImageIcon img2 = new ImageIcon(
-                new ImageIcon(getClass().getResource("/img/The_Legend_of_Zelda_Tears_of_the_Kingdom_cover.jpg"))
-                        .getImage()
-                        .getScaledInstance(50, 50, Image.SCALE_SMOOTH)
-        );
 
-        ImageIcon img3 = new ImageIcon(
-                new ImageIcon(getClass().getResource("/img/Tapa-GTA-V.jpg"))
-                        .getImage()
-                        .getScaledInstance(50, 50, Image.SCALE_SMOOTH)
-        );
-
-        ImageIcon img4 = new ImageIcon(
-                new ImageIcon(getClass().getResource("/img/forza_horizon_6-6006996.jpg"))
-                        .getImage()
-                        .getScaledInstance(50, 50, Image.SCALE_SMOOTH)
-        );
-
-        ImageIcon img5 = new ImageIcon(
-                new ImageIcon(getClass().getResource("/img/resident.jpg"))
-                        .getImage()
-                        .getScaledInstance(50, 50, Image.SCALE_SMOOTH)
-        );
-
-        // TABLA 
-
-        String[] columnas = {
-                "", "Carátula", "Nombre", "ID", "Tipo", "Plataforma", "Info"
-        };
-
+        String[] columnas = {"", "Título", "Plataforma", "Género", "Stock", "Precio Renta", "Info"};
         Object[][] datos = {
-                {false, img1, "Spider-Man 2", "JUE-00064", "Videojuego", "PS5", "Ver info"},
-                {false, img2, "Zelda", "JUE-00024", "Videojuego", "Switch", "Ver info"},
-                {false, img3, "GTA 5", "JUE-00034", "Videojuego", "PS5", "Ver info"},
-                {false, img4, "Forza", "JUE-00084", "Videojuego", "Xbox", "Ver info"},
-                {false, img5, "Resident Evil", "JUE-00087", "Videojuego", "PS5", "Ver info"}
+            {false, "Halo Infinite", "Xbox Series X", "FPS", "5", "$50.00", "Ver info"},
+            {false, "God of War Ragnarök", "PS5", "Acción", "3", "$60.00", "Ver info"},
+            {false, "Elden Ring", "Multi", "RPG", "7", "$55.00", "Ver info"}
         };
 
-        DefaultTableModel modelo = new DefaultTableModel(datos, columnas) {
-
-            @Override
-            public Class<?> getColumnClass(int column) {
-
-                if (column == 0) {
-                    return Boolean.class;
-                }
-
-                if (column == 1) {
-                    return Icon.class;
-                }
-
-                return String.class;
-            }
-
-            @Override
-            public boolean isCellEditable(int row, int column) {
-
-                return column == 0;
-            }
+        modelo = new DefaultTableModel(datos, columnas) {
+            @Override public Class<?> getColumnClass(int c) { return (c == 0) ? Boolean.class : String.class; }
+            @Override public boolean isCellEditable(int r, int c) { return c == 0; }
         };
 
-        JTable tabla = new JTable(modelo);
-
-        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(modelo);
+        tabla = new JTable(modelo);
+        tabla.setRowHeight(50);
+        sorter = new TableRowSorter<>(modelo);
         tabla.setRowSorter(sorter);
 
-        // TABLA CUADRADA 
+        tabla.getColumnModel().getColumn(6).setCellRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                
+                setForeground(Color.BLACK);
+                setFont(new Font("Arial", Font.PLAIN, 13));
+                setHorizontalAlignment(SwingConstants.CENTER);
+                
+                if (isSelected) {
+                    c.setForeground(table.getSelectionForeground());
+                }
+                
+                return c;
+            }
+        });
 
-        tabla.setShowHorizontalLines(true);
-        tabla.setShowVerticalLines(true);
-        tabla.setGridColor(new Color(180, 180, 180));
-        tabla.setIntercellSpacing(new Dimension(0, 0));
-
-        tabla.setRowHeight(70);
-        tabla.setFont(new Font("Arial", Font.PLAIN, 14));
-
-        JTableHeader header = tabla.getTableHeader();
-        header.setFont(new Font("Arial", Font.BOLD, 14));
-        header.setBackground(Color.WHITE);
-        header.setBorder(
-                BorderFactory.createMatteBorder(0, 0, 1, 0, Color.GRAY)
-        );
-
-        tabla.getColumnModel().getColumn(0).setPreferredWidth(30);
-        tabla.getColumnModel().getColumn(1).setPreferredWidth(70);
-        tabla.getColumnModel().getColumn(2).setPreferredWidth(250);
-        tabla.getColumnModel().getColumn(3).setPreferredWidth(100);
-        tabla.getColumnModel().getColumn(4).setPreferredWidth(120);
-        tabla.getColumnModel().getColumn(5).setPreferredWidth(100);
-        tabla.getColumnModel().getColumn(6).setPreferredWidth(100);
+        tabla.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(java.awt.event.MouseEvent e) {
+                int col = tabla.columnAtPoint(e.getPoint());
+                if (col == 6) {
+                    tabla.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                } else {
+                    tabla.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                }
+            }
+        });
 
         JScrollPane scroll = new JScrollPane(tabla);
         scroll.setBounds(20, 170, 790, 350);
-        scroll.setBorder(BorderFactory.createLineBorder(new Color(180, 180, 180)));
         mainPanel.add(scroll);
 
-        JButton btnEliminar = new JButton("Eliminar videojuego");
+        btnEliminar = new JButton("Eliminar Seleccionados");
         btnEliminar.setBounds(320, 540, 200, 35);
         btnEliminar.setBackground(new Color(255, 87, 34));
         btnEliminar.setForeground(Color.WHITE);
         mainPanel.add(btnEliminar);
-
-        // BUSQUEDA 
-
-        btnBuscar.addActionListener(e -> {
-            String texto = buscador.getText().trim();
-
-            if (texto.isEmpty()) {
-                sorter.setRowFilter(null);
-            } else {
-                sorter.setRowFilter(RowFilter.regexFilter("(?i)" + texto));
-            }
-        });
-        // ELIMINAR FILAS
-        btnEliminar.addActionListener(e -> {
-
-            JPanel panel = new JPanel();
-            panel.setBackground(new Color(220, 220, 220));
-            panel.setLayout(new BorderLayout());
-
-            JLabel mensaje = new JLabel("¿Está seguro de borrar?", SwingConstants.CENTER);
-            mensaje.setFont(new Font("Arial", Font.PLAIN, 16));
-            mensaje.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
-            panel.add(mensaje, BorderLayout.CENTER);
-
-            UIManager.put("OptionPane.background", new Color(220, 220, 220));
-            UIManager.put("Panel.background", new Color(220, 220, 220));
-
-            int opcion = JOptionPane.showConfirmDialog(
-                    null,
-                    panel,
-                    "Confirmación",
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.PLAIN_MESSAGE
-            );
-
-            if(opcion == JOptionPane.YES_OPTION) {
-
-                boolean eliminado = false;
-
-                for (int i = tabla.getRowCount() - 1; i >= 0; i--) {
-
-                    Boolean seleccionado = (Boolean) tabla.getValueAt(i, 0);
-
-                    if (seleccionado != null && seleccionado) {
-
-                        modelo.removeRow(tabla.convertRowIndexToModel(i));
-                        eliminado = true;
-                    }
-                }
-
-                if(eliminado) {
-
-                    JPanel panelExito = new JPanel();
-                    panelExito.setBackground(new Color(220, 220, 220));
-                    panelExito.setLayout(new BorderLayout());
-
-                    JLabel mensajeExito = new JLabel(
-                            "Los elementos se han eliminado con éxito",
-                            SwingConstants.CENTER
-                    );
-
-                    mensajeExito.setFont(new Font("Arial", Font.PLAIN, 16));
-                    mensajeExito.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
-                    panelExito.add(mensajeExito, BorderLayout.CENTER);
-
-                    JOptionPane.showMessageDialog(
-                            null,
-                            panelExito,
-                            "Éxito",
-                            JOptionPane.PLAIN_MESSAGE
-                    );
-                }
-            }
-        });
-        setVisible(true);
     }
 
-    // MENU
-
-    public void Menu(JPanel panel, String texto, int y, Icon icono) {
-
-        JLabel iconLabel = new JLabel(icono);
+    private JLabel crearItemMenu(JPanel panel, String texto, int y, String ruta) {
+        JLabel iconLabel = new JLabel();
+        try {
+            iconLabel.setIcon(new ImageIcon(new ImageIcon(getClass().getResource(ruta)).getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));
+        } catch(Exception e) {}
         iconLabel.setBounds(15, y, 25, 30);
-
+        
         JLabel label = new JLabel(texto);
         label.setForeground(Color.WHITE);
         label.setFont(new Font("Arial", Font.PLAIN, 15));
         label.setBounds(50, y, 120, 30);
         label.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-        label.addMouseListener(new MouseAdapter() {
-
-            public void mouseClicked(MouseEvent e) {
-
-                JFrame ventana = null;
-
-                switch (texto) {
-
-                    case "Inicio":
-                        ventana = new principal();
-                        break;
-
-                    case "Videojuegos":
-                        ventana = new videojuegos();
-                        break;
-
-                    case "Clientes":
-                        ventana = new clientes();
-                        break;
-
-                    case "Operación":
-                        ventana = new operaciones();
-                        break;
-
-                    case "Peliculas":
-                        ventana = new peliculas();
-                        break;
-                }
-
-                if (ventana != null) {
-                    ventana.setVisible(true);
-                    dispose();
-                }
-            }
-        });
-
-        panel.add(iconLabel);
+        
+        panel.add(iconLabel); 
         panel.add(label);
+        return label;
     }
-
-    // BORDE
 
     class RoundedBorder implements Border {
-
-        int r;
-
-        RoundedBorder(int r) {
-            this.r = r;
-        }
-
-        public Insets getBorderInsets(Component c) {
-            return new Insets(r, r, r, r);
-        }
-
-        public boolean isBorderOpaque() {
-            return false;
-        }
-
-        public void paintBorder(Component c, Graphics g, int x, int y, int w, int h) {
-            g.drawRoundRect(x, y, w - 1, h - 1, r, r);
+        int r; RoundedBorder(int r) { this.r = r; }
+        public Insets getBorderInsets(Component c) { return new Insets(r, r, r, r); }
+        public boolean isBorderOpaque() { return false; }
+        public void paintBorder(Component c, Graphics g, int x, int y, int w, int h) { 
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2d.drawRoundRect(x, y, w - 1, h - 1, r, r); 
         }
     }
 
-    public static void main(String[] args) {
-        new videojuegos();
+    public void mostrarConfirmacionEliminar(String mensaje, java.awt.event.ActionListener accionSi) {
+        JDialog dialogo = new JDialog(this, "Confirmar", true);
+        dialogo.setUndecorated(true);
+        dialogo.setSize(350, 280); 
+        dialogo.setLocationRelativeTo(this);
+
+        JPanel contenedor = new JPanel(new BorderLayout());
+        contenedor.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
+        contenedor.setBackground(new Color(209, 209, 209));
+        dialogo.setContentPane(contenedor);
+
+        JPanel panelContenido = new JPanel();
+        panelContenido.setOpaque(false);
+        panelContenido.setLayout(new BoxLayout(panelContenido, BoxLayout.Y_AXIS));
+        panelContenido.add(Box.createVerticalStrut(25));
+
+        JLabel lblMsg = new JLabel("<html><div style='text-align: center; width: 250px;'>" + mensaje + "</div></html>", SwingConstants.CENTER);
+        lblMsg.setFont(new Font("Inter", Font.BOLD, 16));
+        lblMsg.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panelContenido.add(lblMsg);
+        panelContenido.add(Box.createVerticalGlue());
+
+        try {
+            ImageIcon imagenAlerta = new ImageIcon(new ImageIcon(getClass().getResource("/img/mingcute_warning-fill.png"))
+                    .getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH));
+            JLabel iconoCentro = new JLabel(imagenAlerta);
+            iconoCentro.setAlignmentX(Component.CENTER_ALIGNMENT);
+            panelContenido.add(iconoCentro);
+        } catch (Exception e) {}
+
+        panelContenido.add(Box.createVerticalGlue());
+
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 15));
+        panelBotones.setOpaque(false);
+
+        JButton btnSi = new JButton("Eliminar");
+        btnSi.setPreferredSize(new Dimension(100, 35));
+        btnSi.setBackground(new Color(220, 50, 50));
+        btnSi.setForeground(Color.WHITE);
+        btnSi.addActionListener(e -> {
+            dialogo.dispose();
+            accionSi.actionPerformed(e);
+        });
+
+        JButton btnNo = new JButton("Cancelar");
+        btnNo.setPreferredSize(new Dimension(100, 35));
+        btnNo.setBackground(new Color(150, 150, 150));
+        btnNo.setForeground(Color.WHITE);
+        btnNo.addActionListener(e -> dialogo.dispose());
+
+        panelBotones.add(btnSi);
+        panelBotones.add(btnNo);
+
+        contenedor.add(panelContenido, BorderLayout.CENTER);
+        contenedor.add(panelBotones, BorderLayout.SOUTH);
+        dialogo.setVisible(true);
     }
 }

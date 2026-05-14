@@ -1,13 +1,16 @@
 package view;
+
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
-
 import java.awt.*;
-import java.awt.event.*;
 
 public class HistorialRentas extends JFrame {
+
+    public JButton btnAtras;
+    public JLabel lblInicio, lblOperacion, lblClientes, lblVideojuegos, lblPeliculas;
+    public JTable tabla;
+    public DefaultTableModel modelo;
 
     public HistorialRentas() {
         setTitle("Historial de rentas del cliente");
@@ -16,44 +19,31 @@ public class HistorialRentas extends JFrame {
         setLocationRelativeTo(null);
         setLayout(null);
         
-        //icono esquina de ventana
-        Image icono = new ImageIcon(getClass().getResource("/img/logo3.png")).getImage();
-        this.setIconImage(icono);
+        try {
+            Image icono = new ImageIcon(getClass().getResource("/img/logo3.png")).getImage();
+            this.setIconImage(icono);
+        } catch(Exception e) {}
 
-        // BARRA LATERAL
         JPanel sidebar = new JPanel();
         sidebar.setBounds(0, 0, 160, 700);
         sidebar.setBackground(new Color(0, 51, 102));
         sidebar.setLayout(null);
         add(sidebar);
 
-        // Carga de iconos
-        ImageIcon inicioIcono = crearIcono("/img/gravity-ui_house-fill.png");
-        ImageIcon operacionesIcono = crearIcono("/img/ic_baseline-plus.png");
-        ImageIcon clientesIcono = crearIcono("/img/material-symbols_person.png");
-        ImageIcon videojuegosIcono = crearIcono("/img/carbon_game-console.png");
-        ImageIcon peliculasIcono = crearIcono("/img/fluent_movies-and-tv-16-filled.png");
+        lblInicio = Menu(sidebar, "Inicio", 80, "/img/gravity-ui_house-fill.png");
+        lblOperacion = Menu(sidebar, "Operación", 150, "/img/ic_baseline-plus.png");
+        lblClientes = Menu(sidebar, "Clientes", 260, "/img/material-symbols_person.png");
+        lblVideojuegos = Menu(sidebar, "Videojuegos", 370, "/img/carbon_game-console.png");
+        lblPeliculas = Menu(sidebar, "Peliculas", 480, "/img/fluent_movies-and-tv-16-filled.png");
 
-        Menu(sidebar, "Inicio", 80, inicioIcono);
-        Menu(sidebar, "Operación", 150, operacionesIcono);
-        Menu(sidebar, "Clientes", 260, clientesIcono);
-        Menu(sidebar, "Videojuegos", 370, videojuegosIcono);
-        Menu(sidebar, "Peliculas", 480, peliculasIcono);
-
-        // PANEL PRINCIPAL
         JPanel mainPanel = new JPanel();
         mainPanel.setBounds(160, 0, 840, 700);
         mainPanel.setBackground(new Color(200, 200, 200)); 
         mainPanel.setLayout(null);
         add(mainPanel);
 
-        // Botón Atrás
-        JButton btnAtras = new JButton("Atrás");
+        btnAtras = new JButton("Atrás");
         btnAtras.setBounds(20, 20, 100, 30);
-        btnAtras.addActionListener(e -> {
-            new InfoCliente(); 
-            dispose();
-        });
         mainPanel.add(btnAtras);
 
         JLabel lblTitulo = new JLabel("Historial de rentas del cliente", SwingConstants.CENTER);
@@ -61,7 +51,6 @@ public class HistorialRentas extends JFrame {
         lblTitulo.setBounds(160, 20, 520, 30);
         mainPanel.add(lblTitulo);
 
-        // CONFIGURACIÓN DE LA TABLA
         String[] columnas = {"Producto", "Plataforma", "Monto de pago", "Fecha de Renta", "Descuento"};
         Object[][] datos = {
             {"Dragon Ball Sparking Zero", "Playstation 5", "$1000.00", "08 / 07 / 2025", "0%"},
@@ -71,14 +60,12 @@ public class HistorialRentas extends JFrame {
             {"God of War Ragnarok", "Playstation 5", "$800.00", "08 / 11 / 2025", "0%"}
         };
 
-        DefaultTableModel modelo = new DefaultTableModel(datos, columnas) {
+        modelo = new DefaultTableModel(datos, columnas) {
             @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
+            public boolean isCellEditable(int row, int column) { return false; }
         };
 
-        JTable tabla = new JTable(modelo);
+        tabla = new JTable(modelo);
         tabla.setRowHeight(60);
         tabla.setFont(new Font("Arial", Font.PLAIN, 13));
         tabla.setGridColor(new Color(200, 200, 200));
@@ -95,52 +82,17 @@ public class HistorialRentas extends JFrame {
         scroll.getViewport().setBackground(Color.WHITE);
         scroll.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         mainPanel.add(scroll);
-
-        setVisible(true);
     }
 
-    // MÉTODO PARA CARGAR ICONOS (AGREGADO)
-    private ImageIcon crearIcono(String ruta) {
-        try {
-            return new ImageIcon(new ImageIcon(getClass().getResource(ruta))
-                    .getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH));
-        } catch (Exception e) {
-            return null; 
-        }
-    }
-
-    public void Menu(JPanel panel, String texto, int y, Icon icono) {
-        JLabel iconLabel = new JLabel(icono);
+    private JLabel Menu(JPanel panel, String texto, int y, String ruta) {
+        JLabel iconLabel = new JLabel(new ImageIcon(new ImageIcon(getClass().getResource(ruta)).getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));
         iconLabel.setBounds(15, y, 25, 30);
-
         JLabel label = new JLabel(texto);
         label.setForeground(Color.WHITE);
         label.setFont(new Font("Arial", Font.PLAIN, 15));
         label.setBounds(50, y, 120, 30);
         label.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-        label.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                JFrame ventana = null;
-                switch (texto) {
-                    case "Inicio": ventana = new principal(); break;
-                    case "Videojuegos": ventana = new videojuegos(); break;
-                    case "Clientes": ventana = new clientes(); break;
-                    case "Operación": ventana = new operaciones(); break;
-                    case "Peliculas": ventana = new peliculas(); break;
-                }
-                if (ventana != null) {
-                    ventana.setVisible(true);
-                    dispose();
-                }
-            }
-        });
-
-        panel.add(iconLabel);
-        panel.add(label);
-    }
-
-    public static void main(String[] args) {
-        new HistorialRentas();
+        panel.add(iconLabel); panel.add(label);
+        return label;
     }
 }

@@ -1,24 +1,27 @@
 package view;
+
 import javax.swing.*;
 import javax.swing.border.Border;
-
 import java.awt.*;
-import java.awt.event.*;
 
 public class InfoCliente extends JFrame {
 
-    private JTextField txtId, txtFecha, txtTelefono;
+    public JTextField txtId, txtFecha, txtTelefono;
+    public JLabel lblInicio, lblOperacion, lblClientes, lblVideojuegos, lblPeliculas;
+    public JButton btnAtras, btnEditar, btnHistoVentas, btnHistoRentas, btnDescargar, btnGenerar;
 
     public InfoCliente() {
         setTitle("Información de Cliente");
         setSize(1000, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(false);
         setLocationRelativeTo(null);
         setLayout(null);
         
-        //icono esquina de ventana
-        Image icono = new ImageIcon(getClass().getResource("/img/logo3.png")).getImage();
-        this.setIconImage(icono);
+        try {
+            Image icono = new ImageIcon(getClass().getResource("/img/logo3.png")).getImage();
+            this.setIconImage(icono);
+        } catch(Exception e) {}
 
         // BARRA LATERAL
         JPanel sidebar = new JPanel();
@@ -27,18 +30,11 @@ public class InfoCliente extends JFrame {
         sidebar.setLayout(null);
         add(sidebar);
 
-        // Carga de iconos
-        ImageIcon inicioIcono = crearIcono("/img/gravity-ui_house-fill.png");
-        ImageIcon operacionesIcono = crearIcono("/img/ic_baseline-plus.png");
-        ImageIcon clientesIcono = crearIcono("/img/material-symbols_person.png");
-        ImageIcon videojuegosIcono = crearIcono("/img/carbon_game-console.png");
-        ImageIcon peliculasIcono = crearIcono("/img/fluent_movies-and-tv-16-filled.png");
-
-        Menu(sidebar, "Inicio", 80, inicioIcono);
-        Menu(sidebar, "Operación", 150, operacionesIcono);
-        Menu(sidebar, "Clientes", 260, clientesIcono);
-        Menu(sidebar, "Videojuegos", 370, videojuegosIcono);
-        Menu(sidebar, "Peliculas", 480, peliculasIcono);
+        lblInicio = Menu(sidebar, "Inicio", 80, "/img/gravity-ui_house-fill.png");
+        lblOperacion = Menu(sidebar, "Operación", 150, "/img/ic_baseline-plus.png");
+        lblClientes = Menu(sidebar, "Clientes", 260, "/img/material-symbols_person.png");
+        lblVideojuegos = Menu(sidebar, "Videojuegos", 370, "/img/carbon_game-console.png");
+        lblPeliculas = Menu(sidebar, "Peliculas", 480, "/img/fluent_movies-and-tv-16-filled.png");
 
         // PANEL PRINCIPAL
         JPanel mainPanel = new JPanel();
@@ -47,13 +43,8 @@ public class InfoCliente extends JFrame {
         mainPanel.setLayout(null);
         add(mainPanel);
 
-        // Botón Atrás
-        JButton btnAtras = new JButton("Atrás");
+        btnAtras = new JButton("Atrás");
         btnAtras.setBounds(20, 20, 100, 30);
-        btnAtras.addActionListener(e -> {
-            new clientes(); 
-            dispose();
-        });
         mainPanel.add(btnAtras);
 
         JLabel lblTituloSuperior = new JLabel("Información de cliente", SwingConstants.CENTER);
@@ -61,18 +52,13 @@ public class InfoCliente extends JFrame {
         lblTituloSuperior.setBounds(160, 20, 520, 30);
         mainPanel.add(lblTituloSuperior);
 
-        // FOTO DEL CLIENTE EXTERNA
-        JLabel lblFotoTexto = new JLabel("Foto de cliente", SwingConstants.CENTER);
-        lblFotoTexto.setBounds(330, 60, 180, 20);
-        mainPanel.add(lblFotoTexto);
-
         JPanel marcoFoto = new JPanel();
         marcoFoto.setBounds(360, 85, 120, 130);
         marcoFoto.setBackground(Color.DARK_GRAY); 
         marcoFoto.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
         mainPanel.add(marcoFoto);
 
-        // TARJETA BLANCA CENTRAL
+        // TARJETA CENTRAL
         JPanel card = new JPanel();
         card.setBounds(30, 230, 780, 360);
         card.setBackground(Color.WHITE);
@@ -80,155 +66,72 @@ public class InfoCliente extends JFrame {
         card.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)));
         mainPanel.add(card);
 
-        JLabel lblNombreLabel = new JLabel("Nombre del cliente:", SwingConstants.CENTER);
-        lblNombreLabel.setBounds(0, 15, 780, 20);
-        card.add(lblNombreLabel);
-
         JLabel lblNombreValor = new JLabel("Tobias Martinez", SwingConstants.CENTER);
         lblNombreValor.setFont(new Font("Arial", Font.BOLD, 14));
         lblNombreValor.setBounds(0, 35, 780, 20);
         card.add(lblNombreValor);
 
-        // Inicialización de campos con validación 
-        txtId = CampoEditable(card, "ID del Cliente:", "", 50, 70, 180);
-        txtFecha = CampoEditable(card, "Fecha de nacimiento:", "", 300, 70, 180);
+        txtId = CampoEditable(card, "ID del Cliente:", "123", 50, 70, 180);
+        txtFecha = CampoEditable(card, "Fecha de nacimiento:", "27/08/2000", 300, 70, 180);
         txtTelefono = CampoEditable(card, "Teléfono:", "1234567891", 550, 70, 180);
 
-        // FIDELIDAD Y CORREO
-        JLabel lblFid = new JLabel("Nivel de fidelidad:", SwingConstants.CENTER);
-        lblFid.setBounds(50, 140, 180, 20);
-        card.add(lblFid);
-        JLabel lblFidV = new JLabel("VIP", SwingConstants.CENTER);
-        lblFidV.setFont(new Font("Arial", Font.BOLD, 13));
-        lblFidV.setBounds(50, 165, 180, 20);
-        card.add(lblFidV);
-
-        JLabel lblEmail = new JLabel("Correo electrónico:", SwingConstants.CENTER);
-        lblEmail.setBounds(300, 140, 200, 20);
-        card.add(lblEmail);
-        JLabel lblEmailV = new JLabel("ejemplo@gmail.com", SwingConstants.CENTER);
-        lblEmailV.setFont(new Font("Arial", Font.BOLD, 13));
-        lblEmailV.setBounds(300, 165, 200, 20);
-        card.add(lblEmailV);
-
-        // BOTONES DE HISTORIAL (CORREGIDOS)
-        JButton btnHistoVentas = new JButton("Historial de ventas");
+        btnHistoVentas = new JButton("Historial de ventas");
         btnHistoVentas.setBounds(50, 210, 180, 35);
         btnHistoVentas.setBackground(new Color(45, 62, 80));
         btnHistoVentas.setForeground(Color.WHITE);
-        btnHistoVentas.addActionListener(e -> {
-            new HistorialVentas(); 
-            dispose();
-        });
         card.add(btnHistoVentas);
 
-        JButton btnHistoRentas = new JButton("Historial de rentas");
+        btnHistoRentas = new JButton("Historial de rentas");
         btnHistoRentas.setBounds(550, 210, 180, 35);
         btnHistoRentas.setBackground(new Color(45, 62, 80));
         btnHistoRentas.setForeground(Color.WHITE);
-        btnHistoRentas.addActionListener(e -> {
-            new HistorialRentas(); 
-            dispose();
-        });
         card.add(btnHistoRentas);
 
-        // BOTONES DE DESCARGA PDF
-        JButton btnDescargar = new JButton("Descargar Ficha de cliente [PDF]");
+        btnDescargar = new JButton("Descargar Ficha [PDF]");
         btnDescargar.setBounds(80, 290, 280, 30);
         btnDescargar.setBackground(new Color(0, 170, 255));
         btnDescargar.setForeground(Color.WHITE);
         card.add(btnDescargar);
 
-        JButton btnGenerar = new JButton("Generar tarjeta de cliente [PDF]");
+        btnGenerar = new JButton("Generar tarjeta [PDF]");
         btnGenerar.setBounds(430, 290, 280, 30);
         btnGenerar.setBackground(new Color(0, 170, 255));
         btnGenerar.setForeground(Color.WHITE);
         card.add(btnGenerar);
 
-        // BOTÓN EDITAR CLIENTE 
-        JButton btnEditar = new JButton("Editar Cliente");
+        btnEditar = new JButton("Editar Cliente");
         btnEditar.setBounds(340, 610, 160, 35);
         btnEditar.setBackground(new Color(0, 170, 255));
         btnEditar.setForeground(Color.WHITE);
-        btnEditar.addActionListener(e -> validarEdicion());
         mainPanel.add(btnEditar);
-
-        setVisible(true);
-    }
-
-    private void validarEdicion() {
-        String id = txtId.getText().trim();
-        String fecha = txtFecha.getText().trim();
-        String tel = txtTelefono.getText().trim();
-
-        if (id.isEmpty() || fecha.isEmpty() || tel.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Error: Todos los campos deben estar llenos.", "Error de Validación", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        if (!id.matches("\\d+")) {
-            JOptionPane.showMessageDialog(this, "Error: El ID del cliente debe ser numérico.", "Error de Formato", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        JOptionPane.showMessageDialog(this, "¡Cliente editado con éxito!", "Operación Exitosa", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private JTextField CampoEditable(JPanel panel, String titulo, String valor, int x, int y, int w) {
         JLabel lbl = new JLabel(titulo, SwingConstants.CENTER);
         lbl.setBounds(x, y, w, 20);
         panel.add(lbl);
-
         JTextField txt = new JTextField(valor);
         txt.setBounds(x, y + 25, w, 35);
         txt.setHorizontalAlignment(JTextField.CENTER);
-        txt.setEditable(true); 
-        txt.setBackground(Color.WHITE);
         txt.setBorder(new RoundedBorder(15));
         panel.add(txt);
         return txt;
     }
 
-    private ImageIcon crearIcono(String ruta) {
-        try {
-            return new ImageIcon(new ImageIcon(getClass().getResource(ruta))
-                    .getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH));
-        } catch (Exception e) {
-            return null; 
-        }
-    }
-
-    public void Menu(JPanel panel, String texto, int y, Icon icono) {
-        JLabel iconLabel = new JLabel(icono);
+    private JLabel Menu(JPanel panel, String texto, int y, String ruta) {
+        JLabel iconLabel = new JLabel(new ImageIcon(new ImageIcon(getClass().getResource(ruta)).getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));
         iconLabel.setBounds(15, y, 25, 30);
-
         JLabel label = new JLabel(texto);
         label.setForeground(Color.WHITE);
         label.setFont(new Font("Arial", Font.PLAIN, 15));
         label.setBounds(50, y, 120, 30);
         label.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-        label.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                JFrame ventana = null;
-                switch (texto) {
-                    case "Inicio": ventana = new principal(); break;
-                    case "Videojuegos": ventana = new videojuegos(); break;
-                    case "Clientes": ventana = new clientes(); break;
-                    case "Operación": ventana = new operaciones(); break;
-                    case "Peliculas": ventana = new peliculas(); break;
-                }
-                if (ventana != null) {
-                    ventana.setVisible(true);
-                    dispose();
-                }
-            }
-        });
-        panel.add(iconLabel);
-        panel.add(label);
+        panel.add(iconLabel); panel.add(label);
+        return label;
     }
 
     class RoundedBorder implements Border {
-        int r;
-        RoundedBorder(int r) { this.r = r; }
+        int r; RoundedBorder(int r) { this.r = r; }
         public Insets getBorderInsets(Component c) { return new Insets(r/2, r, r/2, r); }
         public boolean isBorderOpaque() { return false; }
         public void paintBorder(Component c, Graphics g, int x, int y, int w, int h) {
@@ -237,7 +140,64 @@ public class InfoCliente extends JFrame {
         }
     }
 
-    public static void main(String[] args) {
-        new InfoCliente();
+    public void mostrarError(String mensaje) {
+        VentanaAlerta(mensaje, "/img/mingcute_warning-fill.png", new Color(220, 50, 50));
+    }
+
+    public void mostrarExito(String mensaje) {
+        VentanaAlerta(mensaje, "/img/gravity-ui_circle-check-fill.png", new Color(0, 170, 255));
+    }
+
+    private void VentanaAlerta(String mensaje, String rutaIcono, Color colorBoton) {
+        JDialog dialogo = new JDialog(this, true);
+        dialogo.setUndecorated(true);
+        dialogo.setSize(350, 280);
+        dialogo.setLocationRelativeTo(this);
+
+        JPanel contenedor = new JPanel(new BorderLayout());
+        contenedor.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
+        contenedor.setBackground(new Color(209, 209, 209));
+        dialogo.setContentPane(contenedor);
+
+        JPanel panelContenido = new JPanel();
+        panelContenido.setOpaque(false);
+        panelContenido.setLayout(new BoxLayout(panelContenido, BoxLayout.Y_AXIS));
+        
+        panelContenido.add(Box.createVerticalStrut(25));
+
+        JLabel lblMsg = new JLabel("<html><div style='text-align: center; width: 250px;'>" + mensaje + "</div></html>", SwingConstants.CENTER);
+        lblMsg.setFont(new Font("Inter", Font.BOLD, 16));
+        lblMsg.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panelContenido.add(lblMsg);
+
+        panelContenido.add(Box.createVerticalGlue());
+
+        try {
+            ImageIcon imagenAlerta = new ImageIcon(new ImageIcon(getClass().getResource(rutaIcono))
+                    .getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH));
+            JLabel iconoCentro = new JLabel(imagenAlerta);
+            iconoCentro.setAlignmentX(Component.CENTER_ALIGNMENT);
+            panelContenido.add(iconoCentro);
+        } catch (Exception e) {
+            System.err.println("No se pudo cargar el icono: " + rutaIcono);
+        }
+
+        panelContenido.add(Box.createVerticalGlue());
+
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 15));
+        panelBotones.setOpaque(false);
+
+        JButton btnOk = new JButton("Aceptar");
+        btnOk.setPreferredSize(new Dimension(120, 35));
+        btnOk.setBackground(colorBoton);
+        btnOk.setForeground(Color.WHITE);
+        btnOk.setFocusPainted(false);
+        btnOk.addActionListener(e -> dialogo.dispose());
+        panelBotones.add(btnOk);
+
+        contenedor.add(panelContenido, BorderLayout.CENTER);
+        contenedor.add(panelBotones, BorderLayout.SOUTH);
+
+        dialogo.setVisible(true);
     }
 }
