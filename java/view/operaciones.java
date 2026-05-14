@@ -57,17 +57,26 @@ public class operaciones extends JFrame {
         titulo.setBounds(340, 20, 200, 30);
         mainPanel.add(titulo);
 
-        // BUSCADOR
+     
         JPanel searchPanel = new JPanel();
         searchPanel.setBounds(20, 80, 790, 60);
         searchPanel.setLayout(null);
         searchPanel.setBackground(new Color(220, 220, 220));
         searchPanel.setBorder(new RoundedBorder(20));
         mainPanel.add(searchPanel);
+        
+        JLabel lupa = new JLabel("Buscar:");
+        lupa.setBounds(15, 15, 60, 30);
+        searchPanel.add(lupa);
+
 
         buscador = new JTextField();
         buscador.setBounds(80, 15, 450, 30);
-        buscador.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(15), BorderFactory.createEmptyBorder(5, 10, 5, 10)));
+      
+        buscador.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(Color.GRAY, 1), 
+            BorderFactory.createEmptyBorder(5, 10, 5, 10)
+        ));
         searchPanel.add(buscador);
 
         btnBuscar = new JButton("Buscar");
@@ -108,9 +117,6 @@ public class operaciones extends JFrame {
         btnEliminar.setBackground(new Color(255, 87, 34));
         btnEliminar.setForeground(Color.WHITE);
         mainPanel.add(btnEliminar);
-
-        mainPanel.setComponentZOrder(searchPanel, 0);
-        searchPanel.setComponentZOrder(buscador, 0);
     }
 
     private ImageIcon getImg(String ruta) {
@@ -122,14 +128,18 @@ public class operaciones extends JFrame {
     }
 
     public JLabel Menu(JPanel panel, String texto, int y, String ruta) {
-        JLabel iconLabel = new JLabel(new ImageIcon(new ImageIcon(getClass().getResource(ruta)).getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));
-        iconLabel.setBounds(15, y, 25, 30);
+        try {
+            JLabel iconLabel = new JLabel(new ImageIcon(new ImageIcon(getClass().getResource(ruta)).getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));
+            iconLabel.setBounds(15, y, 25, 30);
+            panel.add(iconLabel);
+        } catch(Exception e) {}
+        
         JLabel label = new JLabel(texto);
         label.setForeground(Color.WHITE);
         label.setFont(new Font("Inter", Font.PLAIN, 15));
         label.setBounds(50, y, 120, 30);
         label.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        panel.add(iconLabel); panel.add(label);
+        panel.add(label);
         return label;
     }
 

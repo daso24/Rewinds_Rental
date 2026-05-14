@@ -4,13 +4,11 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.table.*;
 import java.awt.*;
-import java.awt.event.*;
 
 public class videojuegos extends JFrame {
 
-   
     public JLabel btnInicio, btnOperacion, btnClientes, btnVideojuegos, btnPeliculas;
-    public JButton btnAgregar, btnBuscar, btnEliminar;
+    public JButton btnAgregar, btnBuscar, btnEliminar, btnFiltrar;
     public JTextField buscador;
     public JTable tabla;
     public DefaultTableModel modelo;
@@ -24,13 +22,11 @@ public class videojuegos extends JFrame {
         setLocationRelativeTo(null);
         setLayout(null);
 
-        // Icono de ventana
         try {
             Image icono = new ImageIcon(getClass().getResource("/img/logo3.png")).getImage();
             this.setIconImage(icono);
         } catch(Exception e) {}
 
-        // PANEL LATERAL
         JPanel sidebar = new JPanel();
         sidebar.setBounds(0, 0, 160, 650);
         sidebar.setBackground(new Color(0, 51, 102));
@@ -43,7 +39,6 @@ public class videojuegos extends JFrame {
         btnVideojuegos = crearItemMenu(sidebar, "Videojuegos", 370, "/img/carbon_game-console.png");
         btnPeliculas = crearItemMenu(sidebar, "Peliculas", 480, "/img/fluent_movies-and-tv-16-filled.png");
 
-        // PANEL PRINCIPAL
         JPanel mainPanel = new JPanel();
         mainPanel.setBounds(160, 0, 840, 650);
         mainPanel.setBackground(new Color(245, 245, 245));
@@ -56,34 +51,43 @@ public class videojuegos extends JFrame {
         btnAgregar.setForeground(Color.WHITE);
         mainPanel.add(btnAgregar);
 
-        JLabel titulo = new JLabel("Inventario Videojuegos");
-        titulo.setFont(new Font("Arial", Font.BOLD, 24));
-        titulo.setBounds(280, 20, 300, 30);
+        JLabel titulo = new JLabel("Videojuegos");
+        titulo.setFont(new Font("Inter", Font.BOLD, 24));
+        titulo.setBounds(20, 20, 300, 30);
         mainPanel.add(titulo);
 
-        // BUSCADOR
         JPanel searchPanel = new JPanel();
         searchPanel.setBounds(20, 80, 790, 60);
         searchPanel.setLayout(null);
         searchPanel.setBackground(new Color(220, 220, 220));
         searchPanel.setBorder(new RoundedBorder(20));
         mainPanel.add(searchPanel);
+        
+        JLabel lupa = new JLabel("Buscar:");
+        lupa.setBounds(15, 15, 60, 30);
+        searchPanel.add(lupa);
 
         buscador = new JTextField();
         buscador.setBounds(80, 15, 450, 30);
-        buscador.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(15), BorderFactory.createEmptyBorder(5, 10, 5, 10)));
+        buscador.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(Color.GRAY, 1), 
+            BorderFactory.createEmptyBorder(5, 10, 5, 10)
+        ));
         searchPanel.add(buscador);
 
         btnBuscar = new JButton("Buscar");
         btnBuscar.setBounds(540, 15, 110, 30);
         searchPanel.add(btnBuscar);
 
-        // TABLA
+        btnFiltrar = new JButton("Filtrar");
+        btnFiltrar.setBounds(660, 15, 100, 30);
+        searchPanel.add(btnFiltrar);
+
         String[] columnas = {"", "Título", "Plataforma", "Género", "Stock", "Precio Renta", "Info"};
         Object[][] datos = {
-            {false, "Halo Infinite", "Xbox Series X", "FPS", "5", "$50.00", "Ver más"},
-            {false, "God of War Ragnarök", "PS5", "Acción", "3", "$60.00", "Ver más"},
-            {false, "Elden Ring", "Multi", "RPG", "7", "$55.00", "Ver más"}
+            {false, "Halo Infinite", "Xbox Series X", "FPS", "5", "$50.00", "Ver info"},
+            {false, "God of War Ragnarök", "PS5", "Acción", "3", "$60.00", "Ver info"},
+            {false, "Elden Ring", "Multi", "RPG", "7", "$55.00", "Ver info"}
         };
 
         modelo = new DefaultTableModel(datos, columnas) {
@@ -95,6 +99,35 @@ public class videojuegos extends JFrame {
         tabla.setRowHeight(50);
         sorter = new TableRowSorter<>(modelo);
         tabla.setRowSorter(sorter);
+
+        tabla.getColumnModel().getColumn(6).setCellRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                
+                setForeground(Color.BLACK);
+                setFont(new Font("Arial", Font.PLAIN, 13));
+                setHorizontalAlignment(SwingConstants.CENTER);
+                
+                if (isSelected) {
+                    c.setForeground(table.getSelectionForeground());
+                }
+                
+                return c;
+            }
+        });
+
+        tabla.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(java.awt.event.MouseEvent e) {
+                int col = tabla.columnAtPoint(e.getPoint());
+                if (col == 6) {
+                    tabla.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                } else {
+                    tabla.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                }
+            }
+        });
 
         JScrollPane scroll = new JScrollPane(tabla);
         scroll.setBounds(20, 170, 790, 350);
@@ -108,14 +141,20 @@ public class videojuegos extends JFrame {
     }
 
     private JLabel crearItemMenu(JPanel panel, String texto, int y, String ruta) {
-        JLabel iconLabel = new JLabel(new ImageIcon(new ImageIcon(getClass().getResource(ruta)).getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));
+        JLabel iconLabel = new JLabel();
+        try {
+            iconLabel.setIcon(new ImageIcon(new ImageIcon(getClass().getResource(ruta)).getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));
+        } catch(Exception e) {}
         iconLabel.setBounds(15, y, 25, 30);
+        
         JLabel label = new JLabel(texto);
         label.setForeground(Color.WHITE);
         label.setFont(new Font("Arial", Font.PLAIN, 15));
         label.setBounds(50, y, 120, 30);
         label.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        panel.add(iconLabel); panel.add(label);
+        
+        panel.add(iconLabel); 
+        panel.add(label);
         return label;
     }
 
@@ -123,49 +162,45 @@ public class videojuegos extends JFrame {
         int r; RoundedBorder(int r) { this.r = r; }
         public Insets getBorderInsets(Component c) { return new Insets(r, r, r, r); }
         public boolean isBorderOpaque() { return false; }
-        public void paintBorder(Component c, Graphics g, int x, int y, int w, int h) { g.drawRoundRect(x, y, w - 1, h - 1, r, r); }
+        public void paintBorder(Component c, Graphics g, int x, int y, int w, int h) { 
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2d.drawRoundRect(x, y, w - 1, h - 1, r, r); 
+        }
     }
+
     public void mostrarConfirmacionEliminar(String mensaje, java.awt.event.ActionListener accionSi) {
         JDialog dialogo = new JDialog(this, "Confirmar", true);
         dialogo.setUndecorated(true);
         dialogo.setSize(350, 280); 
         dialogo.setLocationRelativeTo(this);
 
-        
         JPanel contenedor = new JPanel(new BorderLayout());
         contenedor.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
         contenedor.setBackground(new Color(209, 209, 209));
         dialogo.setContentPane(contenedor);
 
-     
         JPanel panelContenido = new JPanel();
         panelContenido.setOpaque(false);
         panelContenido.setLayout(new BoxLayout(panelContenido, BoxLayout.Y_AXIS));
-        
         panelContenido.add(Box.createVerticalStrut(25));
 
-        // Texto del mensaje
         JLabel lblMsg = new JLabel("<html><div style='text-align: center; width: 250px;'>" + mensaje + "</div></html>", SwingConstants.CENTER);
         lblMsg.setFont(new Font("Inter", Font.BOLD, 16));
         lblMsg.setAlignmentX(Component.CENTER_ALIGNMENT);
         panelContenido.add(lblMsg);
-
         panelContenido.add(Box.createVerticalGlue());
 
-        // Icono
         try {
             ImageIcon imagenAlerta = new ImageIcon(new ImageIcon(getClass().getResource("/img/mingcute_warning-fill.png"))
                     .getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH));
             JLabel iconoCentro = new JLabel(imagenAlerta);
             iconoCentro.setAlignmentX(Component.CENTER_ALIGNMENT);
             panelContenido.add(iconoCentro);
-        } catch (Exception e) {
-            System.err.println("No se pudo cargar la imagen del pop-up");
-        }
+        } catch (Exception e) {}
 
         panelContenido.add(Box.createVerticalGlue());
 
-        // Panel inferior para botones
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 15));
         panelBotones.setOpaque(false);
 
@@ -173,7 +208,6 @@ public class videojuegos extends JFrame {
         btnSi.setPreferredSize(new Dimension(100, 35));
         btnSi.setBackground(new Color(220, 50, 50));
         btnSi.setForeground(Color.WHITE);
-        btnSi.setFocusPainted(false);
         btnSi.addActionListener(e -> {
             dialogo.dispose();
             accionSi.actionPerformed(e);
@@ -183,7 +217,6 @@ public class videojuegos extends JFrame {
         btnNo.setPreferredSize(new Dimension(100, 35));
         btnNo.setBackground(new Color(150, 150, 150));
         btnNo.setForeground(Color.WHITE);
-        btnNo.setFocusPainted(false);
         btnNo.addActionListener(e -> dialogo.dispose());
 
         panelBotones.add(btnSi);
@@ -191,11 +224,6 @@ public class videojuegos extends JFrame {
 
         contenedor.add(panelContenido, BorderLayout.CENTER);
         contenedor.add(panelBotones, BorderLayout.SOUTH);
-
-      
-        contenedor.revalidate();
-        contenedor.repaint();
-        
         dialogo.setVisible(true);
     }
 }
