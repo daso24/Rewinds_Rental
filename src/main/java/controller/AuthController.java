@@ -4,12 +4,9 @@ import models.AuthModel;
 import view.login;
 import view.principal; 
 import view.registro;
-
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
-import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 
@@ -42,22 +39,21 @@ public class AuthController {
             }
 
             if (hayError) {
-                JOptionPane.showMessageDialog(vista, "Llene los campos marcados en rojo", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
+                vista.mostrarMensajeError("Llene los campos marcados en rojo.");
                 return; 
             }
 
             if (modelo.validarUsuario(usuario, password)) {
-                JOptionPane.showMessageDialog(vista, "Ha iniciado sesión con éxito", "Acceso Concedido", JOptionPane.INFORMATION_MESSAGE);
+                vista.mostrarLoginExitoso("Ha iniciado sesión con éxito.");
                 
                 vista.dispose(); 
                 
-                principal ventanaMenu = new principal();
-                ventanaMenu.setVisible(true); 
-            } else {
-                JOptionPane.showMessageDialog(vista, "Datos inválidos", "Error de Inicio de Sesión", JOptionPane.ERROR_MESSAGE);
+                principal vistaMenu = new principal();
+                new PrincipalController(vistaMenu); 
+                vistaMenu.setVisible(true); 
             }
         });
-
+        
         this.vista.registerLink.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {

@@ -6,26 +6,21 @@ import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 import java.net.URL;
 
-public class AñadirOperacion extends JFrame {
+public class InfoOperacion extends JFrame {
 
     public JLabel lblInicio, lblOperacion, lblClientes, lblVideojuegos, lblPeliculas;
     public JButton btnAtras, btnGuardar, btnDescargar;
     public JTextField txtNombreCli, txtIdCli, txtIdOp, txtFechaOp, txtFechaDev, txtMonto, txtDescuento;
-    public JTextField txtNomProd, txtIdProd, txtTipoProd, txtPlataforma;
+    public JTextField txtNombreProd, txtIdProd, txtTipoProd, txtPlataforma;
     public JRadioButton rbRenta, rbVenta;
 
-    public AñadirOperacion() {
-        setTitle("Añadir Operación");
+    public InfoOperacion() {
+        setTitle("Información de Operación");
         setSize(1000, 650);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
         setLayout(null);
-
-        try {
-            Image icono = new ImageIcon(getClass().getResource("/img/logo3.png")).getImage();
-            this.setIconImage(icono);
-        } catch(Exception e) {}
 
         JPanel sidebar = new JPanel();
         sidebar.setBounds(0, 0, 160, 650);
@@ -52,15 +47,15 @@ public class AñadirOperacion extends JFrame {
         cargarIconoBoton(btnAtras, "/img/lets-icons_back.png", 18, 18);
         fondoBlanco.add(btnAtras);
 
-        JLabel lblTitulo = new JLabel("Generar Operación", SwingConstants.CENTER);
-        lblTitulo.setFont(new Font("Arial", Font.BOLD, 22));
-        lblTitulo.setBounds(300, 15, 240, 35);
-        fondoBlanco.add(lblTitulo);
-
-        JLabel logo = new JLabel();
-        logo.setBounds(720, 5, 90, 60);
-        cargarIconoLabel(logo, "/img/logo3.png", 90, 60);
-        fondoBlanco.add(logo);
+        JLabel titulo = new JLabel("Operación", SwingConstants.CENTER);
+        titulo.setFont(new Font("Arial", Font.BOLD, 22));
+        titulo.setBounds(300, 15, 240, 35);
+        fondoBlanco.add(titulo);
+        
+        JLabel cassette = new JLabel();
+        cassette.setBounds(720, 5, 90, 60);
+        cargarIconoLabel(cassette, "/img/logo3.png", 90, 60);
+        fondoBlanco.add(cassette);
 
         JPanel panelGris = new JPanel();
         panelGris.setBounds(20, 70, 800, 480);
@@ -68,8 +63,8 @@ public class AñadirOperacion extends JFrame {
         panelGris.setLayout(null);
         fondoBlanco.add(panelGris);
 
-        txtNombreCli = crearCampo(panelGris, "Nombre del cliente:", 25, 15, 260, "Adrián Celis Olavarría");
-        txtIdCli = crearCampo(panelGris, "ID de cliente:", 25, 80, 150, "105422");
+        txtNombreCli = crearCampo(panelGris, "Nombre del cliente:", 25, 15, 260, "Paulina Rendón Galván");
+        txtIdCli = crearCampo(panelGris, "ID de cliente:", 25, 80, 150, "285736");
         txtIdOp = crearCampo(panelGris, "ID de la operación:", 25, 145, 150, "00045621");
 
         JLabel lblTipo = new JLabel("Tipo");
@@ -84,10 +79,10 @@ public class AñadirOperacion extends JFrame {
         bgTipo.setLayout(null);
         panelGris.add(bgTipo);
 
-        rbRenta = new JRadioButton("Renta", false);
+        rbRenta = new JRadioButton("Renta", true);
         rbRenta.setBounds(5, 0, 80, 30);
         rbRenta.setOpaque(false);
-        rbVenta = new JRadioButton("Venta", true);
+        rbVenta = new JRadioButton("Venta");
         rbVenta.setBounds(85, 0, 80, 30);
         rbVenta.setOpaque(false);
         ButtonGroup bgGroup = new ButtonGroup();
@@ -95,22 +90,21 @@ public class AñadirOperacion extends JFrame {
         bgTipo.add(rbRenta); bgTipo.add(rbVenta);
 
         txtFechaOp = crearCampo(panelGris, "Fecha de operación:", 25, 260, 155, "24 / 09 / 2026");
-        txtFechaDev = crearCampo(panelGris, "Fecha de devolución:", 25, 325, 155, "No aplica");
-        txtMonto = crearCampo(panelGris, "Monto pagado:", 25, 390, 155, "$ 250.00");
+        txtFechaDev = crearCampo(panelGris, "Fecha de devolución:", 25, 325, 155, "08 / 10 / 2026");
+        txtMonto = crearCampo(panelGris, "Monto pagado:", 25, 390, 155, "$ 80.00");
         txtDescuento = crearCampo(panelGris, "Descuento:", 210, 390, 150, "0%");
 
         JLabel lblImg = new JLabel();
         lblImg.setBounds(460, 25, 310, 260);
-        lblImg.setBackground(Color.DARK_GRAY);
-        lblImg.setOpaque(true); 
         lblImg.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+        cargarIconoLabel(lblImg, "/img/chainsaw_man.png", 310, 260);
         panelGris.add(lblImg);
 
-        txtNomProd = crearCampoSimple(panelGris, "Nombre del producto:", 460, 290, 310, "Chainsaw Man - La película");
+        txtNombreProd = crearCampoSimple(panelGris, "Nombre del producto:", 460, 290, 310, "Chainsaw Man - Arco de Reze");
         txtIdProd = crearCampoSimple(panelGris, "ID del producto:", 460, 350, 150, "PEL-10024");
         txtTipoProd = crearCampoSimple(panelGris, "Tipo:", 620, 350, 150, "Película");
 
-        btnDescargar = new RoundedButton("Descargar Ficha PDF  ", 15);
+        btnDescargar = new RoundedButton("Descargar Ficha  ", 15);
         btnDescargar.setBounds(580, 425, 190, 35);
         btnDescargar.setBackground(new Color(0, 180, 255));
         btnDescargar.setForeground(Color.WHITE);
@@ -118,58 +112,11 @@ public class AñadirOperacion extends JFrame {
         cargarIconoBoton(btnDescargar, "/img/pdf_icon.png", 22, 22);
         panelGris.add(btnDescargar);
 
-        btnGuardar = new RoundedButton("Guardar Operación", 10);
-        btnGuardar.setBounds(330, 560, 200, 40);
+        btnGuardar = new RoundedButton("Confirmar Edición", 10);
+        btnGuardar.setBounds(330, 560, 180, 40);
         btnGuardar.setBackground(Color.BLACK);
         btnGuardar.setForeground(Color.WHITE);
         fondoBlanco.add(btnGuardar);
-    }
-
-    public void mostrarAlerta(String mensaje, boolean esError) {
-        JDialog dialogo = new JDialog(this, true);
-        dialogo.setUndecorated(true);
-        dialogo.setSize(350, 280);
-        dialogo.setLocationRelativeTo(this);
-
-        JPanel contenedor = new JPanel(new BorderLayout());
-        contenedor.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
-        contenedor.setBackground(new Color(209, 209, 209));
-        dialogo.setContentPane(contenedor);
-
-        JPanel panelContenido = new JPanel();
-        panelContenido.setOpaque(false);
-        panelContenido.setLayout(new BoxLayout(panelContenido, BoxLayout.Y_AXIS));
-        panelContenido.add(Box.createVerticalStrut(25));
-
-        JLabel lblMsg = new JLabel("<html><div style='text-align: center; width: 250px;'>" + mensaje + "</div></html>", SwingConstants.CENTER);
-        lblMsg.setFont(new Font("Inter", Font.BOLD, 16));
-        lblMsg.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panelContenido.add(lblMsg);
-
-        try {
-            ImageIcon imagenAlerta = new ImageIcon(new ImageIcon(getClass().getResource("/img/mingcute_warning-fill.png"))
-                    .getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH));
-            JLabel iconoCentro = new JLabel(imagenAlerta);
-            iconoCentro.setAlignmentX(Component.CENTER_ALIGNMENT);
-            panelContenido.add(Box.createVerticalGlue());
-            panelContenido.add(iconoCentro);
-        } catch (Exception e) {}
-
-        panelContenido.add(Box.createVerticalGlue());
-
-        JButton btnOk = new JButton("Aceptar");
-        btnOk.setPreferredSize(new Dimension(120, 35));
-        btnOk.setBackground(esError ? new Color(220, 50, 50) : new Color(0, 170, 255));
-        btnOk.setForeground(Color.WHITE);
-        btnOk.addActionListener(e -> dialogo.dispose());
-        
-        JPanel pBot = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 15));
-        pBot.setOpaque(false);
-        pBot.add(btnOk);
-
-        contenedor.add(panelContenido, BorderLayout.CENTER);
-        contenedor.add(pBot, BorderLayout.SOUTH);
-        dialogo.setVisible(true);
     }
 
     public JLabel Menu(JPanel panel, String texto, int y, String ruta) {
@@ -211,6 +158,7 @@ public class AñadirOperacion extends JFrame {
         JTextField tf = new JTextField(texto);
         tf.setHorizontalAlignment(JTextField.CENTER);
         tf.setBounds(x, y + 20, w, 30);
+        tf.setEditable(false);
         tf.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         p.add(tf);
         return tf;

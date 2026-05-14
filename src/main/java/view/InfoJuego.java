@@ -1,318 +1,240 @@
 package view;
-import javax.swing.*;
 
+import javax.swing.*;
+import javax.swing.border.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.geom.RoundRectangle2D;
+import java.net.URL;
 
 public class InfoJuego extends JFrame {
 
+    public JLabel lblInicio, lblOperacion, lblClientes, lblVideojuegos, lblPeliculas;
+    public JButton btnAtras, btnDescargar, btnEditar;
+    public JTextField txtNombreProd, txtIdProd, txtPlataforma, txtGenero, txtEstado, txtStock;
+    public JTextField txtTipoProd, txtPrecioVenta, txtPrecioRenta, txtDescuento, txtClasificacion, txtAnio, txtStockRenta;
+    public JLabel lblImg; 
+
     public InfoJuego() {
-
-        setTitle("Información del producto");
-        setSize(820, 620);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setTitle("Información de Videojuego");
+        setSize(1000, 650);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setResizable(false);
         setLayout(null);
-        getContentPane().setBackground(Color.WHITE);
         
-        //icono esquina de ventana
-        Image icono = new ImageIcon(getClass().getResource("/img/logo3.png")).getImage();
-        this.setIconImage(icono);
-
-        // BARRA AZUL
-        JPanel barraLat = new JPanel();
-        barraLat.setBackground(new Color(0, 51, 102));
-        barraLat.setBounds(0, 0, 120, 600);
-        barraLat.setLayout(null);
-        ImageIcon inicioIcono = new ImageIcon(
-                new ImageIcon(getClass().getResource("/img/gravity-ui_house-fill.png"))
-                        .getImage()
-                        .getScaledInstance(25, 25, Image.SCALE_SMOOTH)
-        );
-
-        ImageIcon operacionesIcono = new ImageIcon(
-                new ImageIcon(getClass().getResource("/img/ic_baseline-plus.png"))
-                        .getImage()
-                        .getScaledInstance(25, 25, Image.SCALE_SMOOTH)
-        );
-
-        ImageIcon clientesIcono = new ImageIcon(
-                new ImageIcon(getClass().getResource("/img/material-symbols_person.png"))
-                        .getImage()
-                        .getScaledInstance(25, 25, Image.SCALE_SMOOTH)
-        );
-
-        ImageIcon videojuegosIcono = new ImageIcon(
-                new ImageIcon(getClass().getResource("/img/carbon_game-console.png"))
-                        .getImage()
-                        .getScaledInstance(25, 25, Image.SCALE_SMOOTH)
-        );
-
-        ImageIcon peliculasIcono= new ImageIcon(
-                new ImageIcon(getClass().getResource("/img/fluent_movies-and-tv-16-filled.png"))
-                        .getImage()
-                        .getScaledInstance(25, 25, Image.SCALE_SMOOTH)
-        );
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/img/logo3.png")));
         
-        Menu(barraLat, "Inicio", 80, inicioIcono);
-        Menu(barraLat, "Operación", 150, operacionesIcono);
-        Menu(barraLat, "Clientes", 260, clientesIcono);
-        Menu(barraLat, "Videojuegos", 370, videojuegosIcono);
-        Menu(barraLat, "Peliculas", 480, peliculasIcono);
+        JPanel sidebar = new JPanel();
+        sidebar.setBounds(0, 0, 160, 650);
+        sidebar.setBackground(new Color(0, 51, 102));
+        sidebar.setLayout(null);
+        add(sidebar);
 
-        // PANEL PRINCIPAL
-        JPanel panel = new JPanel();
-        panel.setBackground(new Color(230, 230, 230));
-        panel.setBounds(150, 20, 620, 540);
-        panel.setLayout(null);
+        lblInicio = Menu(sidebar, "Inicio", 80, "/img/gravity-ui_house-fill.png");
+        lblOperacion = Menu(sidebar, "Operación", 150, "/img/ic_baseline-plus.png");
+        lblClientes = Menu(sidebar, "Clientes", 260, "/img/material-symbols_person.png");
+        lblVideojuegos = Menu(sidebar, "Videojuegos", 370, "/img/carbon_game-console.png");
+        lblPeliculas = Menu(sidebar, "Peliculas", 480, "/img/fluent_movies-and-tv-16-filled.png");
 
-        // TITULO
-        JLabel titulo = new JLabel("Información del producto");
-        titulo.setFont(new Font("Arial", Font.BOLD, 20));
-        titulo.setBounds(220, 15, 300, 30);
+        JPanel fondoBlanco = new JPanel();
+        fondoBlanco.setBounds(160, 0, 840, 650);
+        fondoBlanco.setBackground(Color.WHITE);
+        fondoBlanco.setLayout(null);
+        add(fondoBlanco);
 
-        // BOTON ATRAS
-        JButton atras = new JButton("←  Atrás");
-        atras.setBounds(20, 15, 115, 28);
+        btnAtras = new RoundedButton("  Atrás", 20);
+        btnAtras.setBounds(20, 15, 120, 35);
+        btnAtras.setFont(new Font("Arial", Font.PLAIN, 15));
+        btnAtras.setBackground(new Color(225, 225, 225));
+        cargarIconoBoton(btnAtras, "/img/lets-icons_back.png", 18, 18);
+        fondoBlanco.add(btnAtras);
 
-        atras.addActionListener(e -> {
+        JLabel titulo = new JLabel("Información de videojuego", SwingConstants.CENTER);
+        titulo.setFont(new Font("Arial", Font.BOLD, 22));
+        titulo.setBounds(250, 15, 350, 35);
+        fondoBlanco.add(titulo);
+        
+        JLabel logoDerecha = new JLabel();
+        logoDerecha.setBounds(730, 5, 80, 60);
+        cargarIconoLabel(logoDerecha, "/img/logo3.png", 80, 60);
+        fondoBlanco.add(logoDerecha);
 
-            dispose();
+        JPanel panelGris = new JPanel();
+        panelGris.setBounds(20, 70, 800, 520);
+        panelGris.setBackground(new Color(209, 209, 209));
+        panelGris.setLayout(null);
+        fondoBlanco.add(panelGris);
 
-            SwingUtilities.invokeLater(() -> new principal());
+        txtNombreProd = crearCampo(panelGris, "Nombre del producto:", 30, 20, 180);
+        txtIdProd = crearCampo(panelGris, "ID del producto:", 30, 80, 180);
+        txtTipoProd = crearCampo(panelGris, "Tipo de producto:", 30, 140, 180);
+        txtPlataforma = crearCampo(panelGris, "Plataforma:", 30, 200, 180);
+        txtPrecioVenta = crearCampo(panelGris, "Precio de venta:", 30, 260, 180);
+        txtDescuento = crearCampo(panelGris, "Descuento:", 30, 320, 180);
+        
+        txtStock = crearCampo(panelGris, "Disponibles para venta:", 30, 390, 180);
+        txtStockRenta = crearCampo(panelGris, "Disponibles para renta:", 250, 390, 180);
+        
+        txtPrecioRenta = crearCampo(panelGris, "Precio de renta (por 14 días):", 250, 260, 180);
 
+        JLabel lblProductoImg = new JLabel("Producto:");
+        lblProductoImg.setBounds(500, 20, 100, 20);
+        lblProductoImg.setFont(new Font("Arial", Font.BOLD, 14));
+        panelGris.add(lblProductoImg);
+
+        lblImg = new JLabel();
+        lblImg.setBounds(500, 45, 260, 280);
+        lblImg.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
+        lblImg.setBackground(Color.LIGHT_GRAY);
+        lblImg.setOpaque(true);
+        panelGris.add(lblImg);
+
+        txtClasificacion = crearCampo(panelGris, "Clasificación:", 500, 335, 120);
+        txtAnio = crearCampo(panelGris, "Año de lanzamiento:", 640, 335, 120);
+        txtGenero = crearCampo(panelGris, "Género:", 500, 390, 260);
+
+        btnEditar = new RoundedButton("Editar info de videojuego", 10);
+        btnEditar.setBounds(30, 465, 230, 35);
+        btnEditar.setBackground(new Color(45, 59, 72));
+        btnEditar.setForeground(Color.WHITE);
+        panelGris.add(btnEditar);
+
+        btnDescargar = new RoundedButton("Descargar ficha", 10);
+        btnDescargar.setBounds(340, 465, 200, 35);
+        btnDescargar.setBackground(new Color(0, 180, 255));
+        btnDescargar.setForeground(Color.WHITE);
+        cargarIconoBoton(btnDescargar, "/img/teenyicons_pdf-solid.png", 22, 22);
+        btnDescargar.addActionListener(e -> mostrarAlertaPersonalizada("Generando el archivo PDF..."));
+        panelGris.add(btnDescargar);
+    }
+
+    public void mostrarAlertaPersonalizada(String mensaje) {
+        JDialog dialogo = new JDialog(this, true);
+        dialogo.setUndecorated(true);
+        dialogo.setSize(350, 200);
+        dialogo.setLocationRelativeTo(this);
+
+        JPanel p = new JPanel(new BorderLayout());
+        p.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
+        p.setBackground(new Color(209, 209, 209));
+
+        JLabel msg = new JLabel("<html><center>" + mensaje + "</center></html>", SwingConstants.CENTER);
+        msg.setFont(new Font("Arial", Font.BOLD, 14));
+
+        JButton btnOk = new JButton("Aceptar");
+        btnOk.setBackground(new Color(0, 180, 255));
+        btnOk.setForeground(Color.WHITE);
+        btnOk.addActionListener(e -> dialogo.dispose());
+
+        JPanel pBot = new JPanel(new FlowLayout());
+        pBot.setOpaque(false);
+        pBot.add(btnOk);
+
+        p.add(msg, BorderLayout.CENTER);
+        p.add(pBot, BorderLayout.SOUTH);
+
+        dialogo.add(p);
+        dialogo.setVisible(true);
+    }
+
+    public void mostrarConfirmacion(String mensaje, ActionListener accionSi) {
+        JDialog dialogo = new JDialog(this, "Confirmación", true);
+        dialogo.setUndecorated(true);
+        dialogo.setSize(350, 200);
+        dialogo.setLocationRelativeTo(this);
+
+        JPanel p = new JPanel(new BorderLayout());
+        p.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
+        p.setBackground(new Color(209, 209, 209));
+
+        JLabel msg = new JLabel("<html><center>" + mensaje + "</center></html>", SwingConstants.CENTER);
+        msg.setFont(new Font("Arial", Font.BOLD, 14));
+
+        JPanel pBotones = new JPanel(new FlowLayout());
+        pBotones.setOpaque(false);
+
+        JButton si = new JButton("Confirmar");
+        JButton no = new JButton("Cancelar");
+        si.setBackground(new Color(0, 51, 102));
+        si.setForeground(Color.WHITE);
+        no.setBackground(Color.WHITE);
+
+        si.addActionListener(e -> {
+            dialogo.dispose();
+            if (accionSi != null) accionSi.actionPerformed(e);
         });
 
-        // LABELS IZQUIERDA
-        JLabel nombre = new JLabel("Nombre del producto:");
-        nombre.setFont(new Font("Arial", Font.BOLD, 14));
-        nombre.setBounds(30, 70, 180, 20);
+        no.addActionListener(e -> dialogo.dispose());
 
-        JTextField nombreTxt = new JTextField("Resident Evil Requiem");
-        nombreTxt.setBounds(30, 95, 180, 28);
-
-        JLabel id = new JLabel("ID del producto:");
-        id.setFont(new Font("Arial", Font.BOLD, 14));
-        id.setBounds(30, 135, 180, 20);
-
-        JTextField idTxt = new JTextField("JUE-00087");
-        idTxt.setBounds(30, 160, 180, 28);
-
-        JLabel tipo = new JLabel("Tipo de producto:");
-        tipo.setFont(new Font("Arial", Font.BOLD, 14));
-        tipo.setBounds(30, 200, 180, 20);
-
-        JTextField tipoTxt = new JTextField("Videojuego");
-        tipoTxt.setBounds(30, 225, 180, 28);
-
-        JLabel plataforma = new JLabel("Plataforma:");
-        plataforma.setFont(new Font("Arial", Font.BOLD, 14));
-        plataforma.setBounds(30, 265, 180, 20);
-
-        JTextField plataformaTxt = new JTextField("Playstation 5");
-        plataformaTxt.setBounds(30, 290, 180, 28);
-
-        JLabel venta = new JLabel("Precio de venta:");
-        venta.setFont(new Font("Arial", Font.BOLD, 14));
-        venta.setBounds(30, 330, 180, 20);
-
-        JTextField ventaTxt = new JTextField("$ 1200.00");
-        ventaTxt.setBounds(30, 355, 180, 28);
-
-        JLabel renta = new JLabel("Precio de renta:");
-        renta.setFont(new Font("Arial", Font.BOLD, 14));
-        renta.setBounds(250, 330, 180, 20);
-
-        JTextField rentaTxt = new JTextField("$ 250.00");
-        rentaTxt.setBounds(250, 355, 180, 28);
-
-        JLabel descuento = new JLabel("Descuento:");
-        descuento.setFont(new Font("Arial", Font.BOLD, 14));
-        descuento.setBounds(30, 395, 180, 20);
-
-        JTextField descuentoTxt = new JTextField("0%");
-        descuentoTxt.setBounds(30, 420, 180, 28);
-
-        // STOCK
-        JLabel stock = new JLabel("Stock");
-        stock.setFont(new Font("Arial", Font.BOLD, 14));
-        stock.setBounds(250, 395, 180, 20);
-
-        JTextField ventaStock = new JTextField("Venta: 20");
-        ventaStock.setBounds(250, 420, 80, 28);
-
-        JTextField rentaStock = new JTextField("Renta: 10");
-        rentaStock.setBounds(350, 420, 80, 28);
-
-        // IMAGEN PRODUCTO
-        JLabel producto = new JLabel("Producto:");
-        producto.setFont(new Font("Arial", Font.BOLD, 14));
-        producto.setBounds(430, 70, 100, 20);
-
-        ImageIcon portada = new ImageIcon(
-                juegomas_rentado.class.getResource("/img/resident.jpg")
-        );
-
-        Image img = portada.getImage().getScaledInstance(
-                150,
-                210,
-                Image.SCALE_SMOOTH
-        );
-
-        JLabel imagen = new JLabel(new ImageIcon(img));
-        imagen.setBounds(420, 95, 150, 210);
-
-        // INFORMACION DERECHA
-        JLabel clasificacion = new JLabel("Clasificación:");
-        clasificacion.setFont(new Font("Arial", Font.BOLD, 14));
-        clasificacion.setBounds(430, 320, 120, 20);
-
-        JTextField clasificacionTxt = new JTextField("M");
-        clasificacionTxt.setHorizontalAlignment(SwingConstants.CENTER);
-        clasificacionTxt.setBounds(430, 345, 140, 28);
-
-        JLabel año = new JLabel("Lanzamiento:");
-        año.setFont(new Font("Arial", Font.BOLD, 14));
-        año.setBounds(430, 385, 140, 20);
-
-        JTextField añoTxt = new JTextField("2026");
-        añoTxt.setHorizontalAlignment(SwingConstants.CENTER);
-        añoTxt.setBounds(430, 410, 140, 28);
-
-        JLabel genero = new JLabel("Género:");
-        genero.setFont(new Font("Arial", Font.BOLD, 14));
-        genero.setBounds(430, 450, 120, 20);
-
-        JTextField generoTxt = new JTextField("Survival horror");
-        generoTxt.setHorizontalAlignment(SwingConstants.CENTER);
-        generoTxt.setBounds(430, 475, 140, 28);
-
-        // BOTONES ABAJO
-        JButton editar = new JButton("Editar videojuego");
-        editar.setBackground(new Color(52, 73, 94));
-        editar.setForeground(Color.WHITE);
-        editar.setBounds(30, 485, 180, 35);
-
-        JButton descargar = new JButton("Descargar PDF");
-        descargar.setBackground(new Color(0, 170, 255));
-        descargar.setForeground(Color.WHITE);
-        descargar.setBounds(240, 485, 180, 35);
-        
-
-        // AGREGAR COMPONENTES ORDENADOS
-        add(barraLat);
-        add(panel);
-
-        panel.add(titulo);
-        panel.add(atras);
-
-        panel.add(nombre);
-        panel.add(nombreTxt);
-
-        panel.add(id);
-        panel.add(idTxt);
-
-        panel.add(tipo);
-        panel.add(tipoTxt);
-
-        panel.add(plataforma);
-        panel.add(plataformaTxt);
-
-        panel.add(venta);
-        panel.add(ventaTxt);
-
-        panel.add(renta);
-        panel.add(rentaTxt);
-
-        panel.add(descuento);
-        panel.add(descuentoTxt);
-
-        panel.add(stock);
-        panel.add(ventaStock);
-        panel.add(rentaStock);
-
-        panel.add(producto);
-        panel.add(imagen);
-
-        panel.add(clasificacion);
-        panel.add(clasificacionTxt);
-
-        panel.add(año);
-        panel.add(añoTxt);
-
-        panel.add(genero);
-        panel.add(generoTxt);
-
-        panel.add(editar);
-        panel.add(descargar);
-
-        setLocationRelativeTo(null);
-        setVisible(true);
-
+        pBotones.add(si); 
+        pBotones.add(no);
+        p.add(msg, BorderLayout.CENTER);
+        p.add(pBotones, BorderLayout.SOUTH);
+        dialogo.add(p);
+        dialogo.setVisible(true);
     }
-    // MENU
-    public void Menu(JPanel panel, String texto, int y, Icon icono) {
 
-        JLabel iconLabel = new JLabel(icono);
-        iconLabel.setBounds(15, y, 25, 30);
+    private JTextField crearCampo(JPanel p, String titulo, int x, int y, int w) {
+        JLabel lbl = new JLabel(titulo);
+        lbl.setBounds(x, y, w + 50, 20);
+        lbl.setFont(new Font("Arial", Font.BOLD, 13));
+        p.add(lbl);
+        JTextField tf = new JTextField();
+        tf.setBounds(x, y + 20, w, 30);
+        tf.setEditable(false);
+        tf.setHorizontalAlignment(JTextField.CENTER);
+        tf.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        p.add(tf);
+        return tf;
+    }
 
+    public JLabel Menu(JPanel panel, String texto, int y, String ruta) {
+        try {
+            URL url = getClass().getResource(ruta);
+            if (url != null) {
+                JLabel iconLabel = new JLabel(new ImageIcon(new ImageIcon(url).getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));
+                iconLabel.setBounds(15, y, 25, 30);
+                panel.add(iconLabel);
+            }
+        } catch(Exception e) {}
         JLabel label = new JLabel(texto);
         label.setForeground(Color.WHITE);
-        label.setFont(new Font("Arial", Font.PLAIN, 15));
+        label.setFont(new Font("Inter", Font.PLAIN, 15));
         label.setBounds(50, y, 120, 30);
         label.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-        label.addMouseListener(new MouseAdapter() {
-
-            public void mouseClicked(MouseEvent e) {
-
-                JFrame ventana = null;
-
-                switch (texto) {
-
-                    case "Inicio":
-                        ventana = new principal();
-                        break;
-
-                    case "Videojuegos":
-                        ventana = new videojuegos();
-                        break;
-
-                    case "Clientes":
-                        ventana = new clientes();
-                        break;
-
-                    case "Operación":
-                        ventana = new operaciones();
-                        break;
-
-                    case "Peliculas":
-                        ventana = new peliculas();
-                        break;
-                }
-
-                if (ventana != null) {
-                    ventana.setVisible(true);
-                    dispose();
-                }
-            }
-        });
-
-        panel.add(iconLabel);
         panel.add(label);
-    }
-
-
-    private JLabel Menu(String texto, int y) {
-
-        JLabel label = new JLabel(texto);
-
-        label.setForeground(Color.CYAN);
-        label.setFont(new Font("Arial", Font.PLAIN, 20));
-        label.setBounds(25, y, 150, 30);
-
         return label;
-
     }
 
+    private void cargarIconoLabel(JLabel l, String p, int w, int h) {
+        URL u = getClass().getResource(p);
+        if (u != null) l.setIcon(new ImageIcon(new ImageIcon(u).getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH)));
+    }
+
+    private void cargarIconoBoton(JButton b, String p, int w, int h) {
+        URL u = getClass().getResource(p);
+        if (u != null) b.setIcon(new ImageIcon(new ImageIcon(u).getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH)));
+    }
+
+    class RoundedButton extends JButton {
+        private int radius;
+        public RoundedButton(String label, int radius) {
+            super(label);
+            this.radius = radius;
+            setContentAreaFilled(false);
+            setFocusPainted(false);
+            setBorderPainted(false);
+        }
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setColor(getBackground());
+            g2.fill(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), radius, radius));
+            super.paintComponent(g2);
+            g2.dispose();
+        }
+    }
 }
