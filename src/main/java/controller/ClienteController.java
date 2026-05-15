@@ -13,44 +13,13 @@ public class ClienteController {
     }
 
     private void initEvents() {
-        vista.btnInicio.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                vista.dispose();
-                principal v = new principal();
-                new PrincipalController(v);
-                v.setVisible(true);
-            }
-        });
-
-        vista.btnOperacion.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                vista.dispose();
-                operaciones v = new operaciones();
-                new OperacionesController(v);
-                v.setVisible(true);
-            }
-        });
-
-        vista.btnVideojuegos.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                vista.dispose();
-                videojuegos v = new videojuegos();
-                new VideojuegosController(v);
-                v.setVisible(true);
-            }
-        });
-
-        vista.btnPeliculas.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                vista.dispose();
-                peliculas v = new peliculas();
-                new PeliculasController(v);
-                v.setVisible(true);
-            }
+        configurarMenuLateral(vista.btnInicio, vista.btnOperacion, vista.btnVideojuegos, vista.btnPeliculas, vista);
+        
+        vista.btnAtras.addActionListener(e -> {
+            vista.dispose();
+            principal v = new principal();
+            new PrincipalController(v);
+            v.setVisible(true);
         });
 
         vista.btnAgregar.addActionListener(e -> {
@@ -111,13 +80,13 @@ public class ClienteController {
 
     private class InternoInfoController {
         private InfoCliente vInfo;
-
         public InternoInfoController(InfoCliente vInfo) {
             this.vInfo = vInfo;
             initInfoEvents();
         }
-
         private void initInfoEvents() {
+            configurarMenuLateral(vInfo.lblInicio, vInfo.lblOperacion, vInfo.lblVideojuegos, vInfo.lblPeliculas, vInfo);
+
             vInfo.btnAtras.addActionListener(e -> regresarAClientes(vInfo));
             vInfo.btnEditar.addActionListener(e -> vInfo.mostrarExito("¡Cliente editado con éxito!"));
             
@@ -127,21 +96,11 @@ public class ClienteController {
                 vHist.setVisible(true);
                 vInfo.dispose();
             });
-
             vInfo.btnHistoRentas.addActionListener(e -> {
                 HistorialRentas vRent = new HistorialRentas();
                 new HistorialRentasController(vRent);
                 vRent.setVisible(true);
                 vInfo.dispose();
-            });
-
-            vInfo.lblInicio.addMouseListener(new MouseAdapter() {
-                @Override public void mouseClicked(MouseEvent e) {
-                    vInfo.dispose();
-                    principal p = new principal();
-                    new PrincipalController(p);
-                    p.setVisible(true);
-                }
             });
 
             vInfo.lblClientes.addMouseListener(new MouseAdapter() {
@@ -157,9 +116,11 @@ public class ClienteController {
             initAddEvents();
         }
         private void initAddEvents() {
+            configurarMenuLateral(vAdd.btnInicio, vAdd.btnOperacion, vAdd.btnVideojuegos, vAdd.btnPeliculas, vAdd);
+
             vAdd.btnAtras.addActionListener(e -> regresarAClientes(vAdd));
-            vAdd.btnEditar.addActionListener(e -> {
-                if (vAdd.txtId.getText().isEmpty()) {
+            vAdd.btnAgregar.addActionListener(e -> {
+                if (vAdd.txtId.getText().trim().isEmpty() || vAdd.txtNombre.getText().trim().isEmpty()) {
                     vAdd.mostrarError("Error: Todos los campos deben estar llenos.");
                 } else {
                     vAdd.mostrarExito("¡Cliente registrado con éxito!");
@@ -171,44 +132,85 @@ public class ClienteController {
 
     private class HistorialVentasController {
         private HistorialVentas vHist;
+
         public HistorialVentasController(HistorialVentas vHist) {
             this.vHist = vHist;
             initHistEvents();
         }
+
         private void initHistEvents() {
+            configurarMenuLateral(vHist.btnInicio, vHist.btnOperacion, vHist.btnVideojuegos, vHist.btnPeliculas, vHist);
+
             vHist.btnAtras.addActionListener(e -> regresarAClientes(vHist));
-            vHist.lblInicio.addMouseListener(new MouseAdapter() {
-                @Override public void mouseClicked(MouseEvent e) {
-                    vHist.dispose();
-                    principal p = new principal();
-                    new PrincipalController(p);
-                    p.setVisible(true);
+            vHist.btnClientes.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    regresarAClientes(vHist);
                 }
-            });
-            vHist.lblClientes.addMouseListener(new MouseAdapter() {
-                @Override public void mouseClicked(MouseEvent e) { regresarAClientes(vHist); }
             });
         }
     }
 
     private class HistorialRentasController {
         private HistorialRentas vRent;
+
         public HistorialRentasController(HistorialRentas vRent) {
             this.vRent = vRent;
             initRentEvents();
         }
+
         private void initRentEvents() {
+            configurarMenuLateral(vRent.btnInicio, vRent.btnOperacion, vRent.btnVideojuegos, vRent.btnPeliculas, vRent);
+            
             vRent.btnAtras.addActionListener(e -> regresarAClientes(vRent));
-            vRent.lblInicio.addMouseListener(new MouseAdapter() {
-                @Override public void mouseClicked(MouseEvent e) {
-                    vRent.dispose();
-                    principal p = new principal();
-                    new PrincipalController(p);
-                    p.setVisible(true);
+            vRent.btnClientes.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    regresarAClientes(vRent);
                 }
             });
-            vRent.lblClientes.addMouseListener(new MouseAdapter() {
-                @Override public void mouseClicked(MouseEvent e) { regresarAClientes(vRent); }
+        }
+    }
+
+    private void configurarMenuLateral(JComponent inicio, JComponent operacion, JComponent videojuegos, JComponent peliculas, JFrame ventanaActual) {
+        if (inicio != null) {
+            inicio.addMouseListener(new MouseAdapter() {
+                @Override public void mouseClicked(MouseEvent e) {
+                    ventanaActual.dispose();
+                    principal v = new principal();
+                    new PrincipalController(v);
+                    v.setVisible(true);
+                }
+            });
+        }
+        if (operacion != null) {
+            operacion.addMouseListener(new MouseAdapter() {
+                @Override public void mouseClicked(MouseEvent e) {
+                    ventanaActual.dispose();
+                    operaciones v = new operaciones();
+                    new OperacionesController(v);
+                    v.setVisible(true);
+                }
+            });
+        }
+        if (videojuegos != null) {
+            videojuegos.addMouseListener(new MouseAdapter() {
+                @Override public void mouseClicked(MouseEvent e) {
+                    ventanaActual.dispose();
+                    videojuegos v = new videojuegos();
+                    new VideojuegosController(v);
+                    v.setVisible(true);
+                }
+            });
+        }
+        if (peliculas != null) {
+            peliculas.addMouseListener(new MouseAdapter() {
+                @Override public void mouseClicked(MouseEvent e) {
+                    ventanaActual.dispose();
+                    peliculas v = new peliculas();
+                    new PeliculasController(v);
+                    v.setVisible(true);
+                }
             });
         }
     }

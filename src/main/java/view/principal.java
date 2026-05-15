@@ -1,6 +1,7 @@
 package view;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
@@ -12,28 +13,32 @@ public class principal extends JFrame {
     public principal() {
         setTitle("Principal");
         setSize(1000, 600);
-        
+        setMinimumSize(new Dimension(850, 550));
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        setLayout(null);
+        setLayout(new BorderLayout());
         getContentPane().setBackground(Color.WHITE);
-        
+
         try {
             Image icono = new ImageIcon(getClass().getResource("/img/logo3.png")).getImage();
             this.setIconImage(icono);
         } catch(Exception e) {}
 
-        JPanel barraLat = new JPanel();
-        barraLat.setBackground(new Color(0, 51, 102));
-        barraLat.setBounds(0, 0, 160, 600);
-        barraLat.setLayout(null);
-        
-        btnInicio = Menu(barraLat, "Inicio", 80, "/img/gravity-ui_house-fill.png");
-        btnOperacion = Menu(barraLat, "Operación", 150, "/img/ic_baseline-plus.png");
-        btnClientes = Menu(barraLat, "Clientes", 260, "/img/material-symbols_person.png");
-        btnVideojuegos = Menu(barraLat, "Videojuegos", 370, "/img/carbon_game-console.png");
-        btnPeliculas = Menu(barraLat, "Peliculas", 480, "/img/fluent_movies-and-tv-16-filled.png");
+        JPanel sidebar = new JPanel();
+        sidebar.setBackground(new Color(0, 51, 102));
+        sidebar.setPreferredSize(new Dimension(160, 0));
+        sidebar.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 25));
 
-        JPanel header = new JPanel() {
+        btnInicio = crearItemMenu(sidebar, "Inicio", "/img/casaazul.png");
+        btnOperacion = crearItemMenu(sidebar, "Operación", "/img/simbolomasazul.png");
+        btnClientes = crearItemMenu(sidebar, "Clientes", "/img/simboloclientesazul.png");
+        btnVideojuegos = crearItemMenu(sidebar, "Videojuegos", "/img/simbolovideojuegosazul.png");
+        btnPeliculas = crearItemMenu(sidebar, "Peliculas", "/img/simbolopeliculasazul.png");
+
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setOpaque(false);
+        mainPanel.setBorder(new EmptyBorder(10, 20, 10, 20));
+
+        JPanel header = new JPanel(new GridBagLayout()) {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -44,112 +49,201 @@ public class principal extends JFrame {
             }
         };
         header.setOpaque(false);
-        header.setBounds(170, 10, 800, 100); 
-        header.setLayout(null);
+        header.setPreferredSize(new Dimension(0, 100));
+        GridBagConstraints gbcH = new GridBagConstraints();
 
-        JLabel logoLabel = new JLabel(new ImageIcon(new ImageIcon(getClass().getResource("/img/logo0.png")).getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH)));
-        logoLabel.setBounds(30, 10, 80, 80); 
+        JLabel logoLabel = new JLabel();
+        try {
+            logoLabel.setIcon(new ImageIcon(new ImageIcon(getClass().getResource("/img/logo0.png"))
+                .getImage().getScaledInstance(90, 90, Image.SCALE_SMOOTH)));
+        } catch(Exception e) {}
+        
+        gbcH.gridx = 0; gbcH.weightx = 0.1; gbcH.anchor = GridBagConstraints.WEST; gbcH.insets = new Insets(0, 20, 0, 0);
+        header.add(logoLabel, gbcH);
 
-        JLabel user = new JLabel("Bienvenido Usuario", SwingConstants.CENTER); 
-        user.setFont(new Font("Inter", Font.BOLD, 22)); 
-        user.setBounds(0, 35, 800, 30); 
+        JLabel user = new JLabel("<html>Bienvenido<br>Usuario</html>", SwingConstants.LEFT);
+        user.setFont(new Font("Inter", Font.BOLD, 14));
+        try {
+            ImageIcon userIcon = new ImageIcon(new ImageIcon(getClass().getResource("/img/simboloclientesazul.png"))
+                .getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH));
+            user.setIcon(userIcon);
+            user.setIconTextGap(8);
+        } catch(Exception e) {}
+        
+        gbcH.gridx = 1; gbcH.weightx = 1.0; gbcH.anchor = GridBagConstraints.EAST; gbcH.insets = new Insets(0, 0, 0, 20);
+        header.add(user, gbcH);
 
-        logoutBtn = new JLabel(new ImageIcon(new ImageIcon(getClass().getResource("/img/material-symbols_logout-sharp.png")).getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH)));
-        logoutBtn.setBounds(720, 30, 40, 40);
+        logoutBtn = new JLabel();
+        try {
+            logoutBtn.setIcon(new ImageIcon(new ImageIcon(getClass().getResource("/img/simbolo_logoutrojo.png"))
+                .getImage().getScaledInstance(35, 35, Image.SCALE_SMOOTH)));
+        } catch(Exception e) {}
         logoutBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        
+        gbcH.gridx = 2; gbcH.weightx = 0; header.add(logoutBtn, gbcH);
 
-        header.add(logoLabel); header.add(user); header.add(logoutBtn);
+        JPanel cardsContent = new JPanel(new GridBagLayout());
+        cardsContent.setOpaque(false);
+        GridBagConstraints gbcC = new GridBagConstraints();
+        gbcC.insets = new Insets(15, 15, 15, 15);
 
-        JPanel card1 = Card("Clientes", "1000"); card1.setBounds(260, 160, 220, 140);
-        btnVerClientes = (JButton) card1.getComponent(2);
+        JPanel card1 = Card("Clientes", "1000");
+        btnVerClientes = (JButton) ((JPanel)card1.getComponent(2)).getComponent(0);
 
-        JPanel card2 = Card("Rentas y Ventas", "1500"); card2.setBounds(550, 160, 220, 140);
-        btnVerRentas = (JButton) card2.getComponent(2);
+        JPanel card2 = Card("Rentas y Ventas", "1500");
+        btnVerRentas = (JButton) ((JPanel)card2.getComponent(2)).getComponent(0);
 
-        JPanel card3 = crearCardDoble("Películas"); card3.setBounds(260, 340, 220, 150);
-        btnVerPelisCompradas = (JButton) card3.getComponent(3);
-        btnVerPelisRentadas = (JButton) card3.getComponent(4);
+        JPanel card3 = crearCardDoble("Películas");
+        btnVerPelisCompradas = (JButton) ((JPanel)card3.getComponent(2)).getComponent(0);
+        btnVerPelisRentadas = (JButton) ((JPanel)card3.getComponent(2)).getComponent(1);
 
-        JPanel card4 = crearCardDoble("Videojuegos"); card4.setBounds(550, 340, 220, 150);
-        btnVerJuegosComprados = (JButton) card4.getComponent(3);
-        btnVerJuegosRentados = (JButton) card4.getComponent(4);
+        JPanel card4 = crearCardDoble("Videojuegos");
+        btnVerJuegosComprados = (JButton) ((JPanel)card4.getComponent(2)).getComponent(0);
+        btnVerJuegosRentados = (JButton) ((JPanel)card4.getComponent(2)).getComponent(1);
 
-        add(barraLat); add(header); add(card1); add(card2); add(card3); add(card4);
+        gbcC.gridx = 0; gbcC.gridy = 0; cardsContent.add(card1, gbcC);
+        gbcC.gridx = 1; gbcC.gridy = 0; cardsContent.add(card2, gbcC);
+        gbcC.gridx = 0; gbcC.gridy = 1; cardsContent.add(card3, gbcC);
+        gbcC.gridx = 1; gbcC.gridy = 1; cardsContent.add(card4, gbcC);
+
+        mainPanel.add(header, BorderLayout.NORTH);
+        mainPanel.add(cardsContent, BorderLayout.CENTER);
+
+        add(sidebar, BorderLayout.WEST);
+        add(mainPanel, BorderLayout.CENTER);
+
         setLocationRelativeTo(null);
     }
 
     public void mostrarConfirmacionSalir(ActionListener accionSi, ActionListener accionNo) {
         JDialog dialogo = new JDialog(this, true);
         dialogo.setUndecorated(true);
-        dialogo.setSize(350, 280); 
+        dialogo.setSize(350, 250);
         dialogo.setLocationRelativeTo(this);
 
-        JPanel panelPrincipal = new JPanel();
-        panelPrincipal.setBackground(new Color(209, 209, 209));
-        panelPrincipal.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
-        panelPrincipal.setLayout(new BoxLayout(panelPrincipal, BoxLayout.Y_AXIS));
-        dialogo.setContentPane(panelPrincipal);
+        JPanel panel = new JPanel();
+        panel.setBackground(new Color(230, 230, 230));
+        panel.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        panelPrincipal.add(Box.createVerticalStrut(20));
-
-        JLabel lblMsg = new JLabel("<html><body style='text-align: center;'>¿Estás seguro que quieres<br>cerrar sesión?</body></html>", SwingConstants.CENTER);
+        panel.add(Box.createVerticalStrut(20));
+        JLabel lblMsg = new JLabel("<html><center>¿Estás seguro que<br>deseas cerrar sesión?</center></html>", SwingConstants.CENTER);
         lblMsg.setFont(new Font("Inter", Font.BOLD, 16));
         lblMsg.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panelPrincipal.add(lblMsg);
+        panel.add(lblMsg);
 
-        panelPrincipal.add(Box.createVerticalGlue());
-
+        panel.add(Box.createVerticalGlue());
         try {
-            ImageIcon imagenAlerta = new ImageIcon(new ImageIcon(getClass().getResource("/img/mingcute_warning-fill.png"))
-                    .getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH));
-            JLabel iconoCentro = new JLabel(imagenAlerta);
-            iconoCentro.setAlignmentX(Component.CENTER_ALIGNMENT);
-            panelPrincipal.add(iconoCentro);
-        } catch(Exception e) {}
+            JLabel icono = new JLabel(new ImageIcon(new ImageIcon(getClass().getResource("/img/mingcute_warning-fill.png"))
+                .getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH)));
+            icono.setAlignmentX(Component.CENTER_ALIGNMENT);
+            panel.add(icono);
+        } catch (Exception e) {}
+        panel.add(Box.createVerticalGlue());
 
-        panelPrincipal.add(Box.createVerticalGlue());
+        JPanel pBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        pBotones.setOpaque(false);
 
-        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
-        panelBotones.setOpaque(false);
-        panelBotones.setMaximumSize(new Dimension(350, 50));
-
-        JButton btnSi = crearBotonRedondo("Sí, Salir", new Color(220, 50, 50));
-        btnSi.setPreferredSize(new Dimension(110, 35));
+        JButton btnSi = crearBotonRedondo("Sí, salir", new Color(220, 50, 50), 110, 35);
         btnSi.addActionListener(e -> {
             dialogo.dispose();
             accionSi.actionPerformed(e);
         });
 
-        JButton btnNo = crearBotonRedondo("Cancelar", new Color(130, 130, 130));
-        btnNo.setPreferredSize(new Dimension(110, 35));
+        JButton btnNo = crearBotonRedondo("Cancelar", new Color(130, 130, 130), 110, 35);
         btnNo.addActionListener(e -> {
             dialogo.dispose();
-            accionNo.actionPerformed(e);
+            if (accionNo != null) accionNo.actionPerformed(e);
         });
 
-        panelBotones.add(btnSi);
-        panelBotones.add(btnNo);
-        panelPrincipal.add(panelBotones);
-        panelPrincipal.add(Box.createVerticalStrut(20));
+        pBotones.add(btnSi);
+        pBotones.add(btnNo);
+        panel.add(pBotones);
+        panel.add(Box.createVerticalStrut(15));
 
+        dialogo.add(panel);
         dialogo.setVisible(true);
     }
 
-    public JLabel Menu(JPanel panel, String texto, int y, String rutaIcono) {
-        ImageIcon icon = new ImageIcon(new ImageIcon(getClass().getResource(rutaIcono)).getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH));
-        JLabel iconLabel = new JLabel(icon); iconLabel.setBounds(15, y, 25, 30);
-        JLabel label = new JLabel(texto);
-        label.setForeground(Color.WHITE); label.setFont(new Font("Inter", Font.PLAIN, 15));
-        label.setBounds(50, y, 120, 30); label.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        panel.add(iconLabel); panel.add(label);
+    private JLabel crearItemMenu(JPanel panel, String texto, String ruta) {
+        JPanel item = new JPanel();
+        item.setLayout(new BoxLayout(item, BoxLayout.Y_AXIS));
+        item.setOpaque(false);
+        item.setPreferredSize(new Dimension(140, 90));
+
+        JLabel iconLabel = new JLabel();
+        try {
+            iconLabel.setIcon(new ImageIcon(new ImageIcon(getClass().getResource(ruta))
+                .getImage().getScaledInstance(45, 45, Image.SCALE_SMOOTH)));
+        } catch(Exception e) {}
+        iconLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JLabel label = new JLabel(texto, SwingConstants.CENTER);
+        label.setForeground(new Color(4, 180, 255));
+        label.setFont(new Font("Inter", Font.BOLD, 15));
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        label.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        item.add(iconLabel);
+        item.add(Box.createVerticalStrut(5));
+        item.add(label);
+        panel.add(item);
         return label;
     }
 
     private JPanel Card(String titulo, String numero) {
-        JPanel panel = new JPanel(null) {
+        JPanel panel = crearContenedorRedondeado(220, 140);
+        panel.setLayout(new BorderLayout(10, 10));
+        panel.setBorder(new EmptyBorder(15, 15, 15, 15));
+
+        JLabel t = new JLabel(titulo, SwingConstants.CENTER);
+        t.setFont(new Font("Inter", Font.BOLD, 18));
+        JLabel n = new JLabel(numero, SwingConstants.CENTER);
+        n.setForeground(new Color(4, 180, 255));
+        n.setFont(new Font("Inter", Font.BOLD, 26));
+
+        JButton btn = crearBotonRedondo("Ver", new Color(4, 180, 255), 80, 30);
+        JPanel pBtn = new JPanel(new FlowLayout());
+        pBtn.setOpaque(false);
+        pBtn.add(btn);
+
+        panel.add(t, BorderLayout.NORTH);
+        panel.add(n, BorderLayout.CENTER);
+        panel.add(pBtn, BorderLayout.SOUTH);
+        return panel;
+    }
+
+    private JPanel crearCardDoble(String titulo) {
+        JPanel panel = crearContenedorRedondeado(220, 150);
+        panel.setLayout(new BorderLayout(5, 5));
+        panel.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+        JLabel t = new JLabel(titulo, SwingConstants.CENTER);
+        t.setFont(new Font("Inter", Font.BOLD, 18));
+
+        JPanel pLabels = new JPanel(new GridLayout(1, 2));
+        pLabels.setOpaque(false);
+        JLabel m1 = new JLabel("Comprado", SwingConstants.CENTER);
+        m1.setFont(new Font("Inter", Font.PLAIN, 11));
+        JLabel m2 = new JLabel("Rentado", SwingConstants.CENTER);
+        m2.setFont(new Font("Inter", Font.PLAIN, 11));
+        pLabels.add(m1); pLabels.add(m2);
+
+        JPanel pBtns = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
+        pBtns.setOpaque(false);
+        pBtns.add(crearBotonRedondo("Ver", new Color(4, 180, 255), 75, 30));
+        pBtns.add(crearBotonRedondo("Ver", new Color(4, 180, 255), 75, 30));
+
+        panel.add(t, BorderLayout.NORTH);
+        panel.add(pLabels, BorderLayout.CENTER);
+        panel.add(pBtns, BorderLayout.SOUTH);
+        return panel;
+    }
+
+    private JPanel crearContenedorRedondeado(int w, int h) {
+        JPanel panel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setColor(new Color(215, 215, 215));
@@ -157,59 +251,29 @@ public class principal extends JFrame {
             }
         };
         panel.setOpaque(false);
-        JLabel t = new JLabel(titulo, SwingConstants.CENTER); t.setFont(new Font("Inter", Font.BOLD, 18)); t.setBounds(0, 15, 220, 25);
-        JLabel n = new JLabel(numero, SwingConstants.CENTER); n.setFont(new Font("Inter", Font.BOLD, 26)); n.setBounds(0, 45, 220, 35);
-        
-        JButton btn = crearBotonRedondo("Ver", new Color(0, 51, 102));
-        btn.setBounds(70, 95, 80, 30);
-        btn.setFont(new Font("Inter", Font.BOLD, 12));
-        
-        panel.add(t); panel.add(n); panel.add(btn);
+        panel.setPreferredSize(new Dimension(w, h));
         return panel;
     }
 
-    private JPanel crearCardDoble(String titulo) {
-        JPanel panel = new JPanel(null) {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                Graphics2D g2 = (Graphics2D) g;
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(new Color(215, 215, 215));
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 35, 35);
-            }
-        }; 
-        panel.setOpaque(false);
-        JLabel t = new JLabel(titulo, SwingConstants.CENTER); t.setFont(new Font("Inter", Font.BOLD, 18)); t.setBounds(0, 10, 220, 25);
-        
-        JLabel m1 = new JLabel("Más comprado", SwingConstants.CENTER); m1.setFont(new Font("Inter", Font.PLAIN, 11)); m1.setBounds(10, 50, 100, 20);
-        JLabel m2 = new JLabel("Más rentado", SwingConstants.CENTER); m2.setFont(new Font("Inter", Font.PLAIN, 11)); m2.setBounds(110, 50, 100, 20);
-        
-        JButton b1 = crearBotonRedondo("Ver", new Color(0, 51, 102)); b1.setBounds(20, 90, 80, 30);
-        JButton b2 = crearBotonRedondo("Ver", new Color(0, 51, 102)); b2.setBounds(120, 90, 80, 30);
-        
-        panel.add(t); panel.add(m1); panel.add(m2); panel.add(b1); panel.add(b2);
-        return panel;
-    }
-
-    private JButton crearBotonRedondo(String texto, Color colorFondo) {
-        JButton boton = new JButton(texto) {
+    private JButton crearBotonRedondo(String texto, Color color, int w, int h) {
+        JButton btn = new JButton(texto) {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(colorFondo);
+                g2.setColor(color);
                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
                 g2.dispose();
                 super.paintComponent(g);
             }
         };
-        boton.setForeground(Color.WHITE);
-        boton.setFont(new Font("Inter", Font.BOLD, 12));
-        boton.setContentAreaFilled(false);
-        boton.setBorderPainted(false);
-        boton.setFocusPainted(false);
-        boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        return boton;
+        btn.setPreferredSize(new Dimension(w, h));
+        btn.setForeground(Color.WHITE);
+        btn.setFont(new Font("Inter", Font.BOLD, 12));
+        btn.setContentAreaFilled(false);
+        btn.setBorderPainted(false);
+        btn.setFocusPainted(false);
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return btn;
     }
 }

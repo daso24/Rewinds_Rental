@@ -3,6 +3,7 @@ package view;
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.awt.geom.RoundRectangle2D;
 import java.net.URL;
 
@@ -16,57 +17,68 @@ public class AñadirOperacion extends JFrame {
 
     public AñadirOperacion() {
         setTitle("Añadir Operación");
+        setMinimumSize(new Dimension(1000, 650));
         setSize(1000, 650);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setResizable(false);
+        setResizable(true); 
+        
         setLayout(null);
+        getContentPane().setBackground(Color.WHITE);
 
         try {
             Image icono = new ImageIcon(getClass().getResource("/img/logo3.png")).getImage();
             this.setIconImage(icono);
         } catch(Exception e) {}
 
+        // --- SIDEBAR ---
         JPanel sidebar = new JPanel();
-        sidebar.setBounds(0, 0, 160, 650);
+        sidebar.setBounds(0, 0, 160, 2000); 
         sidebar.setBackground(new Color(0, 51, 102));
-        sidebar.setLayout(null);
+        sidebar.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 15)); 
         add(sidebar);
 
-        lblInicio = Menu(sidebar, "Inicio", 80, "/img/gravity-ui_house-fill.png");
-        lblOperacion = Menu(sidebar, "Operación", 150, "/img/ic_baseline-plus.png");
-        lblClientes = Menu(sidebar, "Clientes", 260, "/img/material-symbols_person.png");
-        lblVideojuegos = Menu(sidebar, "Videojuegos", 370, "/img/carbon_game-console.png");
-        lblPeliculas = Menu(sidebar, "Peliculas", 480, "/img/fluent_movies-and-tv-16-filled.png");
+        sidebar.add(Box.createVerticalStrut(30));
 
-        JPanel fondoBlanco = new JPanel();
-        fondoBlanco.setBounds(160, 0, 840, 650);
-        fondoBlanco.setBackground(Color.WHITE);
-        fondoBlanco.setLayout(null);
-        add(fondoBlanco);
+        lblInicio = Menu(sidebar, "Inicio", "/img/casaazul.png");
+        lblOperacion = Menu(sidebar, "Operación", "/img/simbolomasazul.png");
+        lblClientes = Menu(sidebar, "Clientes", "/img/simboloclientesazul.png");
+        lblVideojuegos = Menu(sidebar, "Videojuegos", "/img/simbolovideojuegosazul.png");
+        lblPeliculas = Menu(sidebar, "Peliculas", "/img/simbolopeliculasazul.png");
+
+        // --- CONTENEDOR PRINCIPAL ---
+        JPanel contenedorPrincipal = new JPanel(null);
+        contenedorPrincipal.setBackground(Color.WHITE);
+        add(contenedorPrincipal);
+
+        JPanel contenido = new JPanel(null);
+        contenido.setOpaque(false);
+        contenido.setSize(840, 650);
+        contenedorPrincipal.add(contenido);
 
         btnAtras = new RoundedButton("  Atrás", 20);
         btnAtras.setBounds(20, 15, 120, 35);
         btnAtras.setFont(new Font("Arial", Font.PLAIN, 15));
         btnAtras.setBackground(new Color(225, 225, 225));
+        btnAtras.setCursor(new Cursor(Cursor.HAND_CURSOR));
         cargarIconoBoton(btnAtras, "/img/lets-icons_back.png", 18, 18);
-        fondoBlanco.add(btnAtras);
+        contenido.add(btnAtras);
 
         JLabel lblTitulo = new JLabel("Generar Operación", SwingConstants.CENTER);
         lblTitulo.setFont(new Font("Arial", Font.BOLD, 22));
         lblTitulo.setBounds(300, 15, 240, 35);
-        fondoBlanco.add(lblTitulo);
+        contenido.add(lblTitulo);
 
         JLabel logo = new JLabel();
         logo.setBounds(720, 5, 90, 60);
         cargarIconoLabel(logo, "/img/logo3.png", 90, 60);
-        fondoBlanco.add(logo);
+        contenido.add(logo);
 
         JPanel panelGris = new JPanel();
         panelGris.setBounds(20, 70, 800, 480);
         panelGris.setBackground(new Color(209, 209, 209));
         panelGris.setLayout(null);
-        fondoBlanco.add(panelGris);
+        contenido.add(panelGris);
 
         txtNombreCli = crearCampo(panelGris, "Nombre del cliente:", 25, 15, 260, "Adrián Celis Olavarría");
         txtIdCli = crearCampo(panelGris, "ID de cliente:", 25, 80, 150, "105422");
@@ -77,19 +89,21 @@ public class AñadirOperacion extends JFrame {
         lblTipo.setFont(new Font("Arial", Font.BOLD, 14));
         panelGris.add(lblTipo);
 
-        JPanel bgTipo = new JPanel();
+        JPanel bgTipo = new JPanel(null);
         bgTipo.setBounds(25, 225, 175, 30);
         bgTipo.setBackground(Color.WHITE);
         bgTipo.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        bgTipo.setLayout(null);
         panelGris.add(bgTipo);
 
         rbRenta = new JRadioButton("Renta", false);
         rbRenta.setBounds(5, 0, 80, 30);
         rbRenta.setOpaque(false);
+        rbRenta.setCursor(new Cursor(Cursor.HAND_CURSOR));
         rbVenta = new JRadioButton("Venta", true);
         rbVenta.setBounds(85, 0, 80, 30);
         rbVenta.setOpaque(false);
+        rbVenta.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        
         ButtonGroup bgGroup = new ButtonGroup();
         bgGroup.add(rbRenta); bgGroup.add(rbVenta);
         bgTipo.add(rbRenta); bgTipo.add(rbVenta);
@@ -114,6 +128,7 @@ public class AñadirOperacion extends JFrame {
         btnDescargar.setBounds(580, 425, 190, 35);
         btnDescargar.setBackground(new Color(0, 180, 255));
         btnDescargar.setForeground(Color.WHITE);
+        btnDescargar.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnDescargar.setHorizontalTextPosition(SwingConstants.LEFT);
         cargarIconoBoton(btnDescargar, "/img/pdf_icon.png", 22, 22);
         panelGris.add(btnDescargar);
@@ -122,72 +137,50 @@ public class AñadirOperacion extends JFrame {
         btnGuardar.setBounds(330, 560, 200, 40);
         btnGuardar.setBackground(Color.BLACK);
         btnGuardar.setForeground(Color.WHITE);
-        fondoBlanco.add(btnGuardar);
-    }
+        btnGuardar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        contenido.add(btnGuardar);
 
-    public void mostrarAlerta(String mensaje, boolean esError) {
-        JDialog dialogo = new JDialog(this, true);
-        dialogo.setUndecorated(true);
-        dialogo.setSize(350, 280);
-        dialogo.setLocationRelativeTo(this);
-
-        JPanel contenedor = new JPanel(new BorderLayout());
-        contenedor.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
-        contenedor.setBackground(new Color(209, 209, 209));
-        dialogo.setContentPane(contenedor);
-
-        JPanel panelContenido = new JPanel();
-        panelContenido.setOpaque(false);
-        panelContenido.setLayout(new BoxLayout(panelContenido, BoxLayout.Y_AXIS));
-        panelContenido.add(Box.createVerticalStrut(25));
-
-        JLabel lblMsg = new JLabel("<html><div style='text-align: center; width: 250px;'>" + mensaje + "</div></html>", SwingConstants.CENTER);
-        lblMsg.setFont(new Font("Inter", Font.BOLD, 16));
-        lblMsg.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panelContenido.add(lblMsg);
-
-        try {
-            ImageIcon imagenAlerta = new ImageIcon(new ImageIcon(getClass().getResource("/img/mingcute_warning-fill.png"))
-                    .getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH));
-            JLabel iconoCentro = new JLabel(imagenAlerta);
-            iconoCentro.setAlignmentX(Component.CENTER_ALIGNMENT);
-            panelContenido.add(Box.createVerticalGlue());
-            panelContenido.add(iconoCentro);
-        } catch (Exception e) {}
-
-        panelContenido.add(Box.createVerticalGlue());
-
-        JButton btnOk = new JButton("Aceptar");
-        btnOk.setPreferredSize(new Dimension(120, 35));
-        btnOk.setBackground(esError ? new Color(220, 50, 50) : new Color(0, 170, 255));
-        btnOk.setForeground(Color.WHITE);
-        btnOk.addActionListener(e -> dialogo.dispose());
-        
-        JPanel pBot = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 15));
-        pBot.setOpaque(false);
-        pBot.add(btnOk);
-
-        contenedor.add(panelContenido, BorderLayout.CENTER);
-        contenedor.add(pBot, BorderLayout.SOUTH);
-        dialogo.setVisible(true);
-    }
-
-    public JLabel Menu(JPanel panel, String texto, int y, String ruta) {
-        try {
-            URL url = getClass().getResource(ruta);
-            if (url != null) {
-                JLabel iconLabel = new JLabel(new ImageIcon(new ImageIcon(url).getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));
-                iconLabel.setBounds(15, y, 25, 30);
-                panel.add(iconLabel);
+        this.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                int w = getWidth();
+                int h = getHeight();
+                sidebar.setBounds(0, 0, 160, h);
+                contenedorPrincipal.setBounds(160, 0, w - 160, h);
+                int xCentral = (contenedorPrincipal.getWidth() - contenido.getWidth()) / 2;
+                int yCentral = (contenedorPrincipal.getHeight() - contenido.getHeight()) / 2;
+                contenido.setLocation(Math.max(0, xCentral), Math.max(0, yCentral));
             }
-        } catch(Exception e) {}
+        });
+    }
+
+    // --- MÉTODO MENU SOLO CON CAMBIO DE CURSOR ---
+    public JLabel Menu(JPanel panel, String texto, String ruta) {
+        JPanel item = new JPanel();
+        item.setLayout(new BoxLayout(item, BoxLayout.Y_AXIS));
+        item.setOpaque(false);
+        item.setPreferredSize(new Dimension(150, 95));
         
-        JLabel label = new JLabel(texto);
-        label.setForeground(Color.WHITE);
-        label.setFont(new Font("Inter", Font.PLAIN, 15));
-        label.setBounds(50, y, 120, 30);
-        label.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        panel.add(label);
+        // Cambio de cursor a mano
+        item.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        JLabel iconLabel = new JLabel();
+        try {
+            iconLabel.setIcon(new ImageIcon(new ImageIcon(getClass().getResource(ruta))
+                .getImage().getScaledInstance(45, 45, Image.SCALE_SMOOTH)));
+        } catch(Exception e) {}
+        iconLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JLabel label = new JLabel(texto, SwingConstants.CENTER);
+        label.setForeground(new Color(4, 180, 255));
+        label.setFont(new Font("Inter", Font.BOLD, 15));
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        item.add(Box.createVerticalStrut(10));
+        item.add(iconLabel);
+        item.add(Box.createVerticalStrut(5));
+        item.add(label);
+
+        panel.add(item);
         return label;
     }
 
@@ -224,6 +217,46 @@ public class AñadirOperacion extends JFrame {
     private void cargarIconoBoton(JButton b, String p, int w, int h) {
         URL u = getClass().getResource(p);
         if (u != null) b.setIcon(new ImageIcon(new ImageIcon(u).getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH)));
+    }
+
+    public void mostrarAlerta(String mensaje, boolean esError) {
+        JDialog dialogo = new JDialog(this, true);
+        dialogo.setUndecorated(true);
+        dialogo.setSize(350, 280);
+        dialogo.setLocationRelativeTo(this);
+        JPanel contenedor = new JPanel(new BorderLayout());
+        contenedor.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
+        contenedor.setBackground(new Color(230, 230, 230)); 
+        dialogo.setContentPane(contenedor);
+        JPanel panelContenido = new JPanel();
+        panelContenido.setOpaque(false);
+        panelContenido.setLayout(new BoxLayout(panelContenido, BoxLayout.Y_AXIS));
+        panelContenido.add(Box.createVerticalStrut(25));
+        JLabel lblMsg = new JLabel("<html><div style='text-align: center; width: 250px;'>" + mensaje + "</div></html>", SwingConstants.CENTER);
+        lblMsg.setFont(new Font("Inter", Font.BOLD, 16));
+        lblMsg.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panelContenido.add(lblMsg);
+        try {
+            String rutaIcono = esError ? "/img/mingcute_warning-fill.png" : "/img/gravity-ui_circle-check-fill.png";
+            ImageIcon imagenAlerta = new ImageIcon(new ImageIcon(getClass().getResource(rutaIcono)).getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH));
+            JLabel iconoCentro = new JLabel(imagenAlerta);
+            iconoCentro.setAlignmentX(Component.CENTER_ALIGNMENT);
+            panelContenido.add(Box.createVerticalGlue());
+            panelContenido.add(iconoCentro);
+        } catch (Exception e) {}
+        panelContenido.add(Box.createVerticalGlue());
+        JButton btnOk = new RoundedButton("Aceptar", 15);
+        btnOk.setPreferredSize(new Dimension(120, 35));
+        btnOk.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnOk.setBackground(esError ? new Color(220, 50, 50) : new Color(0, 170, 255));
+        btnOk.setForeground(Color.WHITE);
+        btnOk.addActionListener(e -> dialogo.dispose());
+        JPanel pBot = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 15));
+        pBot.setOpaque(false);
+        pBot.add(btnOk);
+        contenedor.add(panelContenido, BorderLayout.CENTER);
+        contenedor.add(pBot, BorderLayout.SOUTH);
+        dialogo.setVisible(true);
     }
 
     class RoundedButton extends JButton {

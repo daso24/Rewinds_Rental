@@ -14,6 +14,17 @@ public class OperacionesController {
     }
 
     private void initEvents() {
+        
+        vista.btnAtras.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                vista.dispose();
+                principal vPrin = new principal();
+                new PrincipalController(vPrin); 
+                vPrin.setVisible(true);
+            }
+        });
+   
         vista.btnInicio.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -64,6 +75,7 @@ public class OperacionesController {
             }
         });
 
+      
         vista.btnAgregar.addActionListener(e -> {
             vista.dispose();
             AñadirOperacion vAdd = new AñadirOperacion();
@@ -71,6 +83,7 @@ public class OperacionesController {
             vAdd.setVisible(true);
         });
 
+      
         vista.btnBuscar.addActionListener(e -> {
             String texto = vista.buscador.getText().trim();
             if (texto.isEmpty()) {
@@ -79,32 +92,40 @@ public class OperacionesController {
                 try {
                     vista.sorter.setRowFilter(RowFilter.regexFilter("(?i)" + texto));
                 } catch (java.util.regex.PatternSyntaxException ex) {
-                    System.err.println("Error: " + ex.getMessage());
+                    System.err.println("Error de búsqueda: " + ex.getMessage());
                 }
             }
         });
 
+     
         vista.btnEliminar.addActionListener(e -> {
-            vista.mostrarConfirmacionEliminar("¿Seguro que quieres eliminar<br>esta operación?", eSi -> {
-                int fila = vista.tabla.getSelectedRow();
-                if (fila != -1) {
+            int fila = vista.tabla.getSelectedRow();
+            if (fila != -1) {
+                vista.mostrarConfirmacion("¿Seguro que quieres eliminar<br>esta operación?", eSi -> {
                     vista.modeloTabla.removeRow(vista.tabla.convertRowIndexToModel(fila));
-                }
-            });
+                });
+            } else {
+             
+            }
         });
 
+        
         vista.tabla.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int fila = vista.tabla.rowAtPoint(e.getPoint());
                 int columna = vista.tabla.columnAtPoint(e.getPoint());
                 
-                if (columna == 6 && fila != -1) {
-                    abrirInfoOperacion();
-                }
+                if (fila != -1) {
+                 
+                    if (columna == 6) {
+                        abrirInfoOperacion();
+                    }
 
-                if (e.getClickCount() == 2 && fila != -1) {
-                    abrirVentanaEditar(vista.tabla.convertRowIndexToModel(fila));
+              
+                    if (e.getClickCount() == 2) {
+                        abrirVentanaEditar(vista.tabla.convertRowIndexToModel(fila));
+                    }
                 }
             }
         });
@@ -114,6 +135,7 @@ public class OperacionesController {
         vista.dispose();
         InfoOperacion vInfo = new InfoOperacion();
         
+       
         vInfo.btnAtras.addActionListener(e -> {
             vInfo.dispose();
             operaciones op = new operaciones();
@@ -121,53 +143,34 @@ public class OperacionesController {
             op.setVisible(true);
         });
 
+       
         vInfo.lblInicio.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                vInfo.dispose();
-                principal p = new principal();
-                new PrincipalController(p);
-                p.setVisible(true);
+            @Override public void mouseClicked(MouseEvent e) {
+                vInfo.dispose(); principal p = new principal(); new PrincipalController(p); p.setVisible(true);
             }
         });
 
         vInfo.lblClientes.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                vInfo.dispose();
-                clientes c = new clientes();
-                new ClienteController(c);
-                c.setVisible(true);
+            @Override public void mouseClicked(MouseEvent e) {
+                vInfo.dispose(); clientes c = new clientes(); new ClienteController(c); c.setVisible(true);
             }
         });
 
         vInfo.lblVideojuegos.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                vInfo.dispose();
-                videojuegos v = new videojuegos();
-                new VideojuegosController(v);
-                v.setVisible(true);
+            @Override public void mouseClicked(MouseEvent e) {
+                vInfo.dispose(); videojuegos v = new videojuegos(); new VideojuegosController(v); v.setVisible(true);
             }
         });
 
         vInfo.lblPeliculas.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                vInfo.dispose();
-                peliculas p = new peliculas();
-                new PeliculasController(p);
-                p.setVisible(true);
+            @Override public void mouseClicked(MouseEvent e) {
+                vInfo.dispose(); peliculas p = new peliculas(); new PeliculasController(p); p.setVisible(true);
             }
         });
 
         vInfo.lblOperacion.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                vInfo.dispose();
-                operaciones op = new operaciones();
-                new OperacionesController(op);
-                op.setVisible(true);
+            @Override public void mouseClicked(MouseEvent e) {
+                vInfo.dispose(); operaciones op = new operaciones(); new OperacionesController(op); op.setVisible(true);
             }
         });
 
@@ -195,10 +198,12 @@ public class OperacionesController {
         panel.add(lblMsg);
 
         panel.add(Box.createVerticalGlue());
+        
         JButton btnOk = new JButton("Aceptar");
         btnOk.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnOk.setBackground(new Color(0, 51, 102));
         btnOk.setForeground(Color.WHITE);
+        btnOk.setFocusPainted(false);
         btnOk.addActionListener(e -> dialogo.dispose());
         
         panel.add(btnOk);
@@ -207,8 +212,12 @@ public class OperacionesController {
         dialogo.setVisible(true);
     }
 
-    private void abrirVentanaEditar(int fila) {}
+    private void abrirVentanaEditar(int filaModel) {
+      
+        System.out.println("Editando fila: " + filaModel);
+    }
 
+ 
     private class AñadirOperacionController {
         private AñadirOperacion vAdd;
 
@@ -223,48 +232,31 @@ public class OperacionesController {
             vAdd.btnDescargar.addActionListener(e -> vAdd.mostrarAlerta("Generando ficha PDF...", false));
 
             vAdd.lblInicio.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    vAdd.dispose();
-                    principal p = new principal();
-                    new PrincipalController(p);
-                    p.setVisible(true);
+                @Override public void mouseClicked(MouseEvent e) {
+                    vAdd.dispose(); principal p = new principal(); new PrincipalController(p); p.setVisible(true);
                 }
             });
 
             vAdd.lblClientes.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    vAdd.dispose();
-                    clientes c = new clientes();
-                    new ClienteController(c);
-                    c.setVisible(true);
+                @Override public void mouseClicked(MouseEvent e) {
+                    vAdd.dispose(); clientes c = new clientes(); new ClienteController(c); c.setVisible(true);
                 }
             });
 
             vAdd.lblVideojuegos.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    vAdd.dispose();
-                    videojuegos v = new videojuegos();
-                    new VideojuegosController(v);
-                    v.setVisible(true);
+                @Override public void mouseClicked(MouseEvent e) {
+                    vAdd.dispose(); videojuegos v = new videojuegos(); new VideojuegosController(v); v.setVisible(true);
                 }
             });
 
             vAdd.lblPeliculas.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    vAdd.dispose();
-                    peliculas p = new peliculas();
-                    new PeliculasController(p);
-                    p.setVisible(true);
+                @Override public void mouseClicked(MouseEvent e) {
+                    vAdd.dispose(); peliculas p = new peliculas(); new PeliculasController(p); p.setVisible(true);
                 }
             });
             
             vAdd.lblOperacion.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) { regresar(); }
+                @Override public void mouseClicked(MouseEvent e) { regresar(); }
             });
         }
 
