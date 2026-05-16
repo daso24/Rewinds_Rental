@@ -147,17 +147,16 @@ public class operaciones extends JFrame {
         String[] columnas = {"", "Cliente", "Tipo", "Producto", "Tipo Producto", "Plataforma", "Info"};
         Object infoIcon = getImgPequeño("/img/Vector.png"); 
         Object[][] datos = {
-                {false, "Mateo Valeriano Soler", "Renta", getImg("/img/forza_horizon_6-6006996.jpg"), new Object[]{getImg("/img/carbon_game-console.png"), "Consola"}, "Xbox Series X", new Object[]{infoIcon, "Ver info"}},
-                {false, "Lucía Fernanda Mondragón", "Venta", getImg("/img/71fw9QnEQUL.jpg"), new Object[]{getImg("/img/carbon_game-console.png"), "Consola"}, "PS5", new Object[]{infoIcon, "Ver info"}},
-                {false, "Adrián Celis Olavarría", "Renta", getImg("/img/71w58zkWnfL.jpg"), new Object[]{getImg("/img/fluent_movies-and-tv-16-filled.png"), "Pelicula"}, "Blue_ray", new Object[]{infoIcon, "Ver info"}},
-                {false, "Elena Beatriz Iturbide", "Venta", getImg("/img/51gz5Gfjl8L._AC_UF894,1000_QL80_.jpg"), new Object[]{getImg("/img/fluent_movies-and-tv-16-filled.png"), "Pelicula"}, "DVD", new Object[]{infoIcon, "Ver info"}},
-                {false, "Tobías Martínez", "Renta", getImg("/img/71MZBMmOXtL._AC_UF894,1000_QL80_.jpg"), new Object[]{getImg("/img/fluent_movies-and-tv-16-filled.png"), "Pelicula"}, "Blue-Ray", new Object[]{infoIcon, "Ver info"}}
+                {false, "Mateo Valeriano Soler", "Renta", new Object[]{getImg("/img/forza_horizon_6-6006996.jpg"), "Forza Horizon 6"}, new Object[]{getImg("/img/carbon_game-console.png"), "Consola"}, "Xbox Series X", new Object[]{infoIcon, "Ver info"}},
+                {false, "Lucía Fernanda Mondragón", "Venta", new Object[]{getImg("/img/71fw9QnEQUL.jpg"), "Spider-Man 2 "}, new Object[]{getImg("/img/carbon_game-console.png"), "Consola"}, "PS5", new Object[]{infoIcon, "Ver info"}},
+                {false, "Adrián Celis Olavarría", "Renta", new Object[]{getImg("/img/71w58zkWnfL.jpg"), "Chainsaw-man"}, new Object[]{getImg("/img/fluent_movies-and-tv-16-filled.png"), "Pelicula"}, "Blue_ray", new Object[]{infoIcon, "Ver info"}},
+                {false, "Elena Beatriz Iturbide", "Venta", new Object[]{getImg("/img/51gz5Gfjl8L._AC_UF894,1000_QL80_.jpg"), "Rocky IV"}, new Object[]{getImg("/img/fluent_movies-and-tv-16-filled.png"), "Pelicula"}, "DVD", new Object[]{infoIcon, "Ver info"}},
+                {false, "Tobías Martínez", "Renta", new Object[]{getImg("/img/71MZBMmOXtL._AC_UF894,1000_QL80_.jpg"), "Dragon ball super Broly"}, new Object[]{getImg("/img/fluent_movies-and-tv-16-filled.png"), "Pelicula"}, "Blue-Ray", new Object[]{infoIcon, "Ver info"}}
             };
 
         modeloTabla = new DefaultTableModel(datos, columnas) {
             @Override public Class<?> getColumnClass(int c) { 
                 if(c == 0) return Boolean.class;
-                if(c == 3) return Icon.class;
                 return Object.class;
             }
             @Override public boolean isCellEditable(int r, int c) { return c == 0; }
@@ -167,6 +166,7 @@ public class operaciones extends JFrame {
         tabla.setRowHeight(85);
         tabla.setFont(INTER_REGULAR_13);
         tabla.getTableHeader().setFont(INTER_BOLD_13);
+        tabla.getColumnModel().getColumn(3).setCellRenderer(new IconTextVerticalRenderer());
         tabla.getColumnModel().getColumn(4).setCellRenderer(new IconTextVerticalRenderer());
         tabla.getColumnModel().getColumn(6).setCellRenderer(new IconTextHorizontalRenderer());
         

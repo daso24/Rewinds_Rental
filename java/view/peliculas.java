@@ -360,7 +360,7 @@ public class peliculas extends JFrame {
         try { iconLabel.setIcon(new ImageIcon(new ImageIcon(getClass().getResource(ruta)).getImage().getScaledInstance(45, 45, Image.SCALE_SMOOTH))); } catch(Exception e) {}
         iconLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         JLabel label = new JLabel(texto, SwingConstants.CENTER);
-        label.setForeground(new Color(255, 255, 255)); label.setFont(new Font("Inter", Font.BOLD, 15));
+        label.setForeground(new Color(4, 180, 255)); label.setFont(new Font("Inter", Font.BOLD, 15));
         label.setAlignmentX(Component.CENTER_ALIGNMENT); label.setCursor(new Cursor(Cursor.HAND_CURSOR));
         item.add(iconLabel); item.add(Box.createVerticalStrut(5)); item.add(label);
         panel.add(item);
