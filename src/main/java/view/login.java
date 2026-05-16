@@ -133,6 +133,7 @@ public class login extends JFrame {
             }
         });
 
+      
         SwingUtilities.invokeLater(() -> ajustarComponentes());
     }
 
@@ -151,15 +152,21 @@ public class login extends JFrame {
         dialogo.setUndecorated(true);
         dialogo.setSize(350, 280);
         dialogo.setLocationRelativeTo(this);
-        
+
         JPanel contenedor = new JPanel(new BorderLayout());
         contenedor.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
         contenedor.setBackground(new Color(209, 209, 209));
 
+        JLabel tituloError = new JLabel("ERROR", SwingConstants.CENTER);
+        tituloError.setFont(new Font("Inter", Font.BOLD, 20));
+        tituloError.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
+
+        contenedor.add(tituloError, BorderLayout.NORTH);
+
         JPanel centro = new JPanel();
         centro.setOpaque(false);
         centro.setLayout(new BoxLayout(centro, BoxLayout.Y_AXIS));
-        centro.add(Box.createVerticalStrut(20));
+        centro.add(Box.createVerticalStrut(45));
 
         JLabel iconoX = new JLabel("×", SwingConstants.CENTER) {
             @Override
@@ -172,6 +179,7 @@ public class login extends JFrame {
                 super.paintComponent(g);
             }
         };
+
         iconoX.setPreferredSize(new Dimension(65, 65));
         iconoX.setMaximumSize(new Dimension(65, 65));
         iconoX.setForeground(Color.WHITE);
@@ -191,13 +199,14 @@ public class login extends JFrame {
         btnOk.setForeground(Color.WHITE);
         btnOk.setFont(new Font("Inter", Font.BOLD, 14));
         btnOk.addActionListener(e -> dialogo.dispose());
-        
+
         JPanel sur = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 20));
         sur.setOpaque(false);
         sur.add(btnOk);
 
         contenedor.add(centro, BorderLayout.CENTER);
         contenedor.add(sur, BorderLayout.SOUTH);
+
         dialogo.add(contenedor);
         dialogo.setVisible(true);
     }
@@ -207,28 +216,46 @@ public class login extends JFrame {
         dialogo.setUndecorated(true);
         dialogo.setSize(350, 280);
         dialogo.setLocationRelativeTo(this);
-        
+
         JPanel contenedor = new JPanel(new BorderLayout());
         contenedor.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
         contenedor.setBackground(new Color(209, 209, 209));
 
+        JLabel tituloExito = new JLabel("ÉXITO", SwingConstants.CENTER);
+        tituloExito.setFont(new Font("Inter", Font.BOLD, 20));
+        tituloExito.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
+
+        contenedor.add(tituloExito, BorderLayout.NORTH);
+
         JPanel centro = new JPanel();
         centro.setOpaque(false);
         centro.setLayout(new BoxLayout(centro, BoxLayout.Y_AXIS));
-        centro.add(Box.createVerticalStrut(20));
+        centro.add(Box.createVerticalStrut(35));
 
         try {
-            ImageIcon icon = new ImageIcon(new ImageIcon(getClass().getResource("/img/palomitaverde.png"))
-                    .getImage().getScaledInstance(120, 120, Image.SCALE_SMOOTH));
+            ImageIcon icon = new ImageIcon(
+                new ImageIcon(getClass().getResource("/img/palomitaverde.png"))
+                .getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH)
+            );
+
             JLabel lblIcono = new JLabel(icon);
             lblIcono.setAlignmentX(Component.CENTER_ALIGNMENT);
-            centro.add(lblIcono);
+
+            JPanel panelIcono = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+            panelIcono.setOpaque(false);
+            panelIcono.add(lblIcono);
+
+            centro.add(panelIcono);
+
         } catch(Exception e) {}
+
+        centro.add(Box.createVerticalStrut(15));
 
         JLabel lblMsg = new JLabel("<html><center>" + mensaje + "</center></html>", SwingConstants.CENTER);
         lblMsg.setFont(new Font("Inter", Font.BOLD, 15));
         lblMsg.setAlignmentX(Component.CENTER_ALIGNMENT);
-        lblMsg.setBorder(BorderFactory.createEmptyBorder(15, 25, 15, 25));
+        lblMsg.setBorder(BorderFactory.createEmptyBorder(5, 25, 5, 25));
+
         centro.add(lblMsg);
 
         JButton btnOk = new JButton("Continuar");
@@ -236,13 +263,14 @@ public class login extends JFrame {
         btnOk.setForeground(Color.WHITE);
         btnOk.setFont(new Font("Inter", Font.BOLD, 14));
         btnOk.addActionListener(e -> dialogo.dispose());
-        
-        JPanel sur = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 20));
+
+        JPanel sur = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 10));
         sur.setOpaque(false);
         sur.add(btnOk);
 
         contenedor.add(centro, BorderLayout.CENTER);
         contenedor.add(sur, BorderLayout.SOUTH);
+
         dialogo.add(contenedor);
         dialogo.setVisible(true);
     }

@@ -9,7 +9,7 @@ import java.awt.event.*;
 public class videojuegos extends JFrame {
 
     public JLabel btnInicio, btnOperacion, btnClientes, btnVideojuegos, btnPeliculas;
-    public JButton btnAgregar, btnBuscar, btnEliminar, btnFiltrar, btnAtras; // btnAtras agregado
+    public JButton btnAgregar, btnBuscar, btnEliminar, btnFiltrar, btnAtras; 
     public JTextField buscador;
     public JTable tabla;
     public DefaultTableModel modelo;
@@ -35,7 +35,6 @@ public class videojuegos extends JFrame {
             this.setIconImage(icono);
         } catch(Exception e) {}
 
-        // SIDEBAR
         JPanel sidebar = new JPanel();
         sidebar.setPreferredSize(new Dimension(160, 0));
         sidebar.setBackground(new Color(0, 51, 102));
@@ -48,17 +47,14 @@ public class videojuegos extends JFrame {
         btnVideojuegos = Menu(sidebar, "Videojuegos", "/img/simbolovideojuegosazul.png");
         btnPeliculas = Menu(sidebar, "Peliculas", "/img/simbolopeliculasazul.png");
 
-        // PANEL PRINCIPAL
         JPanel mainPanel = new JPanel(new BorderLayout(0, 20));
         mainPanel.setBackground(new Color(245, 245, 245));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         add(mainPanel, BorderLayout.CENTER);
 
-        // CABECERA
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setOpaque(false);
         
-       
         btnAtras = new JButton(" Atrás") {
             @Override
             protected void paintComponent(Graphics g) {
@@ -108,7 +104,6 @@ public class videojuegos extends JFrame {
         headerPanel.add(titulo, BorderLayout.CENTER);
         headerPanel.add(btnAgregar, BorderLayout.EAST);
 
-        // BUSCADOR
         JPanel centerContent = new JPanel(new BorderLayout(0, 15));
         centerContent.setOpaque(false);
 
@@ -129,7 +124,6 @@ public class videojuegos extends JFrame {
 
         centerContent.add(searchPanel, BorderLayout.NORTH);
 
-        // TABLA Y DATOS
         String[] columnas = {"", "Carátula", "Título", "Id", "Tipo", "Plataforma", "Precio Renta", "Info"};
         Icon iconoConsola = getImg("/img/carbon_game-console.png", 40, 40);
         Icon iconoVector = getImg("/img/Vector.png", 20, 20);
@@ -173,7 +167,6 @@ public class videojuegos extends JFrame {
         JScrollPane scroll = new JScrollPane(tabla);
         centerContent.add(scroll, BorderLayout.CENTER);
 
-        // FOOTER
         JPanel footerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         footerPanel.setOpaque(false);
         btnEliminar = new JButton("Eliminar Seleccionados") {
@@ -200,7 +193,6 @@ public class videojuegos extends JFrame {
         mainPanel.add(centerContent, BorderLayout.CENTER);
         mainPanel.add(footerPanel, BorderLayout.SOUTH);
     }
-
 
     class IconArribaRenderer extends DefaultTableCellRenderer {
         @Override

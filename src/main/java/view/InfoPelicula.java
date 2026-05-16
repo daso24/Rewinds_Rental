@@ -11,6 +11,7 @@ public class InfoPelicula extends JFrame {
     public JTextField txtNomProd, txtIdProd, txtFormato, txtGenero, txtMonto, txtDescuento, txtFechaOp;
     public JButton btnAtras, btnDescargar, btnEditar;
     public JLabel lblImagenPelicula;
+    public JTextField txtTipo, txtStockVenta, txtStockRenta, txtClasif, txtAnio;
 
     public InfoPelicula() {
         setTitle("Información de Película / Operación");
@@ -25,7 +26,6 @@ public class InfoPelicula extends JFrame {
             setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/img/logo3.png")));
         } catch (Exception e) {}
 
-        // --- SIDEBAR ---
         JPanel barraLat = new JPanel();
         barraLat.setPreferredSize(new Dimension(160, 0));
         barraLat.setBackground(new Color(0, 51, 102));
@@ -38,7 +38,6 @@ public class InfoPelicula extends JFrame {
         btnVideojuegos = crearLabelMenu(barraLat, "Videojuegos", "/img/simbolovideojuegosazul.png");
         btnPeliculas = crearLabelMenu(barraLat, "Peliculas", "/img/simbolopeliculasazul.png");
 
-        // --- MAIN PANEL ADAPTABLE ---
         JPanel mainPanel = new JPanel(new GridBagLayout());
         mainPanel.setBackground(Color.WHITE);
         add(mainPanel, BorderLayout.CENTER);
@@ -47,7 +46,6 @@ public class InfoPelicula extends JFrame {
         gbc.insets = new Insets(10, 20, 10, 20);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // --- HEADER ---
         JPanel header = new JPanel(new BorderLayout());
         header.setOpaque(false);
 
@@ -70,7 +68,6 @@ public class InfoPelicula extends JFrame {
         gbc.gridx = 0; gbc.gridy = 0; gbc.weightx = 1.0;
         mainPanel.add(header, gbc);
 
-        // --- PANEL GRIS (CONTENIDO) ---
         JPanel panelGris = new JPanel(null);
         panelGris.setPreferredSize(new Dimension(800, 550));
         panelGris.setMinimumSize(new Dimension(800, 550));
@@ -83,7 +80,7 @@ public class InfoPelicula extends JFrame {
         txtIdProd = crearField(panelGris, "PEL-10024", 30, 110, 180);
 
         crearLabel(panelGris, "Tipo de producto:", 30, 150);
-        JTextField txtTipo = crearField(panelGris, "Película", 30, 175, 180);
+        txtTipo = crearField(panelGris, "Película", 30, 175, 180);
         txtTipo.setEditable(false);
 
         crearLabel(panelGris, "Plataforma:", 30, 215);
@@ -99,7 +96,7 @@ public class InfoPelicula extends JFrame {
         JLabel lblDisVenta = new JLabel("Disponibles para venta:");
         lblDisVenta.setBounds(30, 440, 150, 20);
         panelGris.add(lblDisVenta);
-        JTextField txtStockVenta = crearField(panelGris, "50", 30, 460, 180);
+        txtStockVenta = crearField(panelGris, "50", 30, 460, 180);
         
         crearLabel(panelGris, "Precio de renta (por 14 días):", 250, 280);
         txtFechaOp = crearField(panelGris, "$ 100.00", 250, 305, 180);
@@ -107,7 +104,7 @@ public class InfoPelicula extends JFrame {
         JLabel lblDisRenta = new JLabel("Disponibles para renta:");
         lblDisRenta.setBounds(250, 440, 150, 20);
         panelGris.add(lblDisRenta);
-        JTextField txtStockRenta = crearField(panelGris, "20", 250, 460, 180);
+        txtStockRenta = crearField(panelGris, "20", 250, 460, 180);
 
         JLabel lblProdTit = new JLabel("Producto:");
         lblProdTit.setBounds(500, 20, 100, 20);
@@ -123,10 +120,10 @@ public class InfoPelicula extends JFrame {
         panelGris.add(lblImagenPelicula);
 
         crearLabel(panelGris, "Clasificación:", 500, 335);
-        JTextField txtClasif = crearField(panelGris, "B-15", 500, 355, 120);
+        txtClasif = crearField(panelGris, "B-15", 500, 355, 120);
 
         crearLabel(panelGris, "Año de lanzamiento:", 640, 335);
-        JTextField txtAnio = crearField(panelGris, "2025", 640, 355, 120);
+        txtAnio = crearField(panelGris, "2025", 640, 355, 120);
 
         crearLabel(panelGris, "Género:", 500, 395);
         txtGenero = crearField(panelGris, "Acción", 500, 415, 260);
@@ -145,7 +142,26 @@ public class InfoPelicula extends JFrame {
         mainPanel.add(panelGris, gbc);
     }
 
-    // --- NUEVO MÉTODO PARA MOSTRAR ALERTAS ---
+    public void setDatosPelicula(String nombre, String id, String tipo, String plataforma, String precioVenta, String descuento, String stockVenta, String stockRenta, String precioRenta, String clasificacion, String anio, String genero, ImageIcon caratula) {
+        this.txtNomProd.setText(nombre);
+        this.txtIdProd.setText(id);
+        this.txtTipo.setText(tipo);
+        this.txtFormato.setText(plataforma);
+        this.txtMonto.setText(precioVenta);
+        this.txtDescuento.setText(descuento);
+        this.txtStockVenta.setText(stockVenta);
+        this.txtStockRenta.setText(stockRenta);
+        this.txtFechaOp.setText(precioRenta);
+        this.txtClasif.setText(clasificacion);
+        this.txtAnio.setText(anio);
+        this.txtGenero.setText(genero);
+        
+        if (caratula != null) {
+            Image img = caratula.getImage().getScaledInstance(this.lblImagenPelicula.getWidth(), this.lblImagenPelicula.getHeight(), Image.SCALE_SMOOTH);
+            this.lblImagenPelicula.setIcon(new ImageIcon(img));
+        }
+    }
+
     public void mostrarAlerta(String mensaje, boolean esError) {
         JDialog dialogo = new JDialog(this, true);
         dialogo.setUndecorated(true);

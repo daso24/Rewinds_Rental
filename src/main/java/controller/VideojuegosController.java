@@ -2,6 +2,7 @@ package controller;
 
 import view.*;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 
 public class VideojuegosController {
@@ -33,39 +34,76 @@ public class VideojuegosController {
             if (texto.isEmpty()) {
                 vista.sorter.setRowFilter(null);
             } else {
-                try {
-                    vista.sorter.setRowFilter(RowFilter.regexFilter("(?i)" + texto));
-                } catch (java.util.regex.PatternSyntaxException ex) {
-                    System.err.println("Error en la búsqueda: " + ex.getMessage());
-                }
+                vista.sorter.setRowFilter(RowFilter.regexFilter("(?i)" + texto));
             }
         });
 
+        vista.btnFiltrar.addActionListener(e -> {
+            abrirDialogoFiltrar();
+        });
+
         vista.btnEliminar.addActionListener(e -> {
-            vista.mostrarConfirmacionEliminar("¿Está seguro de borrar los<br>juegos seleccionados?", eSi -> {
-                for (int i = vista.tabla.getRowCount() - 1; i >= 0; i--) {
-                    Boolean isSelected = (Boolean) vista.tabla.getValueAt(i, 0);
-                    if (isSelected != null && isSelected) {
-                        int modelIndex = vista.tabla.convertRowIndexToModel(i);
-                        vista.modelo.removeRow(modelIndex);
-                    }
+            boolean haySeleccion = false;
+            for (int i = 0; i < vista.tabla.getRowCount(); i++) {
+                Boolean isSelected = (Boolean) vista.tabla.getValueAt(i, 0);
+                if (isSelected != null && isSelected) {
+                    haySeleccion = true;
+                    break;
                 }
-            });
+            }
+
+            if (haySeleccion) {
+                vista.mostrarConfirmacionEliminar("¿Está seguro de borrar los<br>juegos seleccionados?", eSi -> {
+                    for (int i = vista.tabla.getRowCount() - 1; i >= 0; i--) {
+                        Boolean isSelected = (Boolean) vista.tabla.getValueAt(i, 0);
+                        if (isSelected != null && isSelected) {
+                            int modelIndex = vista.tabla.convertRowIndexToModel(i);
+                            vista.modelo.removeRow(modelIndex);
+                        }
+                    }
+                });
+            } else {
+                mostrarAvisoGris("Selecciona al menos un juego de la lista.");
+            }
         });
 
         vista.tabla.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                int fila = vista.tabla.rowAtPoint(e.getPoint());
+                int filaVisual = vista.tabla.rowAtPoint(e.getPoint());
                 int columna = vista.tabla.columnAtPoint(e.getPoint());
                 
-                if (fila >= 0 && vista.tabla.getValueAt(fila, columna) != null) {
-                    Object valor = vista.tabla.getValueAt(fila, columna);
+                if (filaVisual != -1 && vista.tabla.getValueAt(filaVisual, columna) != null) {
+                    Object valor = vista.tabla.getValueAt(filaVisual, columna);
                     String valorCelda = (valor instanceof Object[]) ? ((Object[]) valor)[1].toString() : valor.toString();
                     
                     if (valorCelda.equalsIgnoreCase("Ver info")) {
+                        int filaModelo = vista.tabla.convertRowIndexToModel(filaVisual);
+                        
+                        String nombre = vista.modelo.getValueAt(filaModelo, 2).toString();
+                        String id = vista.modelo.getValueAt(filaModelo, 3).toString();
+                        String plataforma = vista.modelo.getValueAt(filaModelo, 5).toString();
+                        
+                        String nombreCaratula = "";
+                        try {
+                            nombreCaratula = vista.modelo.getValueAt(filaModelo, 1).toString();
+                        } catch (Exception ex) {
+                            nombreCaratula = id;
+                        }
+                        
+                        String tipo = "Videojuego";
+                        String precioVenta = "$799.00";
+                        String descuento = "0%";
+                        String stockVenta = "15";
+                        String stockRenta = "5";
+                        String precioRenta = "$99.00";
+                        String clasificacion = "TEEN";
+                        String anio = "2023";
+                        String genero = "Acción / Aventura";
+
                         vista.dispose();
                         InfoJuego vInfo = new InfoJuego(); 
+                        vInfo.setDatosJuego(nombre, id, tipo, plataforma, precioVenta, descuento, stockVenta, stockRenta, precioRenta, clasificacion, anio, genero, nombreCaratula);
                         new InfoJuegoInternalController(vInfo);
                         vInfo.setVisible(true);
                     }
@@ -92,6 +130,123 @@ public class VideojuegosController {
         });
 
         vistaAdd.btnAgregar.addActionListener(e -> validarYMostrarPopUp());
+    }
+
+    private void mostrarAvisoGris(String mensaje) {
+        JDialog dialogo = new JDialog(vista, true);
+        dialogo.setUndecorated(true);
+        dialogo.setSize(350, 240);
+        dialogo.setLocationRelativeTo(vista);
+        
+        JPanel contenedor = new JPanel(new BorderLayout());
+        contenedor.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
+        contenedor.setBackground(new Color(209, 209, 209));
+        dialogo.setContentPane(contenedor);
+
+        JPanel panelContenido = new JPanel();
+        panelContenido.setOpaque(false);
+        panelContenido.setLayout(new BoxLayout(panelContenido, BoxLayout.Y_AXIS));
+        panelContenido.add(Box.createVerticalStrut(25));
+
+        JLabel lblMsg = new JLabel("<html><center>" + mensaje + "</center></html>", SwingConstants.CENTER);
+        lblMsg.setFont(new Font("Inter", Font.BOLD, 15));
+        lblMsg.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panelContenido.add(lblMsg);
+        panelContenido.add(Box.createVerticalGlue());
+
+        try {
+            JLabel iconoCentro = new JLabel(new ImageIcon(new ImageIcon(getClass().getResource("/img/mingcute_warning-fill.png"))
+                    .getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH)));
+            iconoCentro.setAlignmentX(Component.CENTER_ALIGNMENT);
+            panelContenido.add(iconoCentro);
+        } catch (Exception e) {}
+        panelContenido.add(Box.createVerticalGlue());
+
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 15));
+        panelBotones.setOpaque(false);
+        
+        JButton btnOk = new JButton("OK") {
+            @Override 
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(130, 130, 130));
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        btnOk.setPreferredSize(new Dimension(110, 35));
+        btnOk.setForeground(Color.WHITE);
+        btnOk.setFont(new Font("Inter", Font.BOLD, 13));
+        btnOk.setContentAreaFilled(false);
+        btnOk.setBorderPainted(false);
+        btnOk.setFocusPainted(false);
+        btnOk.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnOk.addActionListener(e -> dialogo.dispose());
+
+        panelBotones.add(btnOk);
+        contenedor.add(panelContenido, BorderLayout.CENTER);
+        contenedor.add(panelBotones, BorderLayout.SOUTH);
+        dialogo.setVisible(true);
+    }
+
+    private void abrirDialogoFiltrar() {
+        JDialog dialogo = new JDialog(vista, "Filtro Videojuegos", true);
+        dialogo.setSize(320, 200);
+        dialogo.setLocationRelativeTo(vista);
+        dialogo.setLayout(new BorderLayout(10, 10));
+        
+        JPanel panelContenido = new JPanel(new GridLayout(3, 1, 10, 10));
+        panelContenido.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+
+        JLabel lblColumna = new JLabel("Filtrar por columna:");
+        String[] opcionesColumnas = {"Título", "Id", "Plataforma"};
+        JComboBox<String> comboColumnas = new JComboBox<>(opcionesColumnas);
+        
+        JLabel lblCriterio = new JLabel("Texto a buscar:");
+        JTextField txtCriterio = new JTextField();
+
+        panelContenido.add(lblColumna);
+        panelContenido.add(comboColumnas);
+        panelContenido.add(lblCriterio);
+        panelContenido.add(txtCriterio);
+
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton btnAplicar = new JButton("Aplicar");
+        JButton btnLimpiar = new JButton("Quitar Filtros");
+
+        panelBotones.add(btnLimpiar);
+        panelBotones.add(btnAplicar);
+
+        btnAplicar.addActionListener(evt -> {
+            String criterio = txtCriterio.getText().trim();
+            int columnaSeleccionada = comboColumnas.getSelectedIndex();
+            int indexColumnaTabla = 2;
+            if (columnaSeleccionada == 1) indexColumnaTabla = 3;
+            if (columnaSeleccionada == 2) indexColumnaTabla = 5;
+
+            if (criterio.isEmpty()) {
+                vista.sorter.setRowFilter(null);
+            } else {
+                try {
+                    vista.sorter.setRowFilter(RowFilter.regexFilter("(?i)" + criterio, indexColumnaTabla));
+                } catch (Exception ex) {
+                    mostrarAvisoGris("Error en la expresión de filtrado.");
+                }
+            }
+            dialogo.dispose();
+        });
+
+        btnLimpiar.addActionListener(evt -> {
+            vista.sorter.setRowFilter(null);
+            vista.buscador.setText("");
+            dialogo.dispose();
+        });
+
+        dialogo.add(panelContenido, BorderLayout.CENTER);
+        dialogo.add(panelBotones, BorderLayout.SOUTH);
+        dialogo.setVisible(true);
     }
 
     private void configurarMenuLateral(JComponent inicio, JComponent operacion, JComponent clientes, JComponent videojuegos, JComponent peliculas, JFrame ventanaActual) {
@@ -192,6 +347,10 @@ public class VideojuegosController {
                 vistaInfo.mostrarConfirmacion("¿Deseas guardar los cambios realizados?", ev -> {
                     System.out.println("Cambios guardados");
                 });
+            });
+
+            vistaInfo.btnDescargar.addActionListener(e -> {
+                vistaInfo.mostrarAvisoDescarga("Descargando .....");
             });
         }
     }

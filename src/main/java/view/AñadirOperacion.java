@@ -10,10 +10,11 @@ import java.net.URL;
 public class AñadirOperacion extends JFrame {
 
     public JLabel lblInicio, lblOperacion, lblClientes, lblVideojuegos, lblPeliculas;
-    public JButton btnAtras, btnGuardar, btnDescargar;
+    public JButton btnAtras, btnGuardar, btnSeleccionarProd;
     public JTextField txtNombreCli, txtIdCli, txtIdOp, txtFechaOp, txtFechaDev, txtMonto, txtDescuento;
     public JTextField txtNomProd, txtIdProd, txtTipoProd, txtPlataforma;
     public JRadioButton rbRenta, rbVenta;
+    public JLabel lblFoto;
 
     public AñadirOperacion() {
         setTitle("Añadir Operación");
@@ -31,7 +32,6 @@ public class AñadirOperacion extends JFrame {
             this.setIconImage(icono);
         } catch(Exception e) {}
 
-        // --- SIDEBAR ---
         JPanel sidebar = new JPanel();
         sidebar.setBounds(0, 0, 160, 2000); 
         sidebar.setBackground(new Color(0, 51, 102));
@@ -46,7 +46,6 @@ public class AñadirOperacion extends JFrame {
         lblVideojuegos = Menu(sidebar, "Videojuegos", "/img/simbolovideojuegosazul.png");
         lblPeliculas = Menu(sidebar, "Peliculas", "/img/simbolopeliculasazul.png");
 
-        // --- CONTENEDOR PRINCIPAL ---
         JPanel contenedorPrincipal = new JPanel(null);
         contenedorPrincipal.setBackground(Color.WHITE);
         add(contenedorPrincipal);
@@ -80,9 +79,9 @@ public class AñadirOperacion extends JFrame {
         panelGris.setLayout(null);
         contenido.add(panelGris);
 
-        txtNombreCli = crearCampo(panelGris, "Nombre del cliente:", 25, 15, 260, "Adrián Celis Olavarría");
-        txtIdCli = crearCampo(panelGris, "ID de cliente:", 25, 80, 150, "105422");
-        txtIdOp = crearCampo(panelGris, "ID de la operación:", 25, 145, 150, "00045621");
+        txtNombreCli = crearCampo(panelGris, "Nombre del cliente:", 25, 15, 260, "  ");
+        txtIdCli = crearCampo(panelGris, "ID de cliente:", 25, 80, 150, "");
+        txtIdOp = crearCampo(panelGris, "ID de la operación:", 25, 145, 150, "");
 
         JLabel lblTipo = new JLabel("Tipo");
         lblTipo.setBounds(25, 205, 100, 20);
@@ -108,30 +107,28 @@ public class AñadirOperacion extends JFrame {
         bgGroup.add(rbRenta); bgGroup.add(rbVenta);
         bgTipo.add(rbRenta); bgTipo.add(rbVenta);
 
-        txtFechaOp = crearCampo(panelGris, "Fecha de operación:", 25, 260, 155, "24 / 09 / 2026");
+        txtFechaOp = crearCampo(panelGris, "Fecha de operación:", 25, 260, 155, "");
         txtFechaDev = crearCampo(panelGris, "Fecha de devolución:", 25, 325, 155, "No aplica");
-        txtMonto = crearCampo(panelGris, "Monto pagado:", 25, 390, 155, "$ 250.00");
+        txtMonto = crearCampo(panelGris, "Monto pagado:", 25, 390, 155, "$");
         txtDescuento = crearCampo(panelGris, "Descuento:", 210, 390, 150, "0%");
 
-        JLabel lblImg = new JLabel();
-        lblImg.setBounds(460, 25, 310, 260);
-        lblImg.setBackground(Color.DARK_GRAY);
-        lblImg.setOpaque(true); 
-        lblImg.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-        panelGris.add(lblImg);
+        lblFoto = new JLabel();
+        lblFoto.setBounds(460, 25, 310, 260);
+        lblFoto.setBackground(Color.DARK_GRAY);
+        lblFoto.setOpaque(true); 
+        lblFoto.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+        panelGris.add(lblFoto);
 
-        txtNomProd = crearCampoSimple(panelGris, "Nombre del producto:", 460, 290, 310, "Chainsaw Man - La película");
-        txtIdProd = crearCampoSimple(panelGris, "ID del producto:", 460, 350, 150, "PEL-10024");
-        txtTipoProd = crearCampoSimple(panelGris, "Tipo:", 620, 350, 150, "Película");
+        txtNomProd = crearCampoSimple(panelGris, "Nombre del producto:", 460, 290, 310, "");
+        txtIdProd = crearCampoSimple(panelGris, "ID del producto:", 460, 350, 150, "");
+        txtTipoProd = crearCampoSimple(panelGris, "Tipo:", 620, 350, 150, "");
 
-        btnDescargar = new RoundedButton("Descargar Ficha PDF  ", 15);
-        btnDescargar.setBounds(580, 425, 190, 35);
-        btnDescargar.setBackground(new Color(0, 180, 255));
-        btnDescargar.setForeground(Color.WHITE);
-        btnDescargar.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnDescargar.setHorizontalTextPosition(SwingConstants.LEFT);
-        cargarIconoBoton(btnDescargar, "/img/pdf_icon.png", 22, 22);
-        panelGris.add(btnDescargar);
+        btnSeleccionarProd = new RoundedButton("Seleccionar Producto", 15);
+        btnSeleccionarProd.setBounds(580, 425, 190, 35);
+        btnSeleccionarProd.setBackground(new Color(0, 170, 255));
+        btnSeleccionarProd.setForeground(Color.WHITE);
+        btnSeleccionarProd.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        panelGris.add(btnSeleccionarProd);
 
         btnGuardar = new RoundedButton("Guardar Operación", 10);
         btnGuardar.setBounds(330, 560, 200, 40);
@@ -153,14 +150,12 @@ public class AñadirOperacion extends JFrame {
         });
     }
 
-    // --- MÉTODO MENU SOLO CON CAMBIO DE CURSOR ---
     public JLabel Menu(JPanel panel, String texto, String ruta) {
         JPanel item = new JPanel();
         item.setLayout(new BoxLayout(item, BoxLayout.Y_AXIS));
         item.setOpaque(false);
         item.setPreferredSize(new Dimension(150, 95));
         
-        // Cambio de cursor a mano
         item.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         JLabel iconLabel = new JLabel();

@@ -5,7 +5,6 @@ import javax.swing.border.*;
 import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.net.URL;
 
 public class peliculas extends JFrame {
   
@@ -117,9 +116,12 @@ public class peliculas extends JFrame {
         gbc.gridx = 1; gbc.weightx = 1.0; gbc.fill = GridBagConstraints.HORIZONTAL;
         buscador = new JTextField(); buscador.setFont(INTER_REGULAR_13); searchPanel.add(buscador, gbc);
         gbc.gridx = 2; gbc.weightx = 0; gbc.fill = GridBagConstraints.NONE;
+        
         btnBuscar = crearBotonSimple("Buscar", new Color(45, 59, 72));
         btnBuscar.setPreferredSize(new Dimension(100, 30)); searchPanel.add(btnBuscar, gbc);
-        gbc.gridx = 3; btnFiltrar = crearBotonSimple("Filtrar", new Color(0, 170, 255));
+        
+        gbc.gridx = 3; 
+        btnFiltrar = crearBotonSimple("Filtrar", new Color(0, 170, 255));
         btnFiltrar.setPreferredSize(new Dimension(100, 30)); searchPanel.add(btnFiltrar, gbc);
 
         centerContent.add(searchPanel, BorderLayout.NORTH);
@@ -195,62 +197,89 @@ public class peliculas extends JFrame {
         mainPanel.add(footerPanel, BorderLayout.SOUTH);
     }
 
-    // --- NUEVOS METODOS PARA INTEGRACION CON CONTROLLER ---
-
-    public void mostrarAlerta(String mensaje, boolean esError) {
+    public void mostrarAlerta(String mensaje) {
         JDialog dialogo = new JDialog(this, true);
         dialogo.setUndecorated(true);
         dialogo.setSize(350, 280);
         dialogo.setLocationRelativeTo(this);
         JPanel contenedor = new JPanel(new BorderLayout());
         contenedor.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
-        contenedor.setBackground(new Color(230, 230, 230));
+        contenedor.setBackground(new Color(209, 209, 209));
+        
         JPanel contenido = new JPanel();
         contenido.setOpaque(false);
         contenido.setLayout(new BoxLayout(contenido, BoxLayout.Y_AXIS));
-        contenido.add(Box.createVerticalStrut(30));
+        contenido.add(Box.createVerticalStrut(25));
+        
         JLabel lblMsg = new JLabel("<html><center>" + mensaje + "</center></html>", SwingConstants.CENTER);
         lblMsg.setFont(INTER_BOLD_16);
         lblMsg.setAlignmentX(Component.CENTER_ALIGNMENT);
         contenido.add(lblMsg);
         contenido.add(Box.createVerticalGlue());
         
-        JButton btnOk = crearBotonRedondo("Aceptar", esError ? new Color(220, 50, 50) : new Color(0, 170, 255), Color.WHITE);
-        btnOk.setPreferredSize(new Dimension(120, 38));
-        btnOk.addActionListener(e -> dialogo.dispose());
+        try {
+            ImageIcon img = new ImageIcon(new ImageIcon(getClass().getResource("/img/mingcute_warning-fill.png")).getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH));
+            JLabel lblIcono = new JLabel(img);
+            lblIcono.setAlignmentX(Component.CENTER_ALIGNMENT);
+            contenido.add(lblIcono);
+        } catch (Exception e) {}
         
-        JPanel pBot = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 20));
-        pBot.setOpaque(false);
-        pBot.add(btnOk);
+        contenido.add(Box.createVerticalGlue());
+        
+        JPanel pBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 15));
+        pBotones.setOpaque(false);
+        JButton btnOk = crearBotonDialogo("Aceptar", new Color(220, 50, 50));
+        btnOk.addActionListener(e -> dialogo.dispose());
+        pBotones.add(btnOk);
+        
         contenedor.add(contenido, BorderLayout.CENTER);
-        contenedor.add(pBot, BorderLayout.SOUTH);
+        contenedor.add(pBotones, BorderLayout.SOUTH);
         dialogo.add(contenedor);
         dialogo.setVisible(true);
     }
 
-    private JButton crearBotonRedondo(String texto, Color bg, Color fg) {
-        JButton btn = new JButton(texto) {
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(bg);
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20);
-                g2.dispose();
-                super.paintComponent(g);
-            }
-        };
-        btn.setForeground(fg);
-        btn.setContentAreaFilled(false);
-        btn.setBorderPainted(false);
-        btn.setFocusPainted(false);
-        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        return btn;
+    public void mostrarExito(String mensaje) {
+        JDialog dialogo = new JDialog(this, true);
+        dialogo.setUndecorated(true);
+        dialogo.setSize(350, 280);
+        dialogo.setLocationRelativeTo(this);
+        JPanel contenedor = new JPanel(new BorderLayout());
+        contenedor.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
+        contenedor.setBackground(new Color(209, 209, 209));
+        
+        JPanel contenido = new JPanel();
+        contenido.setOpaque(false);
+        contenido.setLayout(new BoxLayout(contenido, BoxLayout.Y_AXIS));
+        contenido.add(Box.createVerticalStrut(25));
+        
+        JLabel lblMsg = new JLabel("<html><center>" + mensaje + "</center></html>", SwingConstants.CENTER);
+        lblMsg.setFont(INTER_BOLD_16);
+        lblMsg.setAlignmentX(Component.CENTER_ALIGNMENT);
+        contenido.add(lblMsg);
+        contenido.add(Box.createVerticalGlue());
+        
+        try {
+            ImageIcon img = new ImageIcon(new ImageIcon(getClass().getResource("/img/simbolomasazul.png")).getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH));
+            JLabel lblIcono = new JLabel(img);
+            lblIcono.setAlignmentX(Component.CENTER_ALIGNMENT);
+            contenido.add(lblIcono);
+        } catch (Exception e) {}
+        
+        contenido.add(Box.createVerticalGlue());
+        
+        JPanel pBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 15));
+        pBotones.setOpaque(false);
+        JButton btnOk = crearBotonDialogo("Aceptar", new Color(0, 170, 255));
+        btnOk.addActionListener(e -> dialogo.dispose());
+        pBotones.add(btnOk);
+        
+        contenedor.add(contenido, BorderLayout.CENTER);
+        contenedor.add(pBotones, BorderLayout.SOUTH);
+        dialogo.add(contenedor);
+        dialogo.setVisible(true);
     }
 
-    // --- FIN DE NUEVOS METODOS ---
-
-    public void mostrarConfirmacionEliminar(String mensaje, ActionListener accionSi) {
+    public void mostrarConfirmacion(String mensaje, ActionListener accionSi) {
         JDialog dialogo = new JDialog(this, true);
         dialogo.setUndecorated(true);
         dialogo.setSize(350, 280); 
@@ -280,7 +309,7 @@ public class peliculas extends JFrame {
 
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 15));
         panelBotones.setOpaque(false);
-        JButton btnSi = crearBotonDialogo("Eliminar", new Color(220, 50, 50));
+        JButton btnSi = crearBotonDialogo("Confirmar", new Color(0, 51, 102));
         btnSi.addActionListener(e -> { dialogo.dispose(); accionSi.actionPerformed(e); });
         JButton btnNo = crearBotonDialogo("Cancelar", new Color(130, 130, 130));
         btnNo.addActionListener(e -> dialogo.dispose());

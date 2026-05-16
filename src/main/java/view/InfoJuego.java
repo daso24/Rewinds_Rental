@@ -51,7 +51,7 @@ public class InfoJuego extends JFrame {
         JPanel header = new JPanel(new BorderLayout());
         header.setOpaque(false);
 
-        btnAtras = new RoundedButton("  Atrás", 20);
+        btnAtras = new RoundedButton("Atrás  ", 20);
         btnAtras.setPreferredSize(new Dimension(120, 35));
         btnAtras.setFont(new Font("Arial", Font.PLAIN, 15));
         btnAtras.setBackground(new Color(225, 225, 225));
@@ -96,6 +96,7 @@ public class InfoJuego extends JFrame {
         lblImg.setBounds(500, 45, 260, 280);
         lblImg.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
         lblImg.setBackground(Color.LIGHT_GRAY);
+        lblImg.setHorizontalAlignment(SwingConstants.CENTER);
         lblImg.setOpaque(true);
         panelGris.add(lblImg);
 
@@ -110,18 +111,79 @@ public class InfoJuego extends JFrame {
         btnEditar.setCursor(new Cursor(Cursor.HAND_CURSOR));
         panelGris.add(btnEditar);
 
-        btnDescargar = new RoundedButton("Descargar ficha", 10);
+        btnDescargar = new RoundedButton("Descargar ficha  ", 10);
         btnDescargar.setBounds(340, 465, 200, 35);
         btnDescargar.setBackground(new Color(0, 180, 255));
         btnDescargar.setForeground(Color.WHITE);
         btnDescargar.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        cargarIconoBoton(btnDescargar, "/img/teenyicons_pdf-solid.png", 22, 22);
+        cargarIconoBoton(btnDescargar, "/img/simbolopdfblanco.png", 22, 22);
         panelGris.add(btnDescargar);
 
         gbc.gridy = 1; gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.CENTER;
         mainPanel.add(panelGris, gbc);
+    }
+
+    public void setDatosJuego(String nombre, String id, String tipo, String plataforma, String precioVenta, String descuento, String stockVenta, String stockRenta, String precioRenta, String clasificacion, String anio, String genero, String caratula) {
+        txtNombreProd.setText(nombre);
+        txtIdProd.setText(id);
+        txtTipoProd.setText(tipo);
+        txtPlataforma.setText(plataforma);
+        txtPrecioVenta.setText(precioVenta);
+        txtDescuento.setText(descuento);
+        txtStock.setText(stockVenta);
+        txtStockRenta.setText(stockRenta);
+        txtPrecioRenta.setText(precioRenta);
+        txtClasificacion.setText(clasificacion);
+        txtAnio.setText(anio);
+        txtGenero.setText(genero);
+        
+        cargarImagenPortada(caratula);
+    }
+
+    private void cargarImagenPortada(String caratula) {
+        try {
+            if (caratula == null || caratula.trim().isEmpty()) {
+                lblImg.setIcon(null);
+                lblImg.setText("Sin portada disponible");
+                return;
+            }
+
+            String nombreArchivo = caratula.trim();
+            
+            if (nombreArchivo.contains("/img/")) {
+                int index = nombreArchivo.indexOf("/img/");
+                nombreArchivo = nombreArchivo.substring(index + 5);
+            } else if (nombreArchivo.contains("img/")) {
+                int index = nombreArchivo.indexOf("img/");
+                nombreArchivo = nombreArchivo.substring(index + 4);
+            }
+            
+            nombreArchivo = nombreArchivo.replace("\"", "")
+                                         .replace("'", "")
+                                         .trim();
+
+            String rutaFinal = "/img/" + nombreArchivo;
+            URL urlImg = getClass().getResource(rutaFinal);
+            
+            if (urlImg != null) {
+                ImageIcon portada = new ImageIcon(new ImageIcon(urlImg).getImage().getScaledInstance(260, 280, Image.SCALE_SMOOTH));
+                lblImg.setIcon(portada);
+                lblImg.setText("");
+            } else {
+                lblImg.setIcon(null);
+                lblImg.setText("<html><center>No se encontró:<br>" + nombreArchivo + "</center></html>");
+                lblImg.setFont(new Font("Arial", Font.ITALIC, 11));
+            }
+        } catch (Exception e) {
+            lblImg.setIcon(null);
+            lblImg.setText("Error al cargar imagen");
+        }
+    }
+
+    public void mostrarAvisoDescarga(String mensaje) {
+        mostrarPopUpGris(mensaje, new Color(130, 130, 130), "/img/mingcute_warning-fill.png", null);
     }
 
     public void mostrarExito(String mensaje) {
@@ -247,7 +309,10 @@ public class InfoJuego extends JFrame {
     private void cargarIconoBoton(JButton b, String p, int w, int h) {
         try {
             URL u = getClass().getResource(p);
-            if (u != null) b.setIcon(new ImageIcon(new ImageIcon(u).getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH)));
+            if (u != null) {
+                b.setIcon(new ImageIcon(new ImageIcon(u).getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH)));
+                b.setHorizontalTextPosition(SwingConstants.LEADING);
+            }
         } catch (Exception e) {}
     }
 

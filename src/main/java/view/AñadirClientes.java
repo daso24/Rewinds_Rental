@@ -3,7 +3,7 @@ package view;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.event.ActionListener;
+import java.net.URL;
 
 public class AñadirClientes extends JFrame {
 
@@ -80,7 +80,7 @@ public class AñadirClientes extends JFrame {
 
         txtId = CampoEditable(panel, "ID del Cliente:", "12345", 50, 230, 170);
         txtNombre = CampoEditable(panel, "Nombre Completo:", "Juan Pérez", 240, 230, 380);
-        txtFecha = CampoEditable(panel, "Fecha de nacimiento:", "01/01/2000", 50, 320, 230);
+        txtFecha = CampoEditable(panel, "Fecha de nacimiento:", "01/01/2000", 640, 230, 160);
         txtTelefono = CampoEditable(panel, "Teléfono:", "1234567891", 310, 320, 230);
 
         btnAgregar = crearBotonRedondo("Agregar Cliente", new Color(0, 170, 255), Color.WHITE);
@@ -114,11 +114,11 @@ public class AñadirClientes extends JFrame {
 
     private JTextField CampoEditable(JPanel p, String titulo, String valor, int x, int y, int w) {
         JLabel lbl = new JLabel(titulo);
-        lbl.setFont(new Font("Inter", Font.BOLD, 15));
+        lbl.setFont(new Font("Inter", Font.BOLD, 14));
         lbl.setBounds(x, y, w, 20);
         p.add(lbl);
         JTextField txt = new JTextField(valor);
-        txt.setBounds(x, y + 25, w, 35);
+        txt.setBounds(x, y + 25, w, 30);
         txt.setHorizontalAlignment(JTextField.CENTER);
         txt.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(15), BorderFactory.createEmptyBorder(0, 10, 0, 10)));
         p.add(txt);
@@ -145,18 +145,18 @@ public class AñadirClientes extends JFrame {
         return btn;
     }
 
-    public void mostrarExito(String mensaje) {
-        mostrarAlerta(mensaje);
+    public void mostrarExito(String mensaje, String rutaImagen) {
+        mostrarAlerta(mensaje, rutaImagen);
     }
 
-    public void mostrarError(String mensaje) {
-        mostrarAlerta(mensaje);
+    public void mostrarError(String mensaje, String rutaImagen) {
+        mostrarAlerta(mensaje, rutaImagen);
     }
 
-    private void mostrarAlerta(String mensaje) {
+    private void mostrarAlerta(String mensaje, String rutaImagen) {
         JDialog dialogo = new JDialog(this, true);
         dialogo.setUndecorated(true);
-        dialogo.setSize(380, 250);
+        dialogo.setSize(380, 280);
         dialogo.setLocationRelativeTo(this);
 
         JPanel contenedor = new JPanel(new BorderLayout());
@@ -166,12 +166,27 @@ public class AñadirClientes extends JFrame {
         JPanel cuerpo = new JPanel();
         cuerpo.setLayout(new BoxLayout(cuerpo, BoxLayout.Y_AXIS));
         cuerpo.setOpaque(false);
-        cuerpo.add(Box.createVerticalStrut(40));
+        cuerpo.add(Box.createVerticalStrut(30));
 
         JLabel texto = new JLabel("<html><center>" + mensaje + "</center></html>", SwingConstants.CENTER);
         texto.setFont(new Font("Inter", Font.BOLD, 16));
         texto.setAlignmentX(Component.CENTER_ALIGNMENT);
         cuerpo.add(texto);
+
+        if (rutaImagen != null && !rutaImagen.isEmpty()) {
+            cuerpo.add(Box.createVerticalStrut(35));
+            JLabel lblIcono = new JLabel();
+            lblIcono.setAlignmentX(Component.CENTER_ALIGNMENT);
+            try {
+                URL url = getClass().getResource(rutaImagen);
+                if (url != null) {
+                    lblIcono.setIcon(new ImageIcon(new ImageIcon(url)
+                        .getImage().getScaledInstance(55, 55, Image.SCALE_SMOOTH)));
+                }
+            } catch (Exception e) {}
+            cuerpo.add(lblIcono);
+        }
+
         cuerpo.add(Box.createVerticalGlue());
 
         JPanel panelBtns = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 20));

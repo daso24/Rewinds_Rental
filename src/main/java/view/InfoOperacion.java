@@ -13,6 +13,7 @@ public class InfoOperacion extends JFrame {
     public JTextField txtNombreCli, txtIdCli, txtIdOp, txtFechaOp, txtFechaDev, txtMonto, txtDescuento;
     public JTextField txtNombreProd, txtIdProd, txtTipoProd, txtPlataforma;
     public JRadioButton rbRenta, rbVenta;
+    public JLabel lblImg;
 
     public InfoOperacion() {
         setTitle("Información de Operación");
@@ -27,7 +28,6 @@ public class InfoOperacion extends JFrame {
             setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/img/logo3.png")));
         } catch (Exception e) {}
 
-        // --- SIDEBAR ---
         JPanel sidebar = new JPanel();
         sidebar.setPreferredSize(new Dimension(160, 0));
         sidebar.setBackground(new Color(0, 51, 102));
@@ -40,7 +40,6 @@ public class InfoOperacion extends JFrame {
         lblVideojuegos = Menu(sidebar, "Videojuegos", "/img/simbolovideojuegosazul.png");
         lblPeliculas = Menu(sidebar, "Peliculas", "/img/simbolopeliculasazul.png");
 
-        // --- MAIN PANEL ADAPTABLE ---
         JPanel mainPanel = new JPanel(new GridBagLayout());
         mainPanel.setBackground(Color.WHITE);
         add(mainPanel, BorderLayout.CENTER);
@@ -49,7 +48,6 @@ public class InfoOperacion extends JFrame {
         gbc.insets = new Insets(10, 20, 10, 20);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // --- HEADER ---
         JPanel header = new JPanel(new BorderLayout());
         header.setOpaque(false);
 
@@ -73,14 +71,13 @@ public class InfoOperacion extends JFrame {
         gbc.gridx = 0; gbc.gridy = 0; gbc.weightx = 1.0; gbc.weighty = 0.0;
         mainPanel.add(header, gbc);
 
-        // --- PANEL GRIS ---
         JPanel panelGris = new JPanel(null);
         panelGris.setPreferredSize(new Dimension(800, 480));
         panelGris.setMinimumSize(new Dimension(800, 480));
         panelGris.setBackground(new Color(209, 209, 209));
         panelGris.setBorder(new LineBorder(Color.GRAY, 1));
 
-        txtNombreCli = crearCampo(panelGris, "Nombre del cliente:", 25, 15, 260, "Paulina Rendón Galván");
+        txtNombreCli = crearCampo(panelGris, "Nombre del cliente:", 25, 15, 260, "");
         txtIdCli = crearCampo(panelGris, "ID de cliente:", 25, 80, 150, "285736");
         txtIdOp = crearCampo(panelGris, "ID de la operación:", 25, 145, 150, "00045621");
 
@@ -114,7 +111,7 @@ public class InfoOperacion extends JFrame {
         txtMonto = crearCampo(panelGris, "Monto pagado:", 25, 390, 155, "$ 80.00");
         txtDescuento = crearCampo(panelGris, "Descuento:", 210, 390, 150, "0%");
 
-        JLabel lblImg = new JLabel();
+        lblImg = new JLabel();
         lblImg.setBounds(460, 25, 310, 260);
         lblImg.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
         cargarIconoLabel(lblImg, "/img/chainsaw_man.png", 310, 260);
@@ -137,7 +134,6 @@ public class InfoOperacion extends JFrame {
         gbc.weighty = 1.0;
         mainPanel.add(panelGris, gbc);
 
-        // --- BOTÓN GUARDAR ---
         btnGuardar = new RoundedButton("Confirmar Edición", 10);
         btnGuardar.setPreferredSize(new Dimension(180, 40));
         btnGuardar.setBackground(Color.BLACK);
@@ -162,7 +158,6 @@ public class InfoOperacion extends JFrame {
         iconLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel label = new JLabel(texto, SwingConstants.CENTER);
-        // Cambio de color solicitado: #04B4FF
         label.setForeground(new Color(4, 180, 255)); 
         label.setFont(new Font("Inter", Font.BOLD, 15));
         label.setAlignmentX(Component.CENTER_ALIGNMENT);

@@ -8,6 +8,7 @@ import java.net.URL;
 public class InfoCliente extends JFrame {
 
     public JTextField txtId, txtFecha, txtTelefono;
+    public JLabel lblNombreValor; 
     public JLabel lblInicio, lblOperacion, lblClientes, lblVideojuegos, lblPeliculas, lblLogoDerecha;
     public JButton btnAtras, btnEditar, btnHistoVentas, btnHistoRentas, btnDescargar, btnGenerar;
 
@@ -29,7 +30,6 @@ public class InfoCliente extends JFrame {
             setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/img/logo3.png")));
         } catch(Exception e) {}
 
-        // --- SIDEBAR ---
         JPanel sidebar = new JPanel();
         sidebar.setPreferredSize(new Dimension(160, 0));
         sidebar.setBackground(new Color(0, 51, 102));
@@ -42,7 +42,6 @@ public class InfoCliente extends JFrame {
         lblVideojuegos = Menu(sidebar, "Videojuegos", "/img/simbolovideojuegosazul.png");
         lblPeliculas = Menu(sidebar, "Peliculas", "/img/simbolopeliculasazul.png");
 
-        // --- MAIN PANEL ADAPTABLE ---
         JPanel mainPanel = new JPanel(new GridBagLayout());
         mainPanel.setBackground(new Color(245, 245, 245));
         add(mainPanel, BorderLayout.CENTER);
@@ -51,7 +50,6 @@ public class InfoCliente extends JFrame {
         gbc.insets = new Insets(10, 20, 10, 20);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // --- HEADER ---
         JPanel header = new JPanel(new BorderLayout());
         header.setOpaque(false);
 
@@ -73,7 +71,6 @@ public class InfoCliente extends JFrame {
         gbc.gridx = 0; gbc.gridy = 0; gbc.weightx = 1.0;
         mainPanel.add(header, gbc);
 
-        // --- FOTO DE PERFIL ---
         JPanel marcoFoto = new JPanel();
         marcoFoto.setPreferredSize(new Dimension(120, 120));
         marcoFoto.setBackground(Color.DARK_GRAY);
@@ -82,47 +79,52 @@ public class InfoCliente extends JFrame {
         gbc.gridy = 1; gbc.fill = GridBagConstraints.NONE;
         mainPanel.add(marcoFoto, gbc);
 
-        // --- CARD CENTRAL (Mantiene su tamaño pero se centra) ---
         JPanel card = new JPanel(null);
         card.setPreferredSize(new Dimension(780, 360));
         card.setBackground(Color.WHITE);
         card.setBorder(new LineBorder(new Color(200, 200, 200), 1, true));
 
-        JLabel lblNombreValor = new JLabel("Tobias Martinez", SwingConstants.CENTER);
+        lblNombreValor = new JLabel("", SwingConstants.CENTER);
         lblNombreValor.setFont(INTER_BOLD_16);
         lblNombreValor.setBounds(0, 35, 780, 20);
         card.add(lblNombreValor);
 
-        txtId = CampoEditable(card, "ID del Cliente:", "123", 50, 70, 180);
-        txtFecha = CampoEditable(card, "Fecha de nacimiento:", "27/08/2000", 300, 70, 180);
-        txtTelefono = CampoEditable(card, "Teléfono:", "1234567891", 550, 70, 180);
+        txtId = CampoEditable(card, "ID del Cliente:", "", 140, 70, 180);
+        txtFecha = CampoEditable(card, "Fecha de nacimiento:", "", 460, 70, 180);
+        txtTelefono = CampoEditable(card, "Teléfono:", "", 300, 145, 180);
 
         btnHistoVentas = crearBotonRedondeado("Historial de ventas", new Color(45, 62, 80), Color.WHITE, 15);
-        btnHistoVentas.setBounds(50, 210, 180, 35);
+        btnHistoVentas.setBounds(50, 225, 180, 35);
         card.add(btnHistoVentas);
 
         btnHistoRentas = crearBotonRedondeado("Historial de rentas", new Color(45, 62, 80), Color.WHITE, 15);
-        btnHistoRentas.setBounds(550, 210, 180, 35);
+        btnHistoRentas.setBounds(550, 225, 180, 35);
         card.add(btnHistoRentas);
 
         btnDescargar = crearBotonRedondeado("Descargar Ficha [PDF]", new Color(0, 170, 255), Color.WHITE, 15);
-        btnDescargar.setBounds(80, 290, 280, 35);
+        btnDescargar.setBounds(80, 295, 280, 35);
         card.add(btnDescargar);
 
         btnGenerar = crearBotonRedondeado("Generar tarjeta [PDF]", new Color(0, 170, 255), Color.WHITE, 15);
-        btnGenerar.setBounds(430, 290, 280, 35);
+        btnGenerar.setBounds(430, 295, 280, 35);
         card.add(btnGenerar);
 
-        gbc.gridy = 2; gbc.weighty = 0.0;
+        gbc.gridy = 2; gbc.weighty = 0.0; gbc.fill = GridBagConstraints.HORIZONTAL;
         mainPanel.add(card, gbc);
 
-        // --- BOTÓN EDITAR (Abajo) ---
         btnEditar = crearBotonRedondeado("Editar Cliente", new Color(0, 170, 255), Color.WHITE, 25);
         btnEditar.setPreferredSize(new Dimension(160, 40));
         btnEditar.setFont(INTER_BOLD_14);
         
-        gbc.gridy = 3; gbc.insets = new Insets(20, 20, 20, 20);
+        gbc.gridy = 3; gbc.fill = GridBagConstraints.NONE; gbc.insets = new Insets(20, 20, 20, 20);
         mainPanel.add(btnEditar, gbc);
+    }
+
+    public void setDatosCliente(String nombre, String id, String telefono, String fechaNacimiento) {
+        this.lblNombreValor.setText(nombre);
+        this.txtId.setText(id);
+        this.txtTelefono.setText(telefono);
+        this.txtFecha.setText(fechaNacimiento);
     }
 
     private JTextField CampoEditable(JPanel panel, String titulo, String valor, int x, int y, int w) {
@@ -133,7 +135,7 @@ public class InfoCliente extends JFrame {
 
         JTextField txt = new JTextField(valor);
         txt.setBounds(x, y + 25, w, 35);
-        txt.setEditable(false); // Por defecto en vista info
+        txt.setEditable(false); 
         txt.setHorizontalAlignment(JTextField.CENTER);
         txt.setFont(INTER_REGULAR_13);
         txt.setBorder(BorderFactory.createCompoundBorder(new LineBorder(new Color(180, 180, 180), 1, true), BorderFactory.createEmptyBorder(0,5,0,5)));
@@ -201,7 +203,6 @@ public class InfoCliente extends JFrame {
         } catch(Exception e) {}
     }
 
-    // Métodos de alerta mantenidos intactos según tu lógica original
     public void mostrarError(String mensaje) { VentanaAlerta(mensaje, "/img/mingcute_warning-fill.png", new Color(220, 50, 50)); }
     public void mostrarExito(String mensaje) { VentanaAlerta(mensaje, "/img/simbolomasazul.png", new Color(0, 170, 255)); }
 

@@ -6,7 +6,7 @@ import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class operaciones extends JFrame {
+public class SeleccionarProducto extends JFrame {
 
     public JLabel btnInicio, btnOperacion, btnClientes, btnVideojuegos, btnPeliculas;
     public JButton btnAgregar, btnBuscar, btnEliminar, btnFiltrar, btnAtras;
@@ -22,8 +22,8 @@ public class operaciones extends JFrame {
     private final Font INTER_REGULAR_14 = new Font("Inter", Font.PLAIN, 14);
     private final Font INTER_REGULAR_13 = new Font("Inter", Font.PLAIN, 13);
 
-    public operaciones() {
-        setTitle("Operaciones - Rewinds Rental");
+    public SeleccionarProducto() {
+        setTitle("Seleccionar Producto - Rewinds Rental");
         setSize(1000, 650);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
         setResizable(true);
@@ -84,7 +84,7 @@ public class operaciones extends JFrame {
         atrasContenedor.add(btnAtras);
         header.add(atrasContenedor, BorderLayout.WEST);
 
-        JLabel titulo = new JLabel("Operaciones", SwingConstants.CENTER);
+        JLabel titulo = new JLabel("Seleccionar Producto", SwingConstants.CENTER);
         titulo.setFont(INTER_BOLD_26);
         header.add(titulo, BorderLayout.CENTER);
 
@@ -144,32 +144,35 @@ public class operaciones extends JFrame {
 
         centerContent.add(searchPanel, BorderLayout.NORTH);
 
-        String[] columnas = {"", "Cliente", "Tipo", "Producto", "Tipo Producto", "Plataforma", "Info"};
+        String[] columnas = {"", "Cliente", "Tipo", "Producto", "Tipo Producto", "Plataforma", "Info", "Acción"};
         Object infoIcon = getImgPequeño("/img/Vector.png"); 
         Object[][] datos = {
-                {false, "Mateo Valeriano Soler", "Renta", new Object[]{getImg("/img/forza_horizon_6-6006996.jpg"), "Forza Horizon 6"}, new Object[]{getImg("/img/carbon_game-console.png"), "Consola"}, "Xbox Series X", new Object[]{infoIcon, "Ver info"}},
-                {false, "Lucía Fernanda Mondragón", "Venta", new Object[]{getImg("/img/71fw9QnEQUL.jpg"), "Spider-Man 2 "}, new Object[]{getImg("/img/carbon_game-console.png"), "Consola"}, "PS5", new Object[]{infoIcon, "Ver info"}},
-                {false, "Adrián Celis Olavarría", "Renta", new Object[]{getImg("/img/71w58zkWnfL.jpg"), "Chainsaw-man"}, new Object[]{getImg("/img/fluent_movies-and-tv-16-filled.png"), "Pelicula"}, "Blue_ray", new Object[]{infoIcon, "Ver info"}},
-                {false, "Elena Beatriz Iturbide", "Venta", new Object[]{getImg("/img/51gz5Gfjl8L._AC_UF894,1000_QL80_.jpg"), "Rocky IV"}, new Object[]{getImg("/img/fluent_movies-and-tv-16-filled.png"), "Pelicula"}, "DVD", new Object[]{infoIcon, "Ver info"}},
-                {false, "Tobías Martínez", "Renta", new Object[]{getImg("/img/71MZBMmOXtL._AC_UF894,1000_QL80_.jpg"), "Dragon ball super Broly"}, new Object[]{getImg("/img/fluent_movies-and-tv-16-filled.png"), "Pelicula"}, "Blue-Ray", new Object[]{infoIcon, "Ver info"}}
+                {false, "Mateo Valeriano Soler", "Renta", getImg("/img/forza_horizon_6-6006996.jpg"), new Object[]{getImg("/img/carbon_game-console.png"), "Consola"}, "Xbox Series X", new Object[]{infoIcon, "Ver info"}, "Elegir"},
+                {false, "Lucía Fernanda Mondragón", "Venta", getImg("/img/71fw9QnEQUL.jpg"), new Object[]{getImg("/img/carbon_game-console.png"), "Consola"}, "PS5", new Object[]{infoIcon, "Ver info"}, "Elegir"},
+                {false, "Adrián Celis Olavarría", "Renta", getImg("/img/71w58zkWnfL.jpg"), new Object[]{getImg("/img/fluent_movies-and-tv-16-filled.png"), "Pelicula"}, "Blue_ray", new Object[]{infoIcon, "Ver info"}, "Elegir"},
+                {false, "Elena Beatriz Iturbide", "Venta", getImg("/img/51gz5Gfjl8L._AC_UF894,1000_QL80_.jpg"), new Object[]{getImg("/img/fluent_movies-and-tv-16-filled.png"), "Pelicula"}, "DVD", new Object[]{infoIcon, "Ver info"}, "Elegir"},
+                {false, "Tobías Martínez", "Renta", getImg("/img/71MZBMmOXtL._AC_UF894,1000_QL80_.jpg"), new Object[]{getImg("/img/fluent_movies-and-tv-16-filled.png"), "Pelicula"}, "Blue-Ray", new Object[]{infoIcon, "Ver info"}, "Elegir"}
             };
 
         modeloTabla = new DefaultTableModel(datos, columnas) {
             @Override public Class<?> getColumnClass(int c) { 
                 if(c == 0) return Boolean.class;
+                if(c == 3) return Icon.class;
                 return Object.class;
             }
-            @Override public boolean isCellEditable(int r, int c) { return c == 0; }
+            @Override public boolean isCellEditable(int r, int c) { return c == 0 || c == 7; }
         };
 
         tabla = new JTable(modeloTabla);
         tabla.setRowHeight(85);
         tabla.setFont(INTER_REGULAR_13);
         tabla.getTableHeader().setFont(INTER_BOLD_13);
-        tabla.getColumnModel().getColumn(3).setCellRenderer(new IconTextVerticalRenderer());
         tabla.getColumnModel().getColumn(4).setCellRenderer(new IconTextVerticalRenderer());
         tabla.getColumnModel().getColumn(6).setCellRenderer(new IconTextHorizontalRenderer());
         
+        tabla.getColumnModel().getColumn(7).setCellRenderer(new ButtonRenderer());
+        tabla.getColumnModel().getColumn(7).setCellEditor(new ButtonEditor(new JCheckBox()));
+
         sorter = new TableRowSorter<>(modeloTabla);
         tabla.setRowSorter(sorter);
 
@@ -190,7 +193,7 @@ public class operaciones extends JFrame {
         btnEliminar.setForeground(Color.WHITE);
         btnEliminar.setFont(INTER_BOLD_14);
         btnEliminar.setContentAreaFilled(false);
-        btnEliminar.setBorderPainted(false);
+                btnEliminar.setBorderPainted(false);
         btnEliminar.setFocusPainted(false);
         btnEliminar.setCursor(new Cursor(Cursor.HAND_CURSOR));
         
@@ -355,6 +358,77 @@ public class operaciones extends JFrame {
             Graphics2D g2d = (Graphics2D) g;
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2d.drawRoundRect(x, y, w - 1, h - 1, r, r); 
+        }
+    }
+
+    class ButtonRenderer extends JPanel implements TableCellRenderer {
+        private final JButton button;
+        public ButtonRenderer() {
+            setOpaque(true);
+            setLayout(new GridBagLayout());
+            button = new JButton("Elegir") {
+                @Override protected void paintComponent(Graphics g) {
+                    Graphics2D g2 = (Graphics2D) g.create();
+                    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                    g2.setColor(new Color(220, 50, 50));
+                    g2.fillRoundRect(0, 0, getWidth(), getHeight(), 12, 12);
+                    g2.dispose();
+                    super.paintComponent(g);
+                }
+            };
+            button.setPreferredSize(new Dimension(85, 30));
+            button.setFont(INTER_BOLD_13);
+            button.setForeground(Color.WHITE);
+            button.setContentAreaFilled(false);
+            button.setBorderPainted(false);
+            button.setFocusPainted(false);
+            add(button);
+        }
+        @Override public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            if (isSelected) {
+                setBackground(table.getSelectionBackground());
+            } else {
+                setBackground(table.getBackground());
+            }
+            return this;
+        }
+    }
+
+    class ButtonEditor extends DefaultCellEditor {
+        private final JPanel panel;
+        private final JButton button;
+        public ButtonEditor(JCheckBox checkBox) {
+            super(checkBox);
+            panel = new JPanel(new GridBagLayout());
+            button = new JButton("Elegir") {
+                @Override protected void paintComponent(Graphics g) {
+                    Graphics2D g2 = (Graphics2D) g.create();
+                    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                    g2.setColor(new Color(220, 50, 50));
+                    g2.fillRoundRect(0, 0, getWidth(), getHeight(), 12, 12);
+                    g2.dispose();
+                    super.paintComponent(g);
+                }
+            };
+            button.setPreferredSize(new Dimension(85, 30));
+            button.setFont(INTER_BOLD_13);
+            button.setForeground(Color.WHITE);
+            button.setContentAreaFilled(false);
+            button.setBorderPainted(false);
+            button.setFocusPainted(false);
+            button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            
+            button.addActionListener(e -> {
+                fireEditingStopped();
+            });
+            panel.add(button);
+        }
+        @Override public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+            panel.setBackground(table.getSelectionBackground());
+            return panel;
+        }
+        @Override public Object getCellEditorValue() {
+            return "Elegir";
         }
     }
 }

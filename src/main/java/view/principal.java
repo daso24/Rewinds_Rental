@@ -61,6 +61,18 @@ public class principal extends JFrame {
         gbcH.gridx = 0; gbcH.weightx = 0.1; gbcH.anchor = GridBagConstraints.WEST; gbcH.insets = new Insets(0, 20, 0, 0);
         header.add(logoLabel, gbcH);
 
+        // --- NUEVOS CAMBIOS PARA EL TÍTULO EN EL CENTRO ---
+        JLabel lblBienvenidoCentro = new JLabel("Bienvenido", SwingConstants.CENTER);
+        lblBienvenidoCentro.setFont(new Font("Inter", Font.BOLD, 24));
+        lblBienvenidoCentro.setForeground(new Color(0, 51, 102)); // Azul institucional
+        
+        gbcH.gridx = 1; 
+        gbcH.weightx = 1.0; 
+        gbcH.anchor = GridBagConstraints.CENTER; 
+        gbcH.insets = new Insets(0, 0, 0, 0);
+        header.add(lblBienvenidoCentro, gbcH);
+        // --------------------------------------------------
+
         JLabel user = new JLabel("<html>Bienvenido<br>Usuario</html>", SwingConstants.LEFT);
         user.setFont(new Font("Inter", Font.BOLD, 14));
         try {
@@ -70,7 +82,8 @@ public class principal extends JFrame {
             user.setIconTextGap(8);
         } catch(Exception e) {}
         
-        gbcH.gridx = 1; gbcH.weightx = 1.0; gbcH.anchor = GridBagConstraints.EAST; gbcH.insets = new Insets(0, 0, 0, 20);
+        // Se cambia el gridx a 2 para mantener el orden secuencial hacia la derecha
+        gbcH.gridx = 2; gbcH.weightx = 0.1; gbcH.anchor = GridBagConstraints.EAST; gbcH.insets = new Insets(0, 0, 0, 20);
         header.add(user, gbcH);
 
         logoutBtn = new JLabel();
@@ -80,7 +93,9 @@ public class principal extends JFrame {
         } catch(Exception e) {}
         logoutBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         
-        gbcH.gridx = 2; gbcH.weightx = 0; header.add(logoutBtn, gbcH);
+        // Se cambia el gridx a 3 para posicionarlo al extremo derecho de todo
+        gbcH.gridx = 3; gbcH.weightx = 0; gbcH.anchor = GridBagConstraints.EAST; gbcH.insets = new Insets(0, 0, 0, 20);
+        header.add(logoutBtn, gbcH);
 
         JPanel cardsContent = new JPanel(new GridBagLayout());
         cardsContent.setOpaque(false);

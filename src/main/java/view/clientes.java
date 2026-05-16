@@ -6,6 +6,7 @@ import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.*;
 
+
 public class clientes extends JFrame {
   
     public JLabel btnInicio, btnOperacion, btnClientes, btnVideojuegos, btnPeliculas;
