@@ -8,49 +8,75 @@ import java.awt.*;
 public class HistorialRentas extends JFrame {
 
     public JButton btnAtras;
-    public JLabel lblInicio, lblOperacion, lblClientes, lblVideojuegos, lblPeliculas;
+    public JLabel btnInicio, btnOperacion, btnClientes, btnVideojuegos, btnPeliculas;
     public JTable tabla;
     public DefaultTableModel modelo;
 
     public HistorialRentas() {
         setTitle("Historial de rentas del cliente");
-        setSize(1000, 700);
+        setMinimumSize(new Dimension(1100, 700));
+        setSize(1100, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setLayout(null);
-        
+        getContentPane().setBackground(Color.WHITE);
+
         try {
             Image icono = new ImageIcon(getClass().getResource("/img/logo3.png")).getImage();
             this.setIconImage(icono);
         } catch(Exception e) {}
 
+        setLayout(new BorderLayout());
+
+        // --- SIDEBAR ---
         JPanel sidebar = new JPanel();
-        sidebar.setBounds(0, 0, 160, 700);
+        sidebar.setPreferredSize(new Dimension(160, 0));
         sidebar.setBackground(new Color(0, 51, 102));
-        sidebar.setLayout(null);
-        add(sidebar);
+        sidebar.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 25));
+        add(sidebar, BorderLayout.WEST);
 
-        lblInicio = Menu(sidebar, "Inicio", 80, "/img/gravity-ui_house-fill.png");
-        lblOperacion = Menu(sidebar, "Operación", 150, "/img/ic_baseline-plus.png");
-        lblClientes = Menu(sidebar, "Clientes", 260, "/img/material-symbols_person.png");
-        lblVideojuegos = Menu(sidebar, "Videojuegos", 370, "/img/carbon_game-console.png");
-        lblPeliculas = Menu(sidebar, "Peliculas", 480, "/img/fluent_movies-and-tv-16-filled.png");
+        btnInicio = Menu(sidebar, "Inicio", "/img/casaazul.png");
+        btnOperacion = Menu(sidebar, "Operación", "/img/simbolomasazul.png");
+        btnClientes = Menu(sidebar, "Clientes", "/img/simboloclientesazul.png");
+        btnVideojuegos = Menu(sidebar, "Videojuegos", "/img/simbolovideojuegosazul.png");
+        btnPeliculas = Menu(sidebar, "Peliculas", "/img/simbolopeliculasazul.png");
 
-        JPanel mainPanel = new JPanel();
-        mainPanel.setBounds(160, 0, 840, 700);
-        mainPanel.setBackground(new Color(200, 200, 200)); 
-        mainPanel.setLayout(null);
-        add(mainPanel);
+        // --- MAIN CONTAINER ---
+        JPanel mainContainer = new JPanel(new GridBagLayout());
+        mainContainer.setOpaque(false);
+        add(mainContainer, BorderLayout.CENTER);
 
-        btnAtras = new JButton("Atrás");
-        btnAtras.setBounds(20, 20, 100, 30);
-        mainPanel.add(btnAtras);
+        JPanel panelFondo = new JPanel(null) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(240, 240, 240));
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
+            }
+        };
+        panelFondo.setOpaque(false);
+        panelFondo.setPreferredSize(new Dimension(880, 620));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0; gbc.gridy = 0;
+        mainContainer.add(panelFondo, gbc);
+
+        btnAtras = crearBotonRedondo("  Atrás", new Color(225, 225, 225), new Color(45, 59, 72));
+        btnAtras.setBounds(25, 20, 110, 35);
+        btnAtras.setFont(new Font("Inter", Font.BOLD, 13));
+        try {
+            btnAtras.setIcon(new ImageIcon(new ImageIcon(getClass().getResource("/img/lets-icons_back.png"))
+                    .getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)));
+        } catch (Exception e) {}
+        panelFondo.add(btnAtras);
 
         JLabel lblTitulo = new JLabel("Historial de rentas del cliente", SwingConstants.CENTER);
-        lblTitulo.setFont(new Font("Arial", Font.BOLD, 20));
-        lblTitulo.setBounds(160, 20, 520, 30);
-        mainPanel.add(lblTitulo);
+        lblTitulo.setFont(new Font("Inter", Font.BOLD, 22));
+        lblTitulo.setBounds(280, 20, 350, 35);
+        panelFondo.add(lblTitulo);
 
+        // --- TABLA ---
         String[] columnas = {"Producto", "Plataforma", "Monto de pago", "Fecha de Renta", "Descuento"};
         Object[][] datos = {
             {"Dragon Ball Sparking Zero", "Playstation 5", "$1000.00", "08 / 07 / 2025", "0%"},
@@ -66,33 +92,103 @@ public class HistorialRentas extends JFrame {
         };
 
         tabla = new JTable(modelo);
-        tabla.setRowHeight(60);
-        tabla.setFont(new Font("Arial", Font.PLAIN, 13));
-        tabla.setGridColor(new Color(200, 200, 200));
-        tabla.setShowVerticalLines(true);
-        tabla.setShowHorizontalLines(true);
+        tabla.setRowHeight(55);
+        tabla.setFont(new Font("Inter", Font.PLAIN, 14));
+        tabla.setSelectionBackground(new Color(0, 170, 255, 50));
+        tabla.setGridColor(new Color(220, 220, 220));
+        tabla.setShowVerticalLines(false);
 
         JTableHeader header = tabla.getTableHeader();
-        header.setPreferredSize(new Dimension(100, 50));
-        header.setFont(new Font("Arial", Font.BOLD, 14));
-        header.setBackground(new Color(230, 230, 230));
+        header.setPreferredSize(new Dimension(0, 45));
+        header.setFont(new Font("Inter", Font.BOLD, 14));
+        header.setBackground(new Color(0, 51, 102));
+        header.setForeground(Color.WHITE);
+        header.setReorderingAllowed(false);
 
         JScrollPane scroll = new JScrollPane(tabla);
-        scroll.setBounds(20, 80, 790, 500);
+        scroll.setBounds(25, 80, 830, 480);
+        scroll.setBorder(BorderFactory.createEmptyBorder());
         scroll.getViewport().setBackground(Color.WHITE);
-        scroll.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        mainPanel.add(scroll);
+        panelFondo.add(scroll);
     }
 
-    private JLabel Menu(JPanel panel, String texto, int y, String ruta) {
-        JLabel iconLabel = new JLabel(new ImageIcon(new ImageIcon(getClass().getResource(ruta)).getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));
-        iconLabel.setBounds(15, y, 25, 30);
-        JLabel label = new JLabel(texto);
-        label.setForeground(Color.WHITE);
-        label.setFont(new Font("Arial", Font.PLAIN, 15));
-        label.setBounds(50, y, 120, 30);
+    // --- METODO MOSTRAR ALERTA ---
+    public void mostrarAlerta(String mensaje, boolean esError) {
+        JDialog dialogo = new JDialog(this, true);
+        dialogo.setUndecorated(true);
+        dialogo.setSize(350, 280);
+        dialogo.setLocationRelativeTo(this);
+        
+        JPanel contenedor = new JPanel(new BorderLayout());
+        contenedor.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
+        contenedor.setBackground(new Color(230, 230, 230));
+
+        JPanel contenido = new JPanel();
+        contenido.setOpaque(false);
+        contenido.setLayout(new BoxLayout(contenido, BoxLayout.Y_AXIS));
+        contenido.add(Box.createVerticalStrut(30));
+
+        JLabel lblMsg = new JLabel("<html><center>" + mensaje + "</center></html>", SwingConstants.CENTER);
+        lblMsg.setFont(new Font("Inter", Font.BOLD, 16));
+        lblMsg.setAlignmentX(Component.CENTER_ALIGNMENT);
+        contenido.add(lblMsg);
+        contenido.add(Box.createVerticalGlue());
+        
+        JButton btnOk = crearBotonRedondo("Aceptar", esError ? new Color(220, 50, 50) : new Color(0, 170, 255), Color.WHITE);
+        btnOk.setPreferredSize(new Dimension(120, 38));
+        btnOk.setFont(new Font("Inter", Font.BOLD, 13));
+        btnOk.addActionListener(e -> dialogo.dispose());
+        
+        JPanel pBot = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 20));
+        pBot.setOpaque(false);
+        pBot.add(btnOk);
+
+        contenedor.add(contenido, BorderLayout.CENTER);
+        contenedor.add(pBot, BorderLayout.SOUTH);
+        dialogo.add(contenedor);
+        dialogo.setVisible(true);
+    }
+
+    public JLabel Menu(JPanel panel, String texto, String ruta) {
+        JPanel item = new JPanel();
+        item.setLayout(new BoxLayout(item, BoxLayout.Y_AXIS));
+        item.setOpaque(false);
+        item.setPreferredSize(new Dimension(140, 90));
+        JLabel iconLabel = new JLabel();
+        try {
+            iconLabel.setIcon(new ImageIcon(new ImageIcon(getClass().getResource(ruta))
+                .getImage().getScaledInstance(45, 45, Image.SCALE_SMOOTH)));
+        } catch(Exception e) {}
+        iconLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel label = new JLabel(texto, SwingConstants.CENTER);
+        label.setForeground(new Color(4, 180, 255));
+        label.setFont(new Font("Inter", Font.BOLD, 15));
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
         label.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        panel.add(iconLabel); panel.add(label);
+        item.add(iconLabel);
+        item.add(Box.createVerticalStrut(5));
+        item.add(label);
+        panel.add(item);
         return label;
+    }
+
+    private JButton crearBotonRedondo(String texto, Color bg, Color fg) {
+        JButton btn = new JButton(texto) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(bg);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        btn.setForeground(fg);
+        btn.setContentAreaFilled(false);
+        btn.setBorderPainted(false);
+        btn.setFocusPainted(false);
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return btn;
     }
 }

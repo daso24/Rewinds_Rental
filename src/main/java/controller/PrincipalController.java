@@ -15,12 +15,16 @@ public class PrincipalController {
     }
 
     private void initEvents() {
-     
         vista.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 confirmarCierreSesion();
             }
+        });
+
+        vista.btnInicio.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) { }
         });
 
         vista.btnOperacion.addMouseListener(new MouseAdapter() {
@@ -45,184 +49,136 @@ public class PrincipalController {
 
         vista.logoutBtn.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                confirmarCierreSesion();
-            }
+            public void mouseClicked(MouseEvent e) { confirmarCierreSesion(); }
         });
 
         vista.btnVerClientes.addActionListener(e -> abrirClientes());
-        
         vista.btnVerRentas.addActionListener(e -> abrirOperaciones());
-
-        vista.btnVerJuegosRentados.addActionListener(e -> {
-            vista.dispose();
-            juegomas_rentado vJuego = new juegomas_rentado();
-            configurarEventosJuegoRentado(vJuego);
-            vJuego.setVisible(true);
-        });
-
-        vista.btnVerPelisRentadas.addActionListener(e -> {
-            vista.dispose();
-            reze vReze = new reze();
-            configurarEventosReze(vReze);
-            vReze.setVisible(true);
-        });
-        
-        vista.btnVerJuegosComprados.addActionListener(e -> {
-            vista.dispose();
-            juegomas_rentado vJuego = new juegomas_rentado();
-            configurarEventosJuegoRentado(vJuego);
-            vJuego.setVisible(true);
-        });
-
-        vista.btnVerPelisCompradas.addActionListener(e -> {
-            vista.dispose();
-            reze vReze = new reze();
-            configurarEventosReze(vReze);
-            vReze.setVisible(true);
-        });
+        vista.btnVerJuegosRentados.addActionListener(e -> abrirDetalleJuego());
+        vista.btnVerJuegosComprados.addActionListener(e -> abrirDetalleJuego());
+        vista.btnVerPelisRentadas.addActionListener(e -> abrirDetallePeli());
+        vista.btnVerPelisCompradas.addActionListener(e -> abrirDetallePeli());
     }
 
-    public void configurarEventosJuegoRentado(juegomas_rentado vistaJuego) {
+    private void abrirOperaciones() {
+        vista.dispose();
+        operaciones vOp = new operaciones();
+        new OperacionesController(vOp);
+        vOp.setVisible(true);
+    }
+
+    private void abrirClientes() {
+        vista.dispose();
+        clientes vCli = new clientes();
+        new ClienteController(vCli);
+        vCli.setVisible(true);
+    }
+
+    private void abrirVideojuegos() {
+        vista.dispose();
+        videojuegos vVid = new videojuegos();
+        new VideojuegosController(vVid);
+        vVid.setVisible(true);
+    }
+
+    private void abrirPeliculas() {
+        vista.dispose();
+        peliculas vPel = new peliculas();
+        new PeliculasController(vPel);
+        vPel.setVisible(true);
+    }
+
+    private void abrirDetalleJuego() {
+        vista.dispose();
+        juegomas_rentado vJuego = new juegomas_rentado();
+        configurarEventosJuegoRentado(vJuego);
+        vJuego.setVisible(true);
+    }
+
+    private void abrirDetallePeli() {
+        vista.dispose();
+        reze vReze = new reze();
+        configurarEventosReze(vReze);
+        vReze.setVisible(true);
+    }
+
+    private void volverAlMenu(javax.swing.JFrame vistaActual) {
+        vistaActual.dispose();
+        principal p = new principal();
+        new PrincipalController(p);
+        p.setVisible(true);
+    }
+
+    public void configurarEventosJuegoRentado(juegomas_rentado v) {
+        v.btnAtras.addActionListener(e -> volverAlMenu(v));
         
-        vistaJuego.btnAtras.addActionListener(e -> {
-            vistaJuego.dispose();
-            principal p = new principal();
-            new PrincipalController(p);
-            p.setVisible(true);
-        });
-
-        vistaJuego.btnInicio.addMouseListener(new MouseAdapter() {
+        v.btnInicio.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                vistaJuego.dispose();
-                principal p = new principal();
-                new PrincipalController(p);
-                p.setVisible(true);
-            }
+            public void mouseClicked(MouseEvent e) { volverAlMenu(v); }
         });
-
-        vistaJuego.btnOperacion.addMouseListener(new MouseAdapter() {
+        v.btnOperacion.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                vistaJuego.dispose();
-                operaciones vOp = new operaciones();
-                new OperacionesController(vOp);
-                vOp.setVisible(true);
-            }
+            public void mouseClicked(MouseEvent e) { v.dispose(); abrirOperaciones(); }
         });
-
-        vistaJuego.btnClientes.addMouseListener(new MouseAdapter() {
+        v.btnClientes.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                vistaJuego.dispose();
-                clientes vCli = new clientes();
-                new ClienteController(vCli);
-                vCli.setVisible(true);
-            }
+            public void mouseClicked(MouseEvent e) { v.dispose(); abrirClientes(); }
         });
-
-        vistaJuego.btnVideojuegos.addMouseListener(new MouseAdapter() {
+        v.btnVideojuegos.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                vistaJuego.dispose();
-                videojuegos vVid = new videojuegos();
-                new VideojuegosController(vVid);
-                vVid.setVisible(true);
-            }
+            public void mouseClicked(MouseEvent e) { v.dispose(); abrirVideojuegos(); }
         });
-
-        vistaJuego.btnPeliculas.addMouseListener(new MouseAdapter() {
+        v.btnPeliculas.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                vistaJuego.dispose();
-                peliculas vPel = new peliculas();
-                new PeliculasController(vPel);
-                vPel.setVisible(true);
-            }
+            public void mouseClicked(MouseEvent e) { v.dispose(); abrirPeliculas(); }
         });
 
-        vistaJuego.btnEditar.addActionListener(e -> {
-            vistaJuego.mostrarConfirmacion("¿Desea habilitar la edición<br>de este videojuego?", eSi -> {
-                System.out.println("Modo edición activado en Videojuegos.");
+        v.btnEditar.addActionListener(e -> {
+            v.mostrarConfirmacion("¿Desea habilitar la edición<br>de este videojuego?", eSi -> {
+                System.out.println("Modo edición activado.");
             });
         });
 
-        vistaJuego.btnDescargar.addActionListener(e -> {
-            vistaJuego.mostrarConfirmacion("¿Desea generar el reporte PDF<br>de este videojuego?", eSi -> {
-                System.out.println("Generando PDF de videojuego...");
+        v.btnDescargar.addActionListener(e -> {
+            v.mostrarConfirmacion("¿Desea generar el reporte PDF?", eSi -> {
+                System.out.println("Generando reporte...");
             });
         });
     }
 
-    public void configurarEventosReze(reze vistaReze) {
-        
-        vistaReze.btnAtras.addActionListener(e -> {
-            vistaReze.dispose();
-            principal p = new principal();
-            new PrincipalController(p);
-            p.setVisible(true);
-        });
+    public void configurarEventosReze(reze v) {
+        v.btnAtras.addActionListener(e -> volverAlMenu(v));
 
-        vistaReze.btnInicio.addMouseListener(new MouseAdapter() {
+        v.btnInicio.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                vistaReze.dispose();
-                principal p = new principal();
-                new PrincipalController(p);
-                p.setVisible(true);
-            }
+            public void mouseClicked(MouseEvent e) { volverAlMenu(v); }
         });
-
-        vistaReze.btnOperacion.addMouseListener(new MouseAdapter() {
+        v.btnOperacion.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                vistaReze.dispose();
-                operaciones vOp = new operaciones();
-                new OperacionesController(vOp);
-                vOp.setVisible(true);
-            }
+            public void mouseClicked(MouseEvent e) { v.dispose(); abrirOperaciones(); }
         });
-
-        vistaReze.btnClientes.addMouseListener(new MouseAdapter() {
+        v.btnClientes.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                vistaReze.dispose();
-                clientes vCli = new clientes();
-                new ClienteController(vCli);
-                vCli.setVisible(true);
-            }
+            public void mouseClicked(MouseEvent e) { v.dispose(); abrirClientes(); }
         });
-
-        vistaReze.btnVideojuegos.addMouseListener(new MouseAdapter() {
+        v.btnVideojuegos.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                vistaReze.dispose();
-                videojuegos vVid = new videojuegos();
-                new VideojuegosController(vVid);
-                vVid.setVisible(true);
-            }
+            public void mouseClicked(MouseEvent e) { v.dispose(); abrirVideojuegos(); }
         });
-
-        vistaReze.btnPeliculas.addMouseListener(new MouseAdapter() {
+        v.btnPeliculas.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                vistaReze.dispose();
-                peliculas vPel = new peliculas();
-                new PeliculasController(vPel);
-                vPel.setVisible(true);
-            }
+            public void mouseClicked(MouseEvent e) { v.dispose(); abrirPeliculas(); }
         });
 
-        vistaReze.btnEditar.addActionListener(e -> {
-            vistaReze.mostrarConfirmacion("¿Desea habilitar la edición<br>de esta película?", eSi -> {
-                System.out.println("Modo edición activado en Reze.");
+        v.btnEditar.addActionListener(e -> {
+            v.mostrarConfirmacion("¿Desea habilitar la edición?", eSi -> {
+                System.out.println("Editando...");
             });
         });
 
-        vistaReze.btnDescargar.addActionListener(e -> {
-            vistaReze.mostrarConfirmacion("¿Desea generar el reporte PDF<br>de este producto?", eSi -> {
-                System.out.println("Generando PDF...");
+        v.btnDescargar.addActionListener(e -> {
+            v.mostrarConfirmacion("¿Desea generar el reporte PDF?", eSi -> {
+                System.out.println("Reporte generado.");
             });
         });
     }
@@ -231,39 +187,9 @@ public class PrincipalController {
         vista.mostrarConfirmacionSalir(
             eSi -> {
                 vista.dispose();
-                Rewinds_Rental.Main.main(null); 
-            }, 
-            eNo -> {
-                System.out.println("Permaneciendo en la aplicación.");
-            }
+                Rewinds_Rental.Main.main(null);
+            },
+            eNo -> { }
         );
-    }
-
-    private void abrirOperaciones() {
-        vista.dispose();
-        operaciones vOp = new operaciones();
-        new OperacionesController(vOp); 
-        vOp.setVisible(true);
-    }
-
-    private void abrirClientes() {
-        vista.dispose();
-        clientes vCli = new clientes();
-        new ClienteController(vCli); 
-        vCli.setVisible(true);
-    }
-
-    private void abrirVideojuegos() {
-        vista.dispose();
-        videojuegos vVid = new videojuegos();
-        new VideojuegosController(vVid); 
-        vVid.setVisible(true);
-    }
-
-    private void abrirPeliculas() {
-        vista.dispose();
-        peliculas vPel = new peliculas();
-        new PeliculasController(vPel); 
-        vPel.setVisible(true);
     }
 }

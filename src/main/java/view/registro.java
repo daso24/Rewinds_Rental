@@ -2,6 +2,8 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.geom.Ellipse2D;
 
 public class registro extends JFrame {
@@ -10,31 +12,35 @@ public class registro extends JFrame {
     public JPasswordField passField, confirmField;
     public JRadioButton masculino, femenino, otro;
     public JButton registerBtn, backBtn;
+    
+    private JLayeredPane layeredPane;
+    private JPanel topPanel;
+    private JPanel bottomPanel;
+    private JPanel card;
+    private JLabel logoLabel;
 
     public registro() {
         setTitle("Registro");
         setSize(900, 600);
+        setMinimumSize(new Dimension(850, 580));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setResizable(false);
         
         try {
             Image icono = new ImageIcon(getClass().getResource("/img/logo3.png")).getImage();
             this.setIconImage(icono);
         } catch (Exception e) {}
 
-        JLayeredPane layeredPane = new JLayeredPane();
+        layeredPane = new JLayeredPane();
         layeredPane.setLayout(null);
 
-        JPanel topPanel = new JPanel();
+        topPanel = new JPanel();
         topPanel.setBackground(new Color(0, 51, 102));
-        topPanel.setBounds(0, 0, 900, 200);
 
-        JPanel bottomPanel = new JPanel();
+        bottomPanel = new JPanel();
         bottomPanel.setBackground(new Color(230, 230, 230));
-        bottomPanel.setBounds(0, 200, 900, 400);
 
-        JPanel card = new JPanel(null) {
+        card = new JPanel(null) {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g;
@@ -44,42 +50,52 @@ public class registro extends JFrame {
             }
         };
         card.setOpaque(false);
-        card.setBounds(100, 80, 700, 440);
 
+        logoLabel = new JLabel();
         try {
             ImageIcon logoIcono = new ImageIcon(
                 new ImageIcon(getClass().getResource("/img/logo2.png")) 
                 .getImage()
                 .getScaledInstance(180, 70, Image.SCALE_SMOOTH)
             );
-            JLabel logoLabel = new JLabel(logoIcono);
-            logoLabel.setBounds(500, 10, 180, 70); 
+            logoLabel.setIcon(logoIcono);
             card.add(logoLabel);
         } catch (Exception e) {}
 
         backBtn = new JButton("Atrás");
-        backBtn.setBounds(20, 20, 90, 30);
+        try {
+            ImageIcon backIcon = new ImageIcon(new ImageIcon(getClass().getResource("/img/lets-icons_back.png"))
+                .getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH));
+            backBtn.setIcon(backIcon);
+            backBtn.setIconTextGap(8);
+        } catch (Exception e) {}
+        
+        backBtn.setHorizontalTextPosition(SwingConstants.RIGHT);
+        backBtn.setVerticalTextPosition(SwingConstants.CENTER);
         backBtn.setFocusPainted(false);
         backBtn.setBackground(Color.WHITE);
+        backBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         card.add(backBtn);
 
-        userField = crearCampo(card, "Usuario:", 50, 85);
-        phoneField = crearCampo(card, "Teléfono:", 380, 85);
-        emailField = crearCampo(card, "Correo:", 50, 155);
+        userField = crearCampo(card, "Usuario:", 50, 120);
+        phoneField = crearCampo(card, "Teléfono:", 380, 120);
+        emailField = crearCampo(card, "Correo:", 50, 190);
         
-        masculino = new JRadioButton("Masculino"); masculino.setBounds(380, 155, 90, 25);
-        femenino = new JRadioButton("Femenino"); femenino.setBounds(470, 155, 90, 25);
-        otro = new JRadioButton("Otro"); otro.setBounds(560, 155, 90, 25);
+        masculino = new JRadioButton("Masculino"); masculino.setBounds(380, 190, 90, 25);
+        femenino = new JRadioButton("Femenino"); femenino.setBounds(470, 190, 90, 25);
+        otro = new JRadioButton("Otro"); otro.setBounds(560, 190, 90, 25);
         ButtonGroup bg = new ButtonGroup(); bg.add(masculino); bg.add(femenino); bg.add(otro);
         card.add(masculino); card.add(femenino); card.add(otro);
 
-        passField = (JPasswordField) crearCampo(card, "Contraseña:", 50, 225, true);
-        confirmField = (JPasswordField) crearCampo(card, "Confirmar:", 50, 295, true);
+        passField = (JPasswordField) crearCampo(card, "Contraseña:", 50, 260, true);
+        confirmField = (JPasswordField) crearCampo(card, "Confirmar:", 50, 330, true);
 
         registerBtn = new JButton("Registrar");
-        registerBtn.setBounds(250, 370, 200, 40);
+        registerBtn.setBounds(250, 405, 200, 40);
         registerBtn.setBackground(new Color(4, 180, 255));
         registerBtn.setForeground(Color.WHITE);
+        registerBtn.setFocusPainted(false);
+        registerBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         card.add(registerBtn);
 
         layeredPane.add(topPanel, Integer.valueOf(0));
@@ -87,6 +103,38 @@ public class registro extends JFrame {
         layeredPane.add(card, Integer.valueOf(1));
 
         setContentPane(layeredPane);
+
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                reubicarComponentes();
+            }
+        });
+    }
+
+    private void reubicarComponentes() {
+        int frameWidth = getContentPane().getWidth();
+        int frameHeight = getContentPane().getHeight();
+
+        int topHeight = (int) (frameHeight * 0.33);
+        topPanel.setBounds(0, 0, frameWidth, topHeight);
+        bottomPanel.setBounds(0, topHeight, frameWidth, frameHeight - topHeight);
+
+        int cardWidth = 700;
+        int cardHeight = 470;
+        int cardX = (frameWidth - cardWidth) / 2;
+        int cardY = (frameHeight - cardHeight) / 2;
+        card.setBounds(cardX, cardY, cardWidth, cardHeight);
+
+        Dimension sizeBtn = backBtn.getPreferredSize();
+        int anchoBtnAtras = Math.max(100, sizeBtn.width + 15);
+        backBtn.setBounds(20, 20, anchoBtnAtras, 30);
+
+        logoLabel.setBounds(500, 10, 180, 70);
+
+        layeredPane.setBounds(0, 0, frameWidth, frameHeight);
+        layeredPane.revalidate();
+        layeredPane.repaint();
     }
 
     public void mostrarMensajeError(String mensaje) {
