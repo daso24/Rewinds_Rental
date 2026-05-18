@@ -73,10 +73,24 @@ public class AñadirOperacion extends JFrame {
         cargarIconoLabel(logo, "/img/logo3.png", 90, 60);
         contenido.add(logo);
 
-        JPanel panelGris = new JPanel();
+        JPanel panelGris = new JPanel(null) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                g2.setColor(new Color(217, 217, 217));
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
+
+                g2.dispose();
+            }
+        };
+
+        panelGris.setOpaque(false);
         panelGris.setBounds(20, 70, 800, 480);
-        panelGris.setBackground(new Color(209, 209, 209));
-        panelGris.setLayout(null);
+
         contenido.add(panelGris);
 
         txtNombreCli = crearCampo(panelGris, "Nombre del cliente:", 25, 15, 260, "  ");
@@ -232,7 +246,7 @@ public class AñadirOperacion extends JFrame {
         lblMsg.setAlignmentX(Component.CENTER_ALIGNMENT);
         panelContenido.add(lblMsg);
         try {
-            String rutaIcono = esError ? "/img/mingcute_warning-fill.png" : "/img/gravity-ui_circle-check-fill.png";
+            String rutaIcono = esError ? "/img/mingcute_warning-fill.png" : "/img/palomitav.png";
             ImageIcon imagenAlerta = new ImageIcon(new ImageIcon(getClass().getResource(rutaIcono)).getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH));
             JLabel iconoCentro = new JLabel(imagenAlerta);
             iconoCentro.setAlignmentX(Component.CENTER_ALIGNMENT);

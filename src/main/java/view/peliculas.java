@@ -20,8 +20,14 @@ public class peliculas extends JFrame {
     private final Font INTER_BOLD_14 = new Font("Inter", Font.BOLD, 14);
     private final Font INTER_BOLD_13 = new Font("Inter", Font.BOLD, 13);
     private final Font INTER_REGULAR_13 = new Font("Inter", Font.PLAIN, 13);
+    
 
     public peliculas() {
+    	try {
+            Image icono = new ImageIcon(getClass().getResource("/img/logo3.png")).getImage();
+            this.setIconImage(icono);
+        } catch(Exception e) {}
+    	
         setTitle("Catálogo de Películas");
         setMinimumSize(new Dimension(1000, 650)); 
         setSize(1000, 650);

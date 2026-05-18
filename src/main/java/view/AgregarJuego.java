@@ -72,10 +72,20 @@ public class AgregarJuego extends JFrame {
         gbc.gridx = 0; gbc.gridy = 0; gbc.weightx = 1.0; gbc.weighty = 0.0;
         mainPanel.add(headerPanel, gbc);
 
-        JPanel contentPanel = new JPanel(null);
+        JPanel contentPanel = new JPanel(null) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(210, 210, 210));
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
+                g2.dispose();
+            }
+        };
+
+        contentPanel.setOpaque(false);
         contentPanel.setPreferredSize(new Dimension(800, 480));
-        contentPanel.setBackground(new Color(210, 210, 210));
-        contentPanel.setBorder(new LineBorder(Color.GRAY, 1));
 
         crearLabel(contentPanel, "Nombre del producto:", 30, 20);
         txtNombre = crearField(contentPanel, "", 30, 45, 250);

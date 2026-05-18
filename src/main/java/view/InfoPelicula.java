@@ -68,10 +68,24 @@ public class InfoPelicula extends JFrame {
         gbc.gridx = 0; gbc.gridy = 0; gbc.weightx = 1.0;
         mainPanel.add(header, gbc);
 
-        JPanel panelGris = new JPanel(null);
+        JPanel panelGris = new JPanel(null) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                g2.setColor(new Color(217, 217, 217));
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
+
+                g2.dispose();
+            }
+        };
+
+        panelGris.setOpaque(false);
         panelGris.setPreferredSize(new Dimension(800, 550));
         panelGris.setMinimumSize(new Dimension(800, 550));
-        panelGris.setBackground(new Color(209, 209, 209));
 
         crearLabel(panelGris, "Nombre del producto:", 30, 20);
         txtNomProd = crearField(panelGris, "Chainsaw Man - Arco de Reze", 30, 45, 200);
@@ -137,8 +151,12 @@ public class InfoPelicula extends JFrame {
         cargarIconoBoton(btnDescargar, "/img/pdf_icon.png", 20, 20);
         panelGris.add(btnDescargar);
 
-        gbc.gridy = 1; gbc.fill = GridBagConstraints.NONE; gbc.anchor = GridBagConstraints.CENTER;
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.NORTH;
+        gbc.insets = new Insets(0, 20, 10, 20);
         gbc.weighty = 1.0;
+
         mainPanel.add(panelGris, gbc);
     }
 

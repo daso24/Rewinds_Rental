@@ -25,7 +25,7 @@ public class reze extends JFrame {
 
         setLayout(new BorderLayout());
 
-        // Sidebar estilo Operaciones
+        // Sidebar
         JPanel sidebar = new JPanel();
         sidebar.setPreferredSize(new Dimension(160, 0));
         sidebar.setBackground(new Color(0, 51, 102));
@@ -38,7 +38,7 @@ public class reze extends JFrame {
         btnVideojuegos = Menu(sidebar, "Videojuegos", "/img/simbolovideojuegosazul.png");
         btnPeliculas = Menu(sidebar, "Peliculas", "/img/simbolopeliculasazul.png");
 
-        // Contenedor principal adaptable
+        // Contenedor
         JPanel mainContainer = new JPanel(new GridBagLayout());
         mainContainer.setOpaque(false);
         add(mainContainer, BorderLayout.CENTER);
@@ -49,7 +49,7 @@ public class reze extends JFrame {
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(new Color(240, 240, 240));
+                g2.setColor(new Color(217, 217, 217));
                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
             }
         };
@@ -65,7 +65,7 @@ public class reze extends JFrame {
         titulo.setBounds(300, 20, 350, 30);
         panel.add(titulo);
 
-        // Boton atrás con imagen
+        // Boton atrás 
         btnAtras = crearBotonRedondo(" Atrás", new Color(220, 220, 220), new Color(45, 59, 72));
         try {
             btnAtras.setIcon(new ImageIcon(new ImageIcon(getClass().getResource("/img/lets-icons_back.png"))
@@ -193,6 +193,7 @@ public class reze extends JFrame {
     }
 
     public void mostrarConfirmacion(String mensaje, ActionListener accionSi) {
+
         JDialog dialogo = new JDialog(this, true);
         dialogo.setUndecorated(true);
         dialogo.setSize(380, 300);
@@ -205,30 +206,48 @@ public class reze extends JFrame {
         JPanel cuerpo = new JPanel();
         cuerpo.setLayout(new BoxLayout(cuerpo, BoxLayout.Y_AXIS));
         cuerpo.setOpaque(false);
-        
+
         cuerpo.add(Box.createVerticalStrut(40));
+
         JLabel texto = new JLabel("<html><center>" + mensaje + "</center></html>", SwingConstants.CENTER);
         texto.setFont(new Font("Inter", Font.BOLD, 16));
         texto.setAlignmentX(Component.CENTER_ALIGNMENT);
         cuerpo.add(texto);
-        
+
+        // ESPACIO
+        cuerpo.add(Box.createVerticalStrut(20));
+
+        // IMAGEN
+        ImageIcon icono = new ImageIcon(getClass().getResource("/img/simbolomasazul.png"));
+        Image img = icono.getImage().getScaledInstance(90, 90, Image.SCALE_SMOOTH);
+
+        JLabel imagen = new JLabel(new ImageIcon(img));
+        imagen.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        cuerpo.add(imagen);
+
         cuerpo.add(Box.createVerticalGlue());
-        
+
         JPanel panelBtns = new JPanel(new FlowLayout(FlowLayout.CENTER, 25, 20));
         panelBtns.setOpaque(false);
 
         JButton btnSi = crearBotonRedondo("Confirmar", new Color(0, 51, 102), Color.WHITE);
         btnSi.setPreferredSize(new Dimension(120, 38));
-        btnSi.addActionListener(e -> { dialogo.dispose(); accionSi.actionPerformed(e); });
+        btnSi.addActionListener(e -> {
+            dialogo.dispose();
+            accionSi.actionPerformed(e);
+        });
 
         JButton btnNo = crearBotonRedondo("Cancelar", new Color(130, 130, 130), Color.WHITE);
         btnNo.setPreferredSize(new Dimension(120, 38));
         btnNo.addActionListener(e -> dialogo.dispose());
 
-        panelBtns.add(btnSi); panelBtns.add(btnNo);
+        panelBtns.add(btnSi);
+        panelBtns.add(btnNo);
+
         contenedor.add(cuerpo, BorderLayout.CENTER);
         contenedor.add(panelBtns, BorderLayout.SOUTH);
-        
+
         dialogo.add(contenedor);
         dialogo.setVisible(true);
     }

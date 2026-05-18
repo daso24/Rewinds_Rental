@@ -18,7 +18,7 @@ public class AñadirPelicula extends JFrame {
         setSize(1100, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setResizable(true); // Permite que se adapte al estirar
+        setResizable(true); 
         getContentPane().setBackground(Color.WHITE);
 
         try {
@@ -40,29 +40,31 @@ public class AñadirPelicula extends JFrame {
         btnVideojuegos = Menu(sidebar, "Videojuegos", "/img/simbolovideojuegosazul.png");
         btnPeliculas = Menu(sidebar, "Peliculas", "/img/simbolopeliculasazul.png");
 
-        // Contenedor que centra el panel gris
+        
         JPanel mainContainer = new JPanel(new GridBagLayout());
         mainContainer.setOpaque(false);
         add(mainContainer, BorderLayout.CENTER);
 
-        // Tu Panel Gris con diseño original (Absolute Layout)
+        
         JPanel panelGris = new JPanel(null) {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
+
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(new Color(240, 240, 240));
+
+                g2.setColor(new Color(217, 217, 217));
                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
             }
         };
         panelGris.setOpaque(false);
         panelGris.setPreferredSize(new Dimension(850, 600));
 
-        // Esto centra tu diseño de 850x600 en cualquier tamaño de pantalla
+       
         mainContainer.add(panelGris, new GridBagConstraints());
 
-        // --- Mantenemos tus coordenadas originales (setBounds) ---
+        
         btnAtras = crearBotonRedondo("  Atrás", new Color(225, 225, 225), new Color(45, 59, 72));
         btnAtras.setBounds(20, 20, 110, 35);
         btnAtras.setFont(new Font("Inter", Font.BOLD, 13));
@@ -117,7 +119,7 @@ public class AñadirPelicula extends JFrame {
         panelGris.add(btnAgregar);
     }
 
-    // --- MÉTODOS DE APOYO (Sin cambios) ---
+   
 
     public JLabel Menu(JPanel panel, String texto, String ruta) {
         JPanel item = new JPanel();
@@ -192,7 +194,7 @@ public class AñadirPelicula extends JFrame {
         } catch(Exception e) {}
     }
 
-    // Método para evitar el error en el controlador
+  
     public void mostrarAlerta(String mensaje, boolean esError) {
         JDialog dialogo = new JDialog(this, true);
         dialogo.setUndecorated(true);

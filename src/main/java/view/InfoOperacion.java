@@ -53,14 +53,14 @@ public class InfoOperacion extends JFrame {
 
         btnAtras = new RoundedButton("  Atrás", 20);
         btnAtras.setPreferredSize(new Dimension(120, 35));
-        btnAtras.setFont(new Font("Arial", Font.PLAIN, 15));
+        btnAtras.setFont(new Font("Inter", Font.PLAIN, 15));
         btnAtras.setBackground(new Color(225, 225, 225));
         btnAtras.setCursor(new Cursor(Cursor.HAND_CURSOR));
         cargarIconoBoton(btnAtras, "/img/lets-icons_back.png", 18, 18);
         header.add(btnAtras, BorderLayout.WEST);
 
         JLabel titulo = new JLabel("Operación", SwingConstants.CENTER);
-        titulo.setFont(new Font("Arial", Font.BOLD, 22));
+        titulo.setFont(new Font("Inter", Font.BOLD, 22));
         header.add(titulo, BorderLayout.CENTER);
 
         JLabel cassette = new JLabel();
@@ -71,11 +71,24 @@ public class InfoOperacion extends JFrame {
         gbc.gridx = 0; gbc.gridy = 0; gbc.weightx = 1.0; gbc.weighty = 0.0;
         mainPanel.add(header, gbc);
 
-        JPanel panelGris = new JPanel(null);
+        JPanel panelGris = new JPanel(null) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                g2.setColor(new Color(217, 217, 217));
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
+
+                g2.dispose();
+            }
+        };
+
+        panelGris.setOpaque(false);
         panelGris.setPreferredSize(new Dimension(800, 480));
         panelGris.setMinimumSize(new Dimension(800, 480));
-        panelGris.setBackground(new Color(209, 209, 209));
-        panelGris.setBorder(new LineBorder(Color.GRAY, 1));
 
         txtNombreCli = crearCampo(panelGris, "Nombre del cliente:", 25, 15, 260, "");
         txtIdCli = crearCampo(panelGris, "ID de cliente:", 25, 80, 150, "285736");
