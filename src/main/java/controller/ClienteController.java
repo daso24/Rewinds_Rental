@@ -5,6 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.lang.reflect.Field;
+import java.net.URL;
 
 public class ClienteController {
     private clientes vista;
@@ -55,7 +56,7 @@ public class ClienteController {
                     if (nombre.trim().isEmpty() || id.trim().isEmpty()) {
                         vAdd.mostrarError("Todos los campos son obligatorios.", "/img/mingcute_warning-fill.png");
                     } else {
-                        vAdd.mostrarExito("Cliente añadido correctamente.", "/img/palomitav.png");
+                        vAdd.mostrarExito("Cliente añadido correctamente.", "/img/palomitaverde.png");
                         vAdd.dispose();
                         
                         clientes vClientes = new clientes();
@@ -117,13 +118,14 @@ public class ClienteController {
                     int filaModelo = vista.tabla.convertRowIndexToModel(filaVisual);
                     
                     String nombre = vista.modelo.getValueAt(filaModelo, 1).toString();
-                    String id = vista.modelo.getValueAt(filaModelo, 2).toString();
+                    String id = vista.modelo.getValueAt(filaModelo, 2).toString().trim();
                     String ultimaRenta = vista.modelo.getValueAt(filaModelo, 5).toString();
-                    String telefonoDummy = "555-01" + id.substring(0, 2); 
+                    String telefonoDummy = "555-01" + id.substring(0, Math.min(2, id.length())); 
 
                     InfoCliente vInfo = new InfoCliente();
                     vInfo.setDatosCliente(nombre, id, telefonoDummy, ultimaRenta);
                     
+                    cargarImagenPorId(vInfo, id);
                     asignarEventosFichaCliente(vInfo, nombre, id, telefonoDummy, ultimaRenta);
                     
                     vInfo.setVisible(true);
@@ -131,6 +133,32 @@ public class ClienteController {
                 }
             }
         });
+    }
+
+    private void cargarImagenPorId(InfoCliente vInfo, String id) {
+        String rutaImagen = "";
+        switch (id.trim()) {
+            case "482915":
+                rutaImagen = "/img/bc439453f09041eded2b58747ef63acc.jpg";
+                break;
+            case "730642":
+                rutaImagen = "/img/miranda.jpeg";
+                break;
+            case "105422":
+                rutaImagen = "/img/tobey-maguire-pic.jpg";
+                break;
+            case "627104":
+                rutaImagen = "/img/Robert Pattinson.jpg";
+                break;
+            case "195873":
+                rutaImagen = "/img/emma.jpeg";
+                break;
+        }
+        if (!rutaImagen.isEmpty()) {
+            vInfo.setImagenCliente(rutaImagen);
+            vInfo.lblFoto.revalidate();
+            vInfo.lblFoto.repaint();
+        }
     }
 
     private void abrirDialogoFiltrar() {
@@ -204,19 +232,19 @@ public class ClienteController {
 
         if (vInfo.btnEditar != null) {
             vInfo.btnEditar.addActionListener(eEdit -> {
-                mostrarAvisoOriginal("Se Han Modificado Correctamente<br>Los Datos Del Cliente.", "/img/mingcute_warning-fill.png", new Color(130, 130, 130));
+                vInfo.mostrarExito("Se han modificado correctamente<br>los datos del cliente.");
             });
         }
 
         if (vInfo.btnDescargar != null) {
             vInfo.btnDescargar.addActionListener(ePDF -> {
-                mostrarAvisoOriginal("Descargando ficha de cliente en PDF...", "/img/simbolomasazul.png", new Color(0, 170, 255));
+                vInfo.mostrarExito("Descargando ficha de cliente en PDF...");
             });
         }
 
         if (vInfo.btnGenerar != null) {
             vInfo.btnGenerar.addActionListener(eCard -> {
-                mostrarAvisoOriginal("Generando tarjeta de cliente en PDF...", "/img/simbolomasazul.png", new Color(0, 170, 255));
+                vInfo.mostrarExito("Generating tarjeta de cliente en PDF...");
             });
         }
 
@@ -230,6 +258,7 @@ public class ClienteController {
                         vVentas.dispose();
                         InfoCliente vInfoVolver = new InfoCliente();
                         vInfoVolver.setDatosCliente(nombre, id, telefono, renta);
+                        cargarImagenPorId(vInfoVolver, id);
                         asignarEventosFichaCliente(vInfoVolver, nombre, id, telefono, renta);
                         vInfoVolver.setVisible(true);
                     });
@@ -249,6 +278,7 @@ public class ClienteController {
                         vHisto.dispose();
                         InfoCliente vInfoVolver = new InfoCliente();
                         vInfoVolver.setDatosCliente(nombre, id, telefono, renta);
+                        cargarImagenPorId(vInfoVolver, id);
                         asignarEventosFichaCliente(vInfoVolver, nombre, id, telefono, renta);
                         vInfoVolver.setVisible(true);
                     });
@@ -388,12 +418,23 @@ public class ClienteController {
         lblMsg.setAlignmentX(Component.CENTER_ALIGNMENT);
         panelContenido.add(lblMsg);
         panelContenido.add(Box.createVerticalGlue());
+        
         try {
-            ImageIcon img = new ImageIcon(new ImageIcon(getClass().getResource(rutaIcono)).getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH));
-            JLabel iconoCentro = new JLabel(img);
-            iconoCentro.setAlignmentX(Component.CENTER_ALIGNMENT);
-            panelContenido.add(iconoCentro);
-        } catch (Exception e) {}
+            if (rutaIcono != null && !rutaIcono.isEmpty()) {
+              
+                String rutaLimpia = rutaIcono.startsWith("/") ? rutaIcono.substring(1) : rutaIcono;
+                URL u = getClass().getClassLoader().getResource(rutaLimpia);
+                if (u != null) {
+                    ImageIcon img = new ImageIcon(new ImageIcon(u).getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH));
+                    JLabel iconoCentro = new JLabel(img);
+                    iconoCentro.setAlignmentX(Component.CENTER_ALIGNMENT);
+                    panelContenido.add(iconoCentro);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
         panelContenido.add(Box.createVerticalGlue());
         JButton btnOk = new JButton("Aceptar");
         btnOk.setPreferredSize(new Dimension(120, 35));

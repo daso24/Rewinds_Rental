@@ -27,7 +27,6 @@ public class AñadirPelicula extends JFrame {
 
         setLayout(new BorderLayout());
 
-        // Sidebar lateral
         JPanel sidebar = new JPanel();
         sidebar.setPreferredSize(new Dimension(160, 0));
         sidebar.setBackground(new Color(0, 51, 102));
@@ -40,20 +39,16 @@ public class AñadirPelicula extends JFrame {
         btnVideojuegos = Menu(sidebar, "Videojuegos", "/img/simbolovideojuegosazul.png");
         btnPeliculas = Menu(sidebar, "Peliculas", "/img/simbolopeliculasazul.png");
 
-        
         JPanel mainContainer = new JPanel(new GridBagLayout());
         mainContainer.setOpaque(false);
         add(mainContainer, BorderLayout.CENTER);
 
-        
         JPanel panelGris = new JPanel(null) {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
                 g2.setColor(new Color(217, 217, 217));
                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
             }
@@ -61,10 +56,8 @@ public class AñadirPelicula extends JFrame {
         panelGris.setOpaque(false);
         panelGris.setPreferredSize(new Dimension(850, 600));
 
-       
         mainContainer.add(panelGris, new GridBagConstraints());
 
-        
         btnAtras = crearBotonRedondo("  Atrás", new Color(225, 225, 225), new Color(45, 59, 72));
         btnAtras.setBounds(20, 20, 110, 35);
         btnAtras.setFont(new Font("Inter", Font.BOLD, 13));
@@ -118,8 +111,6 @@ public class AñadirPelicula extends JFrame {
         btnAgregar.setFont(new Font("Inter", Font.BOLD, 15));
         panelGris.add(btnAgregar);
     }
-
-   
 
     public JLabel Menu(JPanel panel, String texto, String ruta) {
         JPanel item = new JPanel();
@@ -194,30 +185,50 @@ public class AñadirPelicula extends JFrame {
         } catch(Exception e) {}
     }
 
-  
     public void mostrarAlerta(String mensaje, boolean esError) {
         JDialog dialogo = new JDialog(this, true);
         dialogo.setUndecorated(true);
         dialogo.setSize(350, 280);
         dialogo.setLocationRelativeTo(this);
+        
         JPanel contenedor = new JPanel(new BorderLayout());
         contenedor.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
         contenedor.setBackground(new Color(230, 230, 230));
+        
         JPanel contenido = new JPanel();
         contenido.setOpaque(false);
         contenido.setLayout(new BoxLayout(contenido, BoxLayout.Y_AXIS));
-        contenido.add(Box.createVerticalStrut(30));
+        contenido.add(Box.createVerticalStrut(25));
+        
         JLabel lblMsg = new JLabel("<html><center>" + mensaje + "</center></html>", SwingConstants.CENTER);
-        lblMsg.setFont(new Font("Inter", Font.BOLD, 16));
+        lblMsg.setFont(new Font("Inter", Font.BOLD, 15));
         lblMsg.setAlignmentX(Component.CENTER_ALIGNMENT);
         contenido.add(lblMsg);
+        
         contenido.add(Box.createVerticalGlue());
+        
+        String rutaIcono = esError ? "/img/mingcute_warning-fill.png" : "/img/palomitaverde.png";
+        try {
+            URL urlImg = getClass().getResource(rutaIcono);
+            if (urlImg != null) {
+                ImageIcon img = new ImageIcon(new ImageIcon(urlImg).getImage().getScaledInstance(65, 65, Image.SCALE_SMOOTH));
+                JLabel lblIcono = new JLabel(img);
+                lblIcono.setAlignmentX(Component.CENTER_ALIGNMENT);
+                contenido.add(lblIcono);
+            }
+        } catch (Exception e) {}
+        
+        contenido.add(Box.createVerticalGlue());
+        
         JButton btnOk = crearBotonRedondo("Aceptar", esError ? new Color(220, 50, 50) : new Color(0, 170, 255), Color.WHITE);
         btnOk.setPreferredSize(new Dimension(120, 38));
+        btnOk.setFont(new Font("Inter", Font.BOLD, 13));
         btnOk.addActionListener(e -> dialogo.dispose());
+        
         JPanel pBot = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 20));
         pBot.setOpaque(false);
         pBot.add(btnOk);
+        
         contenedor.add(contenido, BorderLayout.CENTER);
         contenedor.add(pBot, BorderLayout.SOUTH);
         dialogo.add(contenedor);

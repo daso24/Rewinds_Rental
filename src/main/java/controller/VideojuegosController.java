@@ -4,6 +4,7 @@ import view.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 
 public class VideojuegosController {
     private videojuegos vista;
@@ -17,6 +18,73 @@ public class VideojuegosController {
     public VideojuegosController(AgregarJuego vistaAdd) {
         this.vistaAdd = vistaAdd;
         initEventsAdd();
+    }
+
+    private ImageIcon evaluarYObtenerIcono(Object celdaObjeto) {
+        if (celdaObjeto == null) return null;
+        if (celdaObjeto instanceof ImageIcon) {
+            return (ImageIcon) celdaObjeto;
+        }
+        if (celdaObjeto instanceof Object[]) {
+            Object[] data = (Object[]) celdaObjeto;
+            if (data.length > 0 && data[0] instanceof ImageIcon) {
+                return (ImageIcon) data[0];
+            }
+        }
+        return null;
+    }
+
+    private ImageIcon evaluarIconoDesdeComponente(Object celdaObjeto) {
+        if (celdaObjeto instanceof JLabel) {
+            Icon icon = ((JLabel) celdaObjeto).getIcon();
+            if (icon instanceof ImageIcon) return (ImageIcon) icon;
+        }
+        return null;
+    }
+
+    private ImageIcon evaluarImagenHD(Image srcImg, int targetW, int targetH) {
+        if (srcImg == null) return null;
+        
+        int type = (srcImg instanceof BufferedImage) && ((BufferedImage) srcImg).getType() != BufferedImage.TYPE_CUSTOM 
+                   ? ((BufferedImage) srcImg).getType() : BufferedImage.TYPE_INT_ARGB;
+                   
+        BufferedImage img = new BufferedImage(srcImg.getWidth(null), srcImg.getHeight(null), type);
+        Graphics2D gNormal = img.createGraphics();
+        gNormal.drawImage(srcImg, 0, 0, null);
+        gNormal.dispose();
+
+        int w = img.getWidth();
+        int h = img.getHeight();
+
+        do {
+            if (w > targetW) {
+                w /= 2;
+                if (w < targetW) w = targetW;
+            } else {
+                w = targetW;
+            }
+
+            if (h > targetH) {
+                h /= 2;
+                if (h < targetH) h = targetH;
+            } else {
+                h = targetH;
+            }
+
+            BufferedImage tmp = new BufferedImage(w, h, type);
+            Graphics2D g2 = tmp.createGraphics();
+            
+            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+            g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            
+            g2.drawImage(img, 0, 0, w, h, null);
+            g2.dispose();
+
+            img = tmp;
+        } while (w != targetW || h != targetH);
+
+        return new ImageIcon(img);
     }
 
     private void initEvents() {
@@ -71,22 +139,25 @@ public class VideojuegosController {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int filaVisual = vista.tabla.rowAtPoint(e.getPoint());
-                int columna = vista.tabla.columnAtPoint(e.getPoint());
+                int columnaVisual = vista.tabla.columnAtPoint(e.getPoint());
                 
-                if (filaVisual != -1 && vista.tabla.getValueAt(filaVisual, columna) != null) {
-                    Object valor = vista.tabla.getValueAt(filaVisual, columna);
+                if (filaVisual != -1 && vista.tabla.getValueAt(filaVisual, columnaVisual) != null) {
+                    int columnaModelo = vista.tabla.convertColumnIndexToModel(columnaVisual);
+                    Object valor = vista.tabla.getValueAt(filaVisual, columnaVisual);
                     String valorCelda = (valor instanceof Object[]) ? ((Object[]) valor)[1].toString() : valor.toString();
                     
-                    if (valorCelda.equalsIgnoreCase("Ver info")) {
+                    if (columnaModelo == 7 && valorCelda.equalsIgnoreCase("Ver info")) {
                         int filaModelo = vista.tabla.convertRowIndexToModel(filaVisual);
                         
                         String nombre = vista.modelo.getValueAt(filaModelo, 2).toString();
                         String id = vista.modelo.getValueAt(filaModelo, 3).toString();
                         String plataforma = vista.modelo.getValueAt(filaModelo, 5).toString();
+                        String precioRenta = vista.modelo.getValueAt(filaModelo, 6).toString();
                         
+                        Object cellCaratulaModelo = vista.modelo.getValueAt(filaModelo, 1);
                         String nombreCaratula = "";
                         try {
-                            nombreCaratula = vista.modelo.getValueAt(filaModelo, 1).toString();
+                            nombreCaratula = cellCaratulaModelo.toString();
                         } catch (Exception ex) {
                             nombreCaratula = id;
                         }
@@ -96,7 +167,6 @@ public class VideojuegosController {
                         String descuento = "0%";
                         String stockVenta = "15";
                         String stockRenta = "5";
-                        String precioRenta = "$99.00";
                         String clasificacion = "TEEN";
                         String anio = "2023";
                         String genero = "Acción / Aventura";
@@ -104,6 +174,24 @@ public class VideojuegosController {
                         vista.dispose();
                         InfoJuego vInfo = new InfoJuego(); 
                         vInfo.setDatosJuego(nombre, id, tipo, plataforma, precioVenta, descuento, stockVenta, stockRenta, precioRenta, clasificacion, anio, genero, nombreCaratula);
+                        
+                        ImageIcon imagenProducto = evaluarYObtenerIcono(cellCaratulaModelo);
+                        if (imagenProducto == null) {
+                            Object cellCaratulaVista = vista.tabla.getValueAt(filaVisual, 1);
+                            imagenProducto = evaluarYObtenerIcono(cellCaratulaVista);
+                            if (imagenProducto == null) {
+                                imagenProducto = evaluarIconoDesdeComponente(cellCaratulaVista);
+                            }
+                        }
+
+                        if (imagenProducto != null && vInfo.lblImg != null) {
+                            try {
+                                ImageIcon imagenEscalada = evaluarImagenHD(imagenProducto.getImage(), 260, 280);
+                                vInfo.lblImg.setIcon(imagenEscalada);
+                                vInfo.lblImg.setText("");
+                            } catch (Exception eEx) {}
+                        }
+
                         new InfoJuegoInternalController(vInfo);
                         vInfo.setVisible(true);
                     }

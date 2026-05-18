@@ -246,7 +246,7 @@ public class AñadirOperacion extends JFrame {
         lblMsg.setAlignmentX(Component.CENTER_ALIGNMENT);
         panelContenido.add(lblMsg);
         try {
-            String rutaIcono = esError ? "/img/mingcute_warning-fill.png" : "/img/palomitav.png";
+            String rutaIcono = esError ? "/img/mingcute_warning-fill.png" : "/img/palomitaverde.png";
             ImageIcon imagenAlerta = new ImageIcon(new ImageIcon(getClass().getResource(rutaIcono)).getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH));
             JLabel iconoCentro = new JLabel(imagenAlerta);
             iconoCentro.setAlignmentX(Component.CENTER_ALIGNMENT);

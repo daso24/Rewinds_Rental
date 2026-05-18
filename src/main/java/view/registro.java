@@ -211,7 +211,7 @@ public class registro extends JFrame {
         centro.setLayout(new BoxLayout(centro, BoxLayout.Y_AXIS));
 
         // IMAGEN 
-        ImageIcon icono = new ImageIcon(getClass().getResource("/img/palomitav.png"));
+        ImageIcon icono = new ImageIcon(getClass().getResource("/img/palomitaverde.png"));
 
         Image img = icono.getImage().getScaledInstance(85, 85, Image.SCALE_SMOOTH);
 

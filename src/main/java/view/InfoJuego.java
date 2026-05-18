@@ -138,7 +138,7 @@ public class InfoJuego extends JFrame {
         mainPanel.add(panelGris, gbc);
     }
 
-    public void setDatosJuego(String nombre, String id, String tipo, String plataforma, String precioVenta, String descuento, String stockVenta, String stockRenta, String precioRenta, String clasificacion, String anio, String genero, String caratula) {
+    public InfoJuego setDatosJuego(String nombre, String id, String tipo, String plataforma, String precioVenta, String descuento, String stockVenta, String stockRenta, String precioRenta, String clasificacion, String anio, String genero, String caratula) {
         txtNombreProd.setText(nombre);
         txtIdProd.setText(id);
         txtTipoProd.setText(tipo);
@@ -153,6 +153,7 @@ public class InfoJuego extends JFrame {
         txtGenero.setText(genero);
         
         cargarImagenPortada(caratula);
+        return this;
     }
 
     private void cargarImagenPortada(String caratula) {
@@ -200,11 +201,11 @@ public class InfoJuego extends JFrame {
     }
 
     public void mostrarExito(String mensaje) {
-        mostrarPopUpGris(mensaje, new Color(50, 180, 50), "/img/simbolomasazul.png", null);
+        mostrarPopUpGris(mensaje, new Color(50, 180, 50), "/img/palomitaverde.png", null);
     }
 
     public void mostrarConfirmacion(String mensaje, ActionListener accionSi) {
-        mostrarPopUpGris(mensaje, new Color(0, 51, 102), "/img/mingcute_warning-fill.png", accionSi);
+        mostrarPopUpGris(mensaje, new Color(0, 51, 102), "/img/palomitaverde.png", accionSi);
     }
 
     private void mostrarPopUpGris(String mensaje, Color colorBoton, String rutaIcono, ActionListener accionSi) {

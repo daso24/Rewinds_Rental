@@ -167,7 +167,7 @@ public class AgregarJuego extends JFrame {
     }
 
     public void mostrarExito(String mensaje) {
-        mostrarPopUpGris(mensaje, new Color(50, 180, 50), "/img/simbolomasazul.png");
+        mostrarPopUpGris(mensaje, new Color(0, 51, 102), "/img/palomitaverde.png");
     }
 
     private void mostrarPopUpGris(String mensaje, Color colorBoton, String rutaIcono) {
