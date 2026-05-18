@@ -208,7 +208,7 @@ public class SeleccionarProducto extends JFrame {
     public void mostrarConfirmacion(String mensaje, ActionListener accionSi) {
         JDialog dialogo = new JDialog(this, true);
         dialogo.setUndecorated(true);
-        dialogo.setSize(350, 280); 
+        dialogo.setSize(350, 205); 
         dialogo.setLocationRelativeTo(this);
         JPanel contenedor = new JPanel(new BorderLayout());
         contenedor.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));

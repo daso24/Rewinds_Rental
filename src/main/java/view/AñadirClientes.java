@@ -156,7 +156,7 @@ public class AñadirClientes extends JFrame {
     private void mostrarAlerta(String mensaje, String rutaImagen) {
         JDialog dialogo = new JDialog(this, true);
         dialogo.setUndecorated(true);
-        dialogo.setSize(380, 280);
+        dialogo.setSize(380, 205);
         dialogo.setLocationRelativeTo(this);
 
         JPanel contenedor = new JPanel(new BorderLayout());
@@ -174,7 +174,7 @@ public class AñadirClientes extends JFrame {
         cuerpo.add(texto);
 
         if (rutaImagen != null && !rutaImagen.isEmpty()) {
-            cuerpo.add(Box.createVerticalStrut(35));
+            cuerpo.add(Box.createVerticalStrut(5));
             JLabel lblIcono = new JLabel();
             lblIcono.setAlignmentX(Component.CENTER_ALIGNMENT);
             try {

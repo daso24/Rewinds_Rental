@@ -140,13 +140,14 @@ public class registro extends JFrame {
     public void mostrarMensajeError(String mensaje) {
         JDialog dialogo = new JDialog(this, "Error", true);
         dialogo.setUndecorated(true); 
-        dialogo.setSize(350, 240);
+        dialogo.setSize(350, 205);
         dialogo.setLocationRelativeTo(this);
         JPanel panelPrincipal = new JPanel(new BorderLayout());
         panelPrincipal.setBackground(new Color(209, 209, 209)); 
+        panelPrincipal.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
         dialogo.setContentPane(panelPrincipal);
         JLabel lblTitulo = new JLabel("ERROR", SwingConstants.CENTER);
-        lblTitulo.setFont(new Font("Arial", Font.BOLD, 22));
+        lblTitulo.setFont(new Font("Inter", Font.BOLD, 22));
         lblTitulo.setBorder(BorderFactory.createEmptyBorder(15, 0, 5, 0));
         panelPrincipal.add(lblTitulo, BorderLayout.NORTH);
         JPanel centro = new JPanel();
@@ -166,10 +167,10 @@ public class registro extends JFrame {
         iconoX.setPreferredSize(new Dimension(65, 65));
         iconoX.setMaximumSize(new Dimension(65, 65));
         iconoX.setForeground(Color.WHITE);
-        iconoX.setFont(new Font("Arial", Font.PLAIN, 50));
+        iconoX.setFont(new Font("Inter", Font.PLAIN, 50));
         iconoX.setAlignmentX(Component.CENTER_ALIGNMENT);
         JLabel lblMsg = new JLabel("<html><body style='text-align: center;'>" + mensaje + "</body></html>", SwingConstants.CENTER);
-        lblMsg.setFont(new Font("Arial", Font.BOLD, 15));
+        lblMsg.setFont(new Font("Inter", Font.BOLD, 15));
         lblMsg.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblMsg.setBorder(BorderFactory.createEmptyBorder(15, 25, 15, 25));
         centro.add(iconoX);
@@ -178,7 +179,7 @@ public class registro extends JFrame {
         JButton btnOk = new JButton("OK");
         btnOk.setBackground(new Color(0, 179, 255)); 
         btnOk.setForeground(Color.WHITE);
-        btnOk.setFont(new Font("Arial", Font.BOLD, 14));
+        btnOk.setFont(new Font("Inter", Font.BOLD, 14));
         btnOk.addActionListener(e -> dialogo.dispose());
         JPanel sur = new JPanel(new BorderLayout());
         sur.setOpaque(false);
@@ -192,16 +193,16 @@ public class registro extends JFrame {
 
         JDialog dialogo = new JDialog(this, "Éxito", true);
         dialogo.setUndecorated(true);
-        dialogo.setSize(350, 240);
+        dialogo.setSize(350, 205);
         dialogo.setLocationRelativeTo(this);
 
         JPanel panelPrincipal = new JPanel(new BorderLayout());
         panelPrincipal.setBackground(new Color(209, 209, 209));
-
+        panelPrincipal.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
         dialogo.setContentPane(panelPrincipal);
 
         JLabel lblTitulo = new JLabel("ÉXITO", SwingConstants.CENTER);
-        lblTitulo.setFont(new Font("Arial", Font.BOLD, 22));
+        lblTitulo.setFont(new Font("Inter", Font.BOLD, 22));
         lblTitulo.setBorder(BorderFactory.createEmptyBorder(15, 0, 5, 0));
 
         panelPrincipal.add(lblTitulo, BorderLayout.NORTH);
@@ -223,7 +224,7 @@ public class registro extends JFrame {
             SwingConstants.CENTER
         );
 
-        lblMsg.setFont(new Font("Arial", Font.BOLD, 15));
+        lblMsg.setFont(new Font("Iner", Font.BOLD, 15));
         lblMsg.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblMsg.setBorder(BorderFactory.createEmptyBorder(15, 25, 15, 25));
 
@@ -235,7 +236,7 @@ public class registro extends JFrame {
         JButton btnOk = new JButton("OK");
         btnOk.setBackground(new Color(40, 167, 69));
         btnOk.setForeground(Color.WHITE);
-        btnOk.setFont(new Font("Arial", Font.BOLD, 14));
+        btnOk.setFont(new Font("Inter", Font.BOLD, 14));
 
         btnOk.addActionListener(e -> dialogo.dispose());
 

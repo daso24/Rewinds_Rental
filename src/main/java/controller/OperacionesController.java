@@ -580,7 +580,7 @@ public class OperacionesController {
     private void mostrarAlertaGris(JFrame frame, String mensaje) {
         JDialog dialogo = new JDialog(frame, "Alerta", true);
         dialogo.setUndecorated(true);
-        dialogo.setSize(350, 280);
+        dialogo.setSize(350, 205);
         dialogo.setLocationRelativeTo(frame);
 
         JPanel panel = new JPanel();
@@ -588,7 +588,7 @@ public class OperacionesController {
         panel.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        panel.add(Box.createVerticalStrut(25));
+        panel.add(Box.createVerticalStrut(5));
         
         JLabel lblMsg = new JLabel("<html><body style='text-align: center;'>" + mensaje + "</body></html>", SwingConstants.CENTER);
         lblMsg.setFont(new Font("Inter", Font.BOLD, 15));

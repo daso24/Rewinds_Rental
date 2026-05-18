@@ -69,16 +69,16 @@ public class principal extends JFrame {
         gbcH.gridx = 1; 
         gbcH.weightx = 1.0; 
         gbcH.anchor = GridBagConstraints.CENTER; 
-        gbcH.insets = new Insets(0, 0, 0, 0);
+        gbcH.insets = new Insets(0, 50, 0, 0);
         header.add(lblBienvenidoCentro, gbcH);
        
         JLabel user = new JLabel("<html>Bienvenido<br>Usuario</html>", SwingConstants.LEFT);
         user.setFont(new Font("Inter", Font.BOLD, 14));
         try {
             ImageIcon userIcon = new ImageIcon(new ImageIcon(getClass().getResource("/img/simboloclientesazul.png"))
-                .getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH));
+                .getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
             user.setIcon(userIcon);
-            user.setIconTextGap(8);
+            user.setIconTextGap(5	);
         } catch(Exception e) {}
         
        
@@ -88,7 +88,7 @@ public class principal extends JFrame {
         logoutBtn = new JLabel();
         try {
             logoutBtn.setIcon(new ImageIcon(new ImageIcon(getClass().getResource("/img/simbolo_logoutrojo.png"))
-                .getImage().getScaledInstance(35, 35, Image.SCALE_SMOOTH)));
+                .getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));
         } catch(Exception e) {}
         logoutBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         
@@ -132,7 +132,7 @@ public class principal extends JFrame {
     public void mostrarConfirmacionSalir(ActionListener accionSi, ActionListener accionNo) {
         JDialog dialogo = new JDialog(this, true);
         dialogo.setUndecorated(true);
-        dialogo.setSize(350, 250);
+        dialogo.setSize(350, 205);
         dialogo.setLocationRelativeTo(this);
 
         JPanel panel = new JPanel();
@@ -173,7 +173,7 @@ public class principal extends JFrame {
         pBotones.add(btnSi);
         pBotones.add(btnNo);
         panel.add(pBotones);
-        panel.add(Box.createVerticalStrut(15));
+        panel.add(Box.createVerticalStrut(5));
 
         dialogo.add(panel);
         dialogo.setVisible(true);

@@ -2,6 +2,7 @@ package controller;
 
 import view.*;
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.lang.reflect.Field;
@@ -404,7 +405,7 @@ public class ClienteController {
     private void mostrarAvisoOriginal(String mensaje, String rutaIcono, Color colorBoton) {
         JDialog dialogo = new JDialog(vista, true);
         dialogo.setUndecorated(true);
-        dialogo.setSize(350, 280);
+        dialogo.setSize(350, 205);
         dialogo.setLocationRelativeTo(vista);
         JPanel contenedor = new JPanel(new BorderLayout());
         contenedor.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
@@ -412,7 +413,7 @@ public class ClienteController {
         JPanel panelContenido = new JPanel();
         panelContenido.setOpaque(false);
         panelContenido.setLayout(new BoxLayout(panelContenido, BoxLayout.Y_AXIS));
-        panelContenido.add(Box.createVerticalStrut(25));
+        panelContenido.add(Box.createVerticalStrut(5));
         JLabel lblMsg = new JLabel("<html><center>" + mensaje + "</center></html>", SwingConstants.CENTER);
         lblMsg.setFont(new Font("Inter", Font.BOLD, 16));
         lblMsg.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -438,7 +439,7 @@ public class ClienteController {
         panelContenido.add(Box.createVerticalGlue());
         JButton btnOk = new JButton("Aceptar");
         btnOk.setPreferredSize(new Dimension(120, 35));
-        btnOk.setBackground(colorBoton);
+        btnOk.setBackground(new Color(0,51,102));
         btnOk.setForeground(Color.WHITE);
         btnOk.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnOk.addActionListener(e -> dialogo.dispose());

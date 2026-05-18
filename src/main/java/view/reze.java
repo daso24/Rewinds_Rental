@@ -196,18 +196,19 @@ public class reze extends JFrame {
 
         JDialog dialogo = new JDialog(this, true);
         dialogo.setUndecorated(true);
-        dialogo.setSize(380, 300);
+        dialogo.setSize(380, 225);
         dialogo.setLocationRelativeTo(this);
 
         JPanel contenedor = new JPanel(new BorderLayout());
         contenedor.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
         contenedor.setBackground(new Color(225, 225, 225));
+        
 
         JPanel cuerpo = new JPanel();
         cuerpo.setLayout(new BoxLayout(cuerpo, BoxLayout.Y_AXIS));
         cuerpo.setOpaque(false);
 
-        cuerpo.add(Box.createVerticalStrut(40));
+        cuerpo.add(Box.createVerticalStrut(15));
 
         JLabel texto = new JLabel("<html><center>" + mensaje + "</center></html>", SwingConstants.CENTER);
         texto.setFont(new Font("Inter", Font.BOLD, 16));

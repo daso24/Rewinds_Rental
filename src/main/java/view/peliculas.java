@@ -200,7 +200,7 @@ public class peliculas extends JFrame {
     public void mostrarAlerta(String mensaje) {
         JDialog dialogo = new JDialog(this, true);
         dialogo.setUndecorated(true);
-        dialogo.setSize(350, 280);
+        dialogo.setSize(350, 205);
         dialogo.setLocationRelativeTo(this);
         JPanel contenedor = new JPanel(new BorderLayout());
         contenedor.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
@@ -209,7 +209,7 @@ public class peliculas extends JFrame {
         JPanel contenido = new JPanel();
         contenido.setOpaque(false);
         contenido.setLayout(new BoxLayout(contenido, BoxLayout.Y_AXIS));
-        contenido.add(Box.createVerticalStrut(25));
+        contenido.add(Box.createVerticalStrut(5));
         
         JLabel lblMsg = new JLabel("<html><center>" + mensaje + "</center></html>", SwingConstants.CENTER);
         lblMsg.setFont(INTER_BOLD_16);
@@ -228,7 +228,7 @@ public class peliculas extends JFrame {
         
         JPanel pBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 15));
         pBotones.setOpaque(false);
-        JButton btnOk = crearBotonDialogo("Aceptar", new Color(220, 50, 50));
+        JButton btnOk = crearBotonDialogo("Aceptar", new Color(0, 51, 102));
         btnOk.addActionListener(e -> dialogo.dispose());
         pBotones.add(btnOk);
         
@@ -241,7 +241,7 @@ public class peliculas extends JFrame {
     public void mostrarExito(String mensaje) {
         JDialog dialogo = new JDialog(this, true);
         dialogo.setUndecorated(true);
-        dialogo.setSize(350, 280);
+        dialogo.setSize(350, 205);
         dialogo.setLocationRelativeTo(this);
         JPanel contenedor = new JPanel(new BorderLayout());
         contenedor.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
@@ -250,7 +250,7 @@ public class peliculas extends JFrame {
         JPanel contenido = new JPanel();
         contenido.setOpaque(false);
         contenido.setLayout(new BoxLayout(contenido, BoxLayout.Y_AXIS));
-        contenido.add(Box.createVerticalStrut(25));
+        contenido.add(Box.createVerticalStrut(5));
         
         JLabel lblMsg = new JLabel("<html><center>" + mensaje + "</center></html>", SwingConstants.CENTER);
         lblMsg.setFont(INTER_BOLD_16);
@@ -282,7 +282,7 @@ public class peliculas extends JFrame {
     public void mostrarConfirmacion(String mensaje, ActionListener accionSi) {
         JDialog dialogo = new JDialog(this, true);
         dialogo.setUndecorated(true);
-        dialogo.setSize(350, 280); 
+        dialogo.setSize(350, 205); 
         dialogo.setLocationRelativeTo(this);
         JPanel contenedor = new JPanel(new BorderLayout());
         contenedor.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
@@ -309,7 +309,7 @@ public class peliculas extends JFrame {
 
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 15));
         panelBotones.setOpaque(false);
-        JButton btnSi = crearBotonDialogo("Confirmar", new Color(0, 51, 102));
+        JButton btnSi = crearBotonDialogo("Confirmar", new Color(220, 50, 50));
         btnSi.addActionListener(e -> { dialogo.dispose(); accionSi.actionPerformed(e); });
         JButton btnNo = crearBotonDialogo("Cancelar", new Color(130, 130, 130));
         btnNo.addActionListener(e -> dialogo.dispose());

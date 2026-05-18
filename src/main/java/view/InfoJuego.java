@@ -211,7 +211,7 @@ public class InfoJuego extends JFrame {
     private void mostrarPopUpGris(String mensaje, Color colorBoton, String rutaIcono, ActionListener accionSi) {
         JDialog dialogo = new JDialog(this, true);
         dialogo.setUndecorated(true);
-        dialogo.setSize(350, 280);
+        dialogo.setSize(350, 205);
         dialogo.setLocationRelativeTo(this);
         JPanel contenedor = new JPanel(new BorderLayout());
         contenedor.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
@@ -220,7 +220,7 @@ public class InfoJuego extends JFrame {
         JPanel contenido = new JPanel();
         contenido.setOpaque(false);
         contenido.setLayout(new BoxLayout(contenido, BoxLayout.Y_AXIS));
-        contenido.add(Box.createVerticalStrut(25));
+        contenido.add(Box.createVerticalStrut(5));
         
         JLabel lblMsg = new JLabel("<html><center>" + mensaje + "</center></html>", SwingConstants.CENTER);
         lblMsg.setFont(new Font("Inter", Font.BOLD, 16));

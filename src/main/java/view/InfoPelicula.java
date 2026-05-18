@@ -180,7 +180,7 @@ public class InfoPelicula extends JFrame {
     public void mostrarAlerta(String mensaje, boolean esError) {
         JDialog dialogo = new JDialog(this, true);
         dialogo.setUndecorated(true);
-        dialogo.setSize(350, 280);
+        dialogo.setSize(350, 205);
         dialogo.setLocationRelativeTo(this);
         
         JPanel contenedor = new JPanel(new BorderLayout());
@@ -190,7 +190,7 @@ public class InfoPelicula extends JFrame {
         JPanel contenido = new JPanel();
         contenido.setOpaque(false);
         contenido.setLayout(new BoxLayout(contenido, BoxLayout.Y_AXIS));
-        contenido.add(Box.createVerticalStrut(25));
+        contenido.add(Box.createVerticalStrut(5));
 
         JLabel lblMsg = new JLabel("<html><center>" + mensaje + "</center></html>", SwingConstants.CENTER);
         lblMsg.setFont(new Font("Inter", Font.BOLD, 15));

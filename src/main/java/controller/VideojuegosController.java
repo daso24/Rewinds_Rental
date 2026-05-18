@@ -223,7 +223,7 @@ public class VideojuegosController {
     private void mostrarAvisoGris(String mensaje) {
         JDialog dialogo = new JDialog(vista, true);
         dialogo.setUndecorated(true);
-        dialogo.setSize(350, 240);
+        dialogo.setSize(350, 205);
         dialogo.setLocationRelativeTo(vista);
         
         JPanel contenedor = new JPanel(new BorderLayout());
@@ -234,7 +234,7 @@ public class VideojuegosController {
         JPanel panelContenido = new JPanel();
         panelContenido.setOpaque(false);
         panelContenido.setLayout(new BoxLayout(panelContenido, BoxLayout.Y_AXIS));
-        panelContenido.add(Box.createVerticalStrut(25));
+        panelContenido.add(Box.createVerticalStrut(5));
 
         JLabel lblMsg = new JLabel("<html><center>" + mensaje + "</center></html>", SwingConstants.CENTER);
         lblMsg.setFont(new Font("Inter", Font.BOLD, 15));
@@ -258,7 +258,7 @@ public class VideojuegosController {
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(new Color(130, 130, 130));
+                g2.setColor(new Color(0, 51, 102));
                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
                 g2.dispose();
                 super.paintComponent(g);

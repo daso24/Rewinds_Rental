@@ -192,7 +192,7 @@ public class juegomas_rentado extends JFrame {
 
         JDialog dialogo = new JDialog(this, true);
         dialogo.setUndecorated(true);
-        dialogo.setSize(380, 300);
+        dialogo.setSize(380, 225);
         dialogo.setLocationRelativeTo(this);
 
         JPanel contenedor = new JPanel(new BorderLayout());
@@ -203,7 +203,7 @@ public class juegomas_rentado extends JFrame {
         cuerpo.setLayout(new BoxLayout(cuerpo, BoxLayout.Y_AXIS));
         cuerpo.setOpaque(false);
 
-        cuerpo.add(Box.createVerticalStrut(40));
+        cuerpo.add(Box.createVerticalStrut(5));
 
         JLabel texto = new JLabel("<html><center>" + mensaje + "</center></html>", SwingConstants.CENTER);
         texto.setFont(new Font("Inter", Font.BOLD, 16));

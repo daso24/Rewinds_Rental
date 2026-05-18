@@ -57,14 +57,14 @@ public class AñadirOperacion extends JFrame {
 
         btnAtras = new RoundedButton("  Atrás", 20);
         btnAtras.setBounds(20, 15, 120, 35);
-        btnAtras.setFont(new Font("Arial", Font.PLAIN, 15));
+        btnAtras.setFont(new Font("Inter", Font.PLAIN, 15));
         btnAtras.setBackground(new Color(225, 225, 225));
         btnAtras.setCursor(new Cursor(Cursor.HAND_CURSOR));
         cargarIconoBoton(btnAtras, "/img/lets-icons_back.png", 18, 18);
         contenido.add(btnAtras);
 
         JLabel lblTitulo = new JLabel("Generar Operación", SwingConstants.CENTER);
-        lblTitulo.setFont(new Font("Arial", Font.BOLD, 22));
+        lblTitulo.setFont(new Font("Inter", Font.BOLD, 22));
         lblTitulo.setBounds(300, 15, 240, 35);
         contenido.add(lblTitulo);
 
@@ -231,7 +231,7 @@ public class AñadirOperacion extends JFrame {
     public void mostrarAlerta(String mensaje, boolean esError) {
         JDialog dialogo = new JDialog(this, true);
         dialogo.setUndecorated(true);
-        dialogo.setSize(350, 280);
+        dialogo.setSize(350, 205);
         dialogo.setLocationRelativeTo(this);
         JPanel contenedor = new JPanel(new BorderLayout());
         contenedor.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
@@ -240,7 +240,7 @@ public class AñadirOperacion extends JFrame {
         JPanel panelContenido = new JPanel();
         panelContenido.setOpaque(false);
         panelContenido.setLayout(new BoxLayout(panelContenido, BoxLayout.Y_AXIS));
-        panelContenido.add(Box.createVerticalStrut(25));
+        panelContenido.add(Box.createVerticalStrut(5));
         JLabel lblMsg = new JLabel("<html><div style='text-align: center; width: 250px;'>" + mensaje + "</div></html>", SwingConstants.CENTER);
         lblMsg.setFont(new Font("Inter", Font.BOLD, 16));
         lblMsg.setAlignmentX(Component.CENTER_ALIGNMENT);

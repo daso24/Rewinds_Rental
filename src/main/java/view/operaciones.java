@@ -205,7 +205,7 @@ public class operaciones extends JFrame {
     public void mostrarConfirmacion(String mensaje, ActionListener accionSi) {
         JDialog dialogo = new JDialog(this, true);
         dialogo.setUndecorated(true);
-        dialogo.setSize(350, 280); 
+        dialogo.setSize(350, 205); 
         dialogo.setLocationRelativeTo(this);
         JPanel contenedor = new JPanel(new BorderLayout());
         contenedor.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
@@ -215,7 +215,7 @@ public class operaciones extends JFrame {
         JPanel panelContenido = new JPanel();
         panelContenido.setOpaque(false);
         panelContenido.setLayout(new BoxLayout(panelContenido, BoxLayout.Y_AXIS));
-        panelContenido.add(Box.createVerticalStrut(25));
+        panelContenido.add(Box.createVerticalStrut(15));
         JLabel lblMsg = new JLabel("<html><center>" + mensaje + "</center></html>", SwingConstants.CENTER);
         lblMsg.setFont(INTER_BOLD_16);
         lblMsg.setAlignmentX(Component.CENTER_ALIGNMENT);
