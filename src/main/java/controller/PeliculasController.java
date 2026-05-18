@@ -18,8 +18,11 @@ public class PeliculasController {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int filaVisual = vista.tabla.rowAtPoint(e.getPoint());
-                int columna = vista.tabla.columnAtPoint(e.getPoint());
-                if (columna == 6 && filaVisual != -1) {
+                int columnaVisual = vista.tabla.columnAtPoint(e.getPoint());
+                
+                int columnaModelo = vista.tabla.convertColumnIndexToModel(columnaVisual);
+                
+                if (columnaModelo == 6 && filaVisual != -1) {
                     int filaModelo = vista.tabla.convertRowIndexToModel(filaVisual);
                     
                     String nombre = vista.modelo.getValueAt(filaModelo, 2).toString();
@@ -28,9 +31,7 @@ public class PeliculasController {
                     
                     ImageIcon iconoCaratula = null;
                     Object caratulaObj = vista.modelo.getValueAt(filaModelo, 1);
-                    if (caratulaObj == null) {
-                        caratulaObj = vista.modelo.getValueAt(filaModelo, 0);
-                    }
+                    
                     if (caratulaObj instanceof ImageIcon) {
                         iconoCaratula = (ImageIcon) caratulaObj;
                     }

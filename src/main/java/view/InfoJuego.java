@@ -71,12 +71,25 @@ public class InfoJuego extends JFrame {
         gbc.gridx = 0; gbc.gridy = 0; gbc.weightx = 1.0; gbc.weighty = 0.0;
         mainPanel.add(header, gbc);
 
-        JPanel panelGris = new JPanel(null);
+        JPanel panelGris = new JPanel(null) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                g2.setColor(new Color(217, 217, 217));
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
+
+                g2.dispose();
+            }
+        };
+
+        panelGris.setOpaque(false);
         panelGris.setPreferredSize(new Dimension(800, 520));
         panelGris.setMinimumSize(new Dimension(800, 520));
-        panelGris.setBackground(new Color(209, 209, 209));
-        panelGris.setBorder(new LineBorder(Color.GRAY, 1));
-
+        
         txtNombreProd = crearCampo(panelGris, "Nombre del producto:", 30, 20, 180);
         txtIdProd = crearCampo(panelGris, "ID del producto:", 30, 80, 180);
         txtTipoProd = crearCampo(panelGris, "Tipo de producto:", 30, 140, 180);
@@ -119,13 +132,13 @@ public class InfoJuego extends JFrame {
         cargarIconoBoton(btnDescargar, "/img/simbolopdfblanco.png", 22, 22);
         panelGris.add(btnDescargar);
 
-        gbc.gridy = 1; gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.gridy = 1;
+        gbc.weighty = 1.0;
+        gbc.insets = new Insets(-5, 10, 60, 10);
         mainPanel.add(panelGris, gbc);
     }
 
-    public void setDatosJuego(String nombre, String id, String tipo, String plataforma, String precioVenta, String descuento, String stockVenta, String stockRenta, String precioRenta, String clasificacion, String anio, String genero, String caratula) {
+    public InfoJuego setDatosJuego(String nombre, String id, String tipo, String plataforma, String precioVenta, String descuento, String stockVenta, String stockRenta, String precioRenta, String clasificacion, String anio, String genero, String caratula) {
         txtNombreProd.setText(nombre);
         txtIdProd.setText(id);
         txtTipoProd.setText(tipo);
@@ -140,6 +153,7 @@ public class InfoJuego extends JFrame {
         txtGenero.setText(genero);
         
         cargarImagenPortada(caratula);
+        return this;
     }
 
     private void cargarImagenPortada(String caratula) {
@@ -187,11 +201,11 @@ public class InfoJuego extends JFrame {
     }
 
     public void mostrarExito(String mensaje) {
-        mostrarPopUpGris(mensaje, new Color(50, 180, 50), "/img/simbolomasazul.png", null);
+        mostrarPopUpGris(mensaje, new Color(50, 180, 50), "/img/palomitaverde.png", null);
     }
 
     public void mostrarConfirmacion(String mensaje, ActionListener accionSi) {
-        mostrarPopUpGris(mensaje, new Color(0, 51, 102), "/img/mingcute_warning-fill.png", accionSi);
+        mostrarPopUpGris(mensaje, new Color(0, 51, 102), "/img/palomitaverde.png", accionSi);
     }
 
     private void mostrarPopUpGris(String mensaje, Color colorBoton, String rutaIcono, ActionListener accionSi) {

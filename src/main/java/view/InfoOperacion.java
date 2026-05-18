@@ -53,14 +53,14 @@ public class InfoOperacion extends JFrame {
 
         btnAtras = new RoundedButton("  Atrás", 20);
         btnAtras.setPreferredSize(new Dimension(120, 35));
-        btnAtras.setFont(new Font("Arial", Font.PLAIN, 15));
+        btnAtras.setFont(new Font("Inter", Font.PLAIN, 15));
         btnAtras.setBackground(new Color(225, 225, 225));
         btnAtras.setCursor(new Cursor(Cursor.HAND_CURSOR));
         cargarIconoBoton(btnAtras, "/img/lets-icons_back.png", 18, 18);
         header.add(btnAtras, BorderLayout.WEST);
 
         JLabel titulo = new JLabel("Operación", SwingConstants.CENTER);
-        titulo.setFont(new Font("Arial", Font.BOLD, 22));
+        titulo.setFont(new Font("Inter", Font.BOLD, 22));
         header.add(titulo, BorderLayout.CENTER);
 
         JLabel cassette = new JLabel();
@@ -71,11 +71,21 @@ public class InfoOperacion extends JFrame {
         gbc.gridx = 0; gbc.gridy = 0; gbc.weightx = 1.0; gbc.weighty = 0.0;
         mainPanel.add(header, gbc);
 
-        JPanel panelGris = new JPanel(null);
+        JPanel panelGris = new JPanel(null) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(217, 217, 217));
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
+                g2.dispose();
+            }
+        };
+
+        panelGris.setOpaque(false);
         panelGris.setPreferredSize(new Dimension(800, 480));
         panelGris.setMinimumSize(new Dimension(800, 480));
-        panelGris.setBackground(new Color(209, 209, 209));
-        panelGris.setBorder(new LineBorder(Color.GRAY, 1));
 
         txtNombreCli = crearCampo(panelGris, "Nombre del cliente:", 25, 15, 260, "");
         txtIdCli = crearCampo(panelGris, "ID de cliente:", 25, 80, 150, "285736");
@@ -83,7 +93,7 @@ public class InfoOperacion extends JFrame {
 
         JLabel lblTipo = new JLabel("Tipo");
         lblTipo.setBounds(25, 205, 100, 20);
-        lblTipo.setFont(new Font("Arial", Font.BOLD, 14));
+        lblTipo.setFont(new Font("Inter", Font.BOLD, 14));
         panelGris.add(lblTipo);
 
         JPanel bgTipo = new JPanel(null);
@@ -127,7 +137,7 @@ public class InfoOperacion extends JFrame {
         btnDescargar.setForeground(Color.WHITE);
         btnDescargar.setHorizontalTextPosition(SwingConstants.LEFT);
         btnDescargar.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        cargarIconoBoton(btnDescargar, "/img/pdf_icon.png", 22, 22);
+        cargarIconoBoton(btnDescargar, "/img/simbolopdfblanco.png", 22, 22);
         panelGris.add(btnDescargar);
 
         gbc.gridy = 1; gbc.fill = GridBagConstraints.NONE; gbc.anchor = GridBagConstraints.CENTER;
@@ -144,25 +154,49 @@ public class InfoOperacion extends JFrame {
         mainPanel.add(btnGuardar, gbc);
     }
 
+    public void setImagenProducto(Object origenImagen) {
+        if (origenImagen == null) {
+            lblImg.setIcon(null);
+            return;
+        }
+        ImageIcon iconoOriginal = null;
+        if (origenImagen instanceof ImageIcon) {
+            iconoOriginal = (ImageIcon) origenImagen;
+        } else if (origenImagen instanceof Object[]) {
+            Object[] datos = (Object[]) origenImagen;
+            if (datos[0] instanceof ImageIcon) {
+                iconoOriginal = (ImageIcon) datos[0];
+            }
+        } else if (origenImagen instanceof String) {
+            URL url = getClass().getResource(origenImagen.toString());
+            if (url != null) {
+                iconoOriginal = new ImageIcon(url);
+            }
+        }
+        if (iconoOriginal != null) {
+            Image imagenEscalada = iconoOriginal.getImage().getScaledInstance(310, 260, Image.SCALE_SMOOTH);
+            lblImg.setIcon(new ImageIcon(imagenEscalada));
+        } else {
+            lblImg.setIcon(null);
+        }
+    }
+
     public JLabel Menu(JPanel panel, String texto, String ruta) {
         JPanel item = new JPanel();
         item.setLayout(new BoxLayout(item, BoxLayout.Y_AXIS));
         item.setOpaque(false);
         item.setPreferredSize(new Dimension(140, 90));
-
         JLabel iconLabel = new JLabel();
         try {
             iconLabel.setIcon(new ImageIcon(new ImageIcon(getClass().getResource(ruta))
                 .getImage().getScaledInstance(35, 35, Image.SCALE_SMOOTH)));
         } catch(Exception e) {}
         iconLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
         JLabel label = new JLabel(texto, SwingConstants.CENTER);
         label.setForeground(new Color(4, 180, 255)); 
         label.setFont(new Font("Inter", Font.BOLD, 15));
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
         label.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
         item.add(iconLabel);
         item.add(Box.createVerticalStrut(5));
         item.add(label);

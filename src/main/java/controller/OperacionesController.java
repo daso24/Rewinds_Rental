@@ -5,6 +5,7 @@ import javax.swing.*;
 import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 
 public class OperacionesController {
     private operaciones vista;
@@ -19,6 +20,51 @@ public class OperacionesController {
     public OperacionesController(AñadirOperacion vAdd) {
         this.vAdd = vAdd;
         initAddEvents();
+    }
+
+    private ImageIcon escalarImagenHD(Image srcImg, int targetW, int targetH) {
+        if (srcImg == null) return null;
+        
+        int type = (srcImg instanceof BufferedImage) && ((BufferedImage) srcImg).getType() != BufferedImage.TYPE_CUSTOM 
+                   ? ((BufferedImage) srcImg).getType() : BufferedImage.TYPE_INT_ARGB;
+                   
+        BufferedImage img = new BufferedImage(srcImg.getWidth(null), srcImg.getHeight(null), type);
+        Graphics2D gNormal = img.createGraphics();
+        gNormal.drawImage(srcImg, 0, 0, null);
+        gNormal.dispose();
+
+        int w = img.getWidth();
+        int h = img.getHeight();
+
+        do {
+            if (w > targetW) {
+                w /= 2;
+                if (w < targetW) w = targetW;
+            } else {
+                w = targetW;
+            }
+
+            if (h > targetH) {
+                h /= 2;
+                if (h < targetH) h = targetH;
+            } else {
+                h = targetH;
+            }
+
+            BufferedImage tmp = new BufferedImage(w, h, type);
+            Graphics2D g2 = tmp.createGraphics();
+            
+            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+            g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            
+            g2.drawImage(img, 0, 0, w, h, null);
+            g2.dispose();
+
+            img = tmp;
+        } while (w != targetW || h != targetH);
+
+        return new ImageIcon(img);
     }
 
     private void configurarRenderizadoTabla() {
@@ -51,17 +97,13 @@ public class OperacionesController {
                 if (value instanceof Object[]) {
                     Object[] data = (Object[]) value;
                     if (data[0] instanceof ImageIcon) {
-                        ImageIcon originalIcon = (ImageIcon) data[0];
-                        Image imgEscalada = originalIcon.getImage().getScaledInstance(60, 50, Image.SCALE_SMOOTH);
-                        lblImagen.setIcon(new ImageIcon(imgEscalada));
+                        lblImagen.setIcon(escalarImagenHD(((ImageIcon) data[0]).getImage(), 60, 50));
                     } else {
                         lblImagen.setIcon(null);
                     }
                     lblTexto.setText(data.length > 1 && data[1] != null ? data[1].toString() : "");
                 } else if (value instanceof ImageIcon) {
-                    ImageIcon originalIcon = (ImageIcon) value;
-                    Image imgEscalada = originalIcon.getImage().getScaledInstance(60, 50, Image.SCALE_SMOOTH);
-                    lblImagen.setIcon(new ImageIcon(imgEscalada));
+                    lblImagen.setIcon(escalarImagenHD(((ImageIcon) value).getImage(), 60, 50));
                     lblTexto.setText(mapearNombreString(value));
                 } else {
                     lblImagen.setIcon(null);
@@ -139,11 +181,27 @@ public class OperacionesController {
         });
 
         vista.btnEliminar.addActionListener(e -> {
-            int fila = vista.tabla.getSelectedRow();
-            if (fila != -1) {
-                vista.mostrarConfirmacion("¿Seguro que quieres eliminar<br>esta operación?", eSi -> {
-                    vista.modeloTabla.removeRow(vista.tabla.convertRowIndexToModel(fila));
+            boolean haySeleccion = false;
+            for (int i = 0; i < vista.tabla.getRowCount(); i++) {
+                Boolean isSelected = (Boolean) vista.tabla.getValueAt(i, 0);
+                if (isSelected != null && isSelected) {
+                    haySeleccion = true;
+                    break;
+                }
+            }
+
+            if (haySeleccion) {
+                vista.mostrarConfirmacion("¿Está seguro de borrar las<br>operaciones seleccionadas?", eSi -> {
+                    for (int i = vista.tabla.getRowCount() - 1; i >= 0; i--) {
+                        Boolean isSelected = (Boolean) vista.tabla.getValueAt(i, 0);
+                        if (isSelected != null && isSelected) {
+                            int modelIndex = vista.tabla.convertRowIndexToModel(i);
+                            vista.modeloTabla.removeRow(modelIndex);
+                        }
+                    }
                 });
+            } else {
+                mostrarAlertaGris(vista, "Selecciona al menos una operación de la lista.");
             }
         });
 
@@ -298,16 +356,14 @@ public class OperacionesController {
                     Object componenteFoto = panelFotoField.get(vAdd);
                     if (componenteFoto instanceof JLabel) {
                         JLabel lbl = (JLabel) componenteFoto;
-                        Image imgEscalada = imagenProducto.getImage().getScaledInstance(310, 260, Image.SCALE_SMOOTH);
-                        lbl.setIcon(new ImageIcon(imgEscalada));
+                        lbl.setIcon(escalarImagenHD(imagenProducto.getImage(), 310, 260));
                         lbl.setText("");
                     } else if (componenteFoto instanceof JPanel) {
                         JPanel pnl = (JPanel) componenteFoto;
                         pnl.removeAll();
                         pnl.setLayout(new BorderLayout());
                         JLabel lbl = new JLabel();
-                        Image imgEscalada = imagenProducto.getImage().getScaledInstance(310, 260, Image.SCALE_SMOOTH);
-                        lbl.setIcon(new ImageIcon(imgEscalada));
+                        lbl.setIcon(escalarImagenHD(imagenProducto.getImage(), 310, 260));
                         lbl.setHorizontalAlignment(SwingConstants.CENTER);
                         pnl.add(lbl, BorderLayout.CENTER);
                         pnl.revalidate();
@@ -490,51 +546,7 @@ public class OperacionesController {
             }
         }
 
-        try {
-            ImageIcon originalIcon = null;
-            if (cellProducto instanceof ImageIcon) {
-                originalIcon = (ImageIcon) cellProducto;
-            } else if (cellProducto instanceof Object[]) {
-                Object[] data = (Object[]) cellProducto;
-                if (data[0] instanceof ImageIcon) {
-                    originalIcon = (ImageIcon) data[0];
-                }
-            }
-            
-            if (originalIcon != null) {
-                java.lang.reflect.Field panelFotoField = null;
-                String[] opcionesFotos = {"lblCaratula", "panelFoto", "lblFoto", "lblImagen"};
-                for (String opt : opcionesFotos) {
-                    try {
-                        panelFotoField = vInfo.getClass().getDeclaredField(opt);
-                        break;
-                    } catch (Exception e) {}
-                }
-                if (panelFotoField != null) {
-                    panelFotoField.setAccessible(true);
-                    Object componenteFoto = panelFotoField.get(vInfo);
-                    if (componenteFoto instanceof JLabel) {
-                        JLabel lbl = (JLabel) componenteFoto;
-                        Image imgEscalada = originalIcon.getImage().getScaledInstance(310, 260, Image.SCALE_SMOOTH);
-                        lbl.setIcon(new ImageIcon(imgEscalada));
-                        lbl.setText("");
-                    } else if (componenteFoto instanceof JPanel) {
-                        JPanel pnl = (JPanel) componenteFoto;
-                        pnl.removeAll();
-                        pnl.setLayout(new BorderLayout());
-                        JLabel lbl = new JLabel();
-                        Image imgEscalada = originalIcon.getImage().getScaledInstance(310, 260, Image.SCALE_SMOOTH);
-                        lbl.setIcon(new ImageIcon(imgEscalada));
-                        lbl.setHorizontalAlignment(SwingConstants.CENTER);
-                        pnl.add(lbl, BorderLayout.CENTER);
-                        pnl.revalidate();
-                        pnl.repaint();
-                    }
-                }
-            }
-        } catch (Exception eImg) {
-            System.err.println("Error cargando la carátula: " + eImg.getMessage());
-        }
+        vInfo.setImagenProducto(cellProducto);
 
         vInfo.btnAtras.addActionListener(e -> {
             vInfo.dispose();
@@ -568,7 +580,7 @@ public class OperacionesController {
     private void mostrarAlertaGris(JFrame frame, String mensaje) {
         JDialog dialogo = new JDialog(frame, "Alerta", true);
         dialogo.setUndecorated(true);
-        dialogo.setSize(350, 200);
+        dialogo.setSize(350, 280);
         dialogo.setLocationRelativeTo(frame);
 
         JPanel panel = new JPanel();
@@ -576,19 +588,63 @@ public class OperacionesController {
         panel.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        panel.add(Box.createVerticalStrut(30));
+        panel.add(Box.createVerticalStrut(25));
+        
         JLabel lblMsg = new JLabel("<html><body style='text-align: center;'>" + mensaje + "</body></html>", SwingConstants.CENTER);
         lblMsg.setFont(new Font("Inter", Font.BOLD, 15));
         lblMsg.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(lblMsg);
 
         panel.add(Box.createVerticalGlue());
+
+        String rutaIcono = "";
+        if (mensaje.toLowerCase().contains("éxito") || mensaje.toLowerCase().contains("guardados")) {
+            rutaIcono = "/img/palomitaverde.png";
+        } else if (mensaje.toLowerCase().contains("ficha") || mensaje.toLowerCase().contains("descargar") || mensaje.toLowerCase().contains("generando") || mensaje.toLowerCase().contains("lista")) {
+            rutaIcono = "/img/simbolopdfblanco.png";
+        }
+
+        if (mensaje.toLowerCase().contains("selecciona")) {
+            rutaIcono = "/img/mingcute_warning-fill.png";
+        }
+
+        if (!rutaIcono.isEmpty()) {
+            try {
+                java.net.URL urlImg = getClass().getResource(rutaIcono);
+                if (urlImg != null) {
+                    ImageIcon img = escalarImagenHD(new ImageIcon(urlImg).getImage(), 70, 70);
+                    JLabel lblIcono = new JLabel(img);
+                    lblIcono.setAlignmentX(Component.CENTER_ALIGNMENT);
+                    panel.add(lblIcono);
+                }
+            } catch (Exception e) {
+                System.err.println("Error cargando icono del pop-up: " + e.getMessage());
+            }
+        }
+
+        panel.add(Box.createVerticalGlue());
         
-        JButton btnOk = new JButton("Aceptar");
+        JButton btnOk = new JButton("Aceptar") {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(0, 51, 102));
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        btnOk.setPreferredSize(new Dimension(120, 35));
+        btnOk.setMaximumSize(new Dimension(120, 35));
+        btnOk.setMinimumSize(new Dimension(120, 35));
         btnOk.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnOk.setBackground(new Color(0, 51, 102));
         btnOk.setForeground(Color.WHITE);
+        btnOk.setFont(new Font("Inter", Font.BOLD, 13));
+        btnOk.setContentAreaFilled(false);
+        btnOk.setBorderPainted(false);
         btnOk.setFocusPainted(false);
+        btnOk.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnOk.addActionListener(e -> dialogo.dispose());
         
         panel.add(btnOk);

@@ -189,53 +189,64 @@ public class registro extends JFrame {
     }
 
     public void mostrarMensajeExito(String mensaje) {
+
         JDialog dialogo = new JDialog(this, "Éxito", true);
-        dialogo.setUndecorated(true); 
+        dialogo.setUndecorated(true);
         dialogo.setSize(350, 240);
         dialogo.setLocationRelativeTo(this);
+
         JPanel panelPrincipal = new JPanel(new BorderLayout());
-        panelPrincipal.setBackground(new Color(209, 209, 209)); 
+        panelPrincipal.setBackground(new Color(209, 209, 209));
+
         dialogo.setContentPane(panelPrincipal);
+
         JLabel lblTitulo = new JLabel("ÉXITO", SwingConstants.CENTER);
         lblTitulo.setFont(new Font("Arial", Font.BOLD, 22));
         lblTitulo.setBorder(BorderFactory.createEmptyBorder(15, 0, 5, 0));
+
         panelPrincipal.add(lblTitulo, BorderLayout.NORTH);
+
         JPanel centro = new JPanel();
         centro.setOpaque(false);
         centro.setLayout(new BoxLayout(centro, BoxLayout.Y_AXIS));
-        JLabel iconoCheck = new JLabel("✓", SwingConstants.CENTER) {
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(new Color(40, 167, 69)); 
-                g2.fill(new Ellipse2D.Double(0, 0, 65, 65));
-                g2.dispose();
-                super.paintComponent(g);
-            }
-        };
-        iconoCheck.setPreferredSize(new Dimension(65, 65));
-        iconoCheck.setMaximumSize(new Dimension(65, 65));
-        iconoCheck.setForeground(Color.WHITE);
-        iconoCheck.setFont(new Font("Arial", Font.PLAIN, 40));
+
+        // IMAGEN 
+        ImageIcon icono = new ImageIcon(getClass().getResource("/img/palomitaverde.png"));
+
+        Image img = icono.getImage().getScaledInstance(85, 85, Image.SCALE_SMOOTH);
+
+        JLabel iconoCheck = new JLabel(new ImageIcon(img));
         iconoCheck.setAlignmentX(Component.CENTER_ALIGNMENT);
-        JLabel lblMsg = new JLabel("<html><body style='text-align: center;'>" + mensaje + "</body></html>", SwingConstants.CENTER);
+
+        JLabel lblMsg = new JLabel(
+            "<html><body style='text-align: center;'>" + mensaje + "</body></html>",
+            SwingConstants.CENTER
+        );
+
         lblMsg.setFont(new Font("Arial", Font.BOLD, 15));
         lblMsg.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblMsg.setBorder(BorderFactory.createEmptyBorder(15, 25, 15, 25));
+
         centro.add(iconoCheck);
         centro.add(lblMsg);
+
         panelPrincipal.add(centro, BorderLayout.CENTER);
+
         JButton btnOk = new JButton("OK");
-        btnOk.setBackground(new Color(40, 167, 69)); 
+        btnOk.setBackground(new Color(40, 167, 69));
         btnOk.setForeground(Color.WHITE);
         btnOk.setFont(new Font("Arial", Font.BOLD, 14));
+
         btnOk.addActionListener(e -> dialogo.dispose());
+
         JPanel sur = new JPanel(new BorderLayout());
         sur.setOpaque(false);
         sur.setBorder(BorderFactory.createEmptyBorder(0, 45, 20, 45));
+
         sur.add(btnOk);
+
         panelPrincipal.add(sur, BorderLayout.SOUTH);
+
         dialogo.setVisible(true);
     }
 

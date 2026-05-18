@@ -134,8 +134,8 @@ public class PrincipalController {
         });
 
         v.btnEditar.addActionListener(e -> {
-            v.mostrarConfirmacion("¿Desea habilitar la edición<br>de este videojuego?", eSi -> {
-                System.out.println("Modo edición activado.");
+            v.mostrarConfirmacion("¿Quieres editar<br> este videojuego?", eSi -> {
+               
             });
         });
 
@@ -171,7 +171,7 @@ public class PrincipalController {
         });
 
         v.btnEditar.addActionListener(e -> {
-            v.mostrarConfirmacion("¿Desea habilitar la edición?", eSi -> {
+            v.mostrarConfirmacion("¿Quieres editar<br> esta Pelicula?", eSi -> {
                 System.out.println("Editando...");
             });
         });

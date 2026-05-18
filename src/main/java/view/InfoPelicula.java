@@ -68,10 +68,21 @@ public class InfoPelicula extends JFrame {
         gbc.gridx = 0; gbc.gridy = 0; gbc.weightx = 1.0;
         mainPanel.add(header, gbc);
 
-        JPanel panelGris = new JPanel(null);
+        JPanel panelGris = new JPanel(null) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(217, 217, 217));
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
+                g2.dispose();
+            }
+        };
+
+        panelGris.setOpaque(false);
         panelGris.setPreferredSize(new Dimension(800, 550));
         panelGris.setMinimumSize(new Dimension(800, 550));
-        panelGris.setBackground(new Color(209, 209, 209));
 
         crearLabel(panelGris, "Nombre del producto:", 30, 20);
         txtNomProd = crearField(panelGris, "Chainsaw Man - Arco de Reze", 30, 45, 200);
@@ -134,11 +145,15 @@ public class InfoPelicula extends JFrame {
 
         btnDescargar = crearBotonRedondeado("Descargar ficha", new Color(0, 180, 255), Color.WHITE, 25);
         btnDescargar.setBounds(340, 505, 200, 35);
-        cargarIconoBoton(btnDescargar, "/img/pdf_icon.png", 20, 20);
+        cargarIconoBoton(btnDescargar, "/img/simbolopdfblanco.png", 20, 20);
         panelGris.add(btnDescargar);
 
-        gbc.gridy = 1; gbc.fill = GridBagConstraints.NONE; gbc.anchor = GridBagConstraints.CENTER;
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.NORTH;
+        gbc.insets = new Insets(0, 20, 10, 20);
         gbc.weighty = 1.0;
+
         mainPanel.add(panelGris, gbc);
     }
 
@@ -175,12 +190,36 @@ public class InfoPelicula extends JFrame {
         JPanel contenido = new JPanel();
         contenido.setOpaque(false);
         contenido.setLayout(new BoxLayout(contenido, BoxLayout.Y_AXIS));
-        contenido.add(Box.createVerticalStrut(30));
+        contenido.add(Box.createVerticalStrut(25));
 
         JLabel lblMsg = new JLabel("<html><center>" + mensaje + "</center></html>", SwingConstants.CENTER);
-        lblMsg.setFont(new Font("Inter", Font.BOLD, 16));
+        lblMsg.setFont(new Font("Inter", Font.BOLD, 15));
         lblMsg.setAlignmentX(Component.CENTER_ALIGNMENT);
         contenido.add(lblMsg);
+        
+        contenido.add(Box.createVerticalGlue());
+
+        String rutaIcono = "";
+        if (esError) {
+            rutaIcono = "/img/simbolotachaverde.png"; 
+        } else if (mensaje.toLowerCase().contains("ficha") || mensaje.toLowerCase().contains("descargar") || mensaje.toLowerCase().contains("generando")) {
+            rutaIcono = "/img/simbolopdfblanco.png";
+        } else {
+            rutaIcono = "/img/palomitaverde.png";
+        }
+
+        if (!rutaIcono.isEmpty()) {
+            try {
+                URL urlImg = getClass().getResource(rutaIcono);
+                if (urlImg != null) {
+                    ImageIcon img = new ImageIcon(new ImageIcon(urlImg).getImage().getScaledInstance(65, 65, Image.SCALE_SMOOTH));
+                    JLabel lblIcono = new JLabel(img);
+                    lblIcono.setAlignmentX(Component.CENTER_ALIGNMENT);
+                    contenido.add(lblIcono);
+                }
+            } catch (Exception e) {}
+        }
+
         contenido.add(Box.createVerticalGlue());
         
         JButton btnOk = crearBotonRedondeado("Aceptar", esError ? new Color(220, 50, 50) : new Color(0, 170, 255), Color.WHITE, 20);
@@ -200,7 +239,7 @@ public class InfoPelicula extends JFrame {
 
     private void crearLabel(JPanel p, String t, int x, int y) {
         JLabel l = new JLabel(t);
-        l.setFont(new Font("Arial", Font.BOLD, 13));
+        l.setFont(new Font("Inter", Font.BOLD, 13));
         l.setBounds(x, y, 250, 20);
         p.add(l);
     }
