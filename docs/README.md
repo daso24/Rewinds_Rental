@@ -1,5 +1,7 @@
 # Proyecto Rewinds Rentals
 
+Usuario para entrar al programa(login): usuario: admin, contraseña: 1234
+
 **Descripción**
 
 El proyecto consiste en el diseño y desarrollo de una plataforma administrativa orientada a la gestión de operaciones de un establecimiento de renta y venta de videojuegos y contenido multimedia. El sistema está diseñado específicamente para ser utilizado por los empleados del establecimiento, permitiendo un control integral sobre el inventario, los clientes y las transacciones financieras.
