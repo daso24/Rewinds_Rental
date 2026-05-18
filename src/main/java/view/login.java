@@ -214,7 +214,7 @@ public class login extends JFrame {
     public void mostrarLoginExitoso(String mensaje) {
         JDialog dialogo = new JDialog(this, true);
         dialogo.setUndecorated(true);
-        dialogo.setSize(350, 280);
+        dialogo.setSize(350, 215);
         dialogo.setLocationRelativeTo(this);
 
         JPanel contenedor = new JPanel(new BorderLayout());
@@ -230,7 +230,7 @@ public class login extends JFrame {
         JPanel centro = new JPanel();
         centro.setOpaque(false);
         centro.setLayout(new BoxLayout(centro, BoxLayout.Y_AXIS));
-        centro.add(Box.createVerticalStrut(35));
+        centro.add(Box.createVerticalStrut(15));
 
         try {
             ImageIcon icon = new ImageIcon(
@@ -249,7 +249,7 @@ public class login extends JFrame {
 
         } catch(Exception e) {}
 
-        centro.add(Box.createVerticalStrut(15));
+        centro.add(Box.createVerticalStrut(10));
 
         JLabel lblMsg = new JLabel("<html><center>" + mensaje + "</center></html>", SwingConstants.CENTER);
         lblMsg.setFont(new Font("Inter", Font.BOLD, 15));
