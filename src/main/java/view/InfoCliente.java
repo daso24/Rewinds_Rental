@@ -62,6 +62,11 @@ public class InfoCliente extends JFrame {
 
         JLabel lblTituloSuperior = new JLabel("Información de cliente", SwingConstants.CENTER);
         lblTituloSuperior.setFont(INTER_BOLD_20);
+        
+        lblTituloSuperior.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 50)); 
+        
+        header.add(lblTituloSuperior, BorderLayout.CENTER);
+        
         header.add(lblTituloSuperior, BorderLayout.CENTER);
 
         lblLogoDerecha = new JLabel();

@@ -51,6 +51,8 @@ public class AuthController {
                 principal vistaMenu = new principal();
                 new PrincipalController(vistaMenu); 
                 vistaMenu.setVisible(true); 
+            } else {
+                vista.mostrarMensajeError("Usuario o contraseña incorrectos.");
             }
         });
         
