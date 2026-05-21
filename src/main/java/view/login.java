@@ -66,7 +66,7 @@ public class login extends JFrame {
             card.add(logoLabel, c);
         } catch(Exception e) {}
 
-        JLabel lblUsuario = new JLabel("Usuario:");
+        JLabel lblUsuario = new JLabel("Correo:");
         lblUsuario.setFont(new Font("Inter", Font.BOLD, 13));
         c.gridy = 2;
         card.add(lblUsuario, c);

@@ -88,7 +88,7 @@ public class registro extends JFrame {
         card.add(masculino); card.add(femenino); card.add(otro);
 
         passField = (JPasswordField) crearCampo(card, "Contraseña:", 50, 260, true);
-        confirmField = (JPasswordField) crearCampo(card, "Confirmar:", 50, 330, true);
+        confirmField = (JPasswordField) crearCampo(card, "Confirmar contraseña:", 50, 330, true);
 
         registerBtn = new JButton("Registrar");
         registerBtn.setBounds(250, 405, 200, 40);

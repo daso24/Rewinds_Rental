@@ -2,36 +2,37 @@ package controller;
 
 import models.AuthModel;
 import view.login;
-import view.principal; 
+import view.principal;
 import view.registro;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
+import javax.swing.UIManager;
 
-public class AuthController {
-    
+public class AuthController
+{
     private login vista;
     private AuthModel modelo;
 
-    public AuthController(login vista, AuthModel modelo) {
+    public AuthController(login vista, AuthModel modelo)
+    {
         this.vista = vista;
         this.modelo = modelo;
 
         this.vista.loginButton.addActionListener(e -> {
-            String usuario = vista.userField.getText();
-            String password = new String(vista.passField.getPassword());
+            String correo = vista.userField.getText().trim();
+            String pass = new String(vista.passField.getPassword());
             boolean hayError = false;
 
-            if (usuario.isEmpty()) {
+            if (correo.isEmpty()) {
                 vista.userField.setBorder(new LineBorder(Color.RED, 2));
                 hayError = true;
             } else {
                 vista.userField.setBorder(UIManager.getBorder("TextField.border"));
             }
 
-            if (password.isEmpty()) {
+            if (pass.isEmpty()) {
                 vista.passField.setBorder(new LineBorder(Color.RED, 2));
                 hayError = true;
             } else {
@@ -40,29 +41,32 @@ public class AuthController {
 
             if (hayError) {
                 vista.mostrarMensajeError("Llene los campos marcados en rojo.");
-                return; 
+                return;
             }
 
-            if (modelo.validarUsuario(usuario, password)) {
+            String nombreUsuario = modelo.validarLogin(correo, pass);
+
+            if (nombreUsuario != null) {
                 vista.mostrarLoginExitoso("Ha iniciado sesión con éxito.");
-                
-                vista.dispose(); 
-                
+                vista.dispose();
+
                 principal vistaMenu = new principal();
-                new PrincipalController(vistaMenu); 
-                vistaMenu.setVisible(true); 
+                vistaMenu.setNombreUsuario(nombreUsuario); 
+                new PrincipalController(vistaMenu);
+                vistaMenu.setVisible(true);
             } else {
                 vista.mostrarMensajeError("Usuario o contraseña incorrectos.");
             }
         });
-        
+
         this.vista.registerLink.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                vista.dispose(); 
-                registro vistaReg = new registro(); 
-                new RegistroController(vistaReg);  
-                vistaReg.setVisible(true);          
+                vista.dispose();
+                registro vistaReg = new registro();
+                models.ClientModel modeloReg = new models.ClientModel();
+                new RegisterController(vistaReg, modeloReg);
+                vistaReg.setVisible(true);
             }
         });
     }

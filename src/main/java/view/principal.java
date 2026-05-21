@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 
 public class principal extends JFrame {
 
-    public JLabel btnInicio, btnOperacion, btnClientes, btnVideojuegos, btnPeliculas, logoutBtn;
+    public JLabel btnInicio, btnOperacion, btnClientes, btnVideojuegos, btnPeliculas, logoutBtn, lblUsuario;
     public JButton btnVerClientes, btnVerRentas, btnVerJuegosComprados, btnVerJuegosRentados, btnVerPelisCompradas, btnVerPelisRentadas;
 
     public principal() {
@@ -61,7 +61,6 @@ public class principal extends JFrame {
         gbcH.gridx = 0; gbcH.weightx = 0.1; gbcH.anchor = GridBagConstraints.WEST; gbcH.insets = new Insets(0, 20, 0, 0);
         header.add(logoLabel, gbcH);
 
-      
         JLabel lblBienvenidoCentro = new JLabel("Bienvenido", SwingConstants.CENTER);
         lblBienvenidoCentro.setFont(new Font("Inter", Font.BOLD, 24));
         lblBienvenidoCentro.setForeground(new Color(0, 51, 102)); 
@@ -72,18 +71,17 @@ public class principal extends JFrame {
         gbcH.insets = new Insets(0, 50, 0, 0);
         header.add(lblBienvenidoCentro, gbcH);
        
-        JLabel user = new JLabel("<html>Bienvenido<br>Usuario</html>", SwingConstants.LEFT);
-        user.setFont(new Font("Inter", Font.BOLD, 14));
+        lblUsuario = new JLabel("<html>Bienvenido<br>Usuario</html>", SwingConstants.LEFT);
+        lblUsuario.setFont(new Font("Inter", Font.BOLD, 14));
         try {
             ImageIcon userIcon = new ImageIcon(new ImageIcon(getClass().getResource("/img/simboloclientesazul.png"))
                 .getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
-            user.setIcon(userIcon);
-            user.setIconTextGap(5	);
+            lblUsuario.setIcon(userIcon);
+            lblUsuario.setIconTextGap(5);
         } catch(Exception e) {}
         
-       
         gbcH.gridx = 2; gbcH.weightx = 0.1; gbcH.anchor = GridBagConstraints.EAST; gbcH.insets = new Insets(0, 0, 0, 20);
-        header.add(user, gbcH);
+        header.add(lblUsuario, gbcH);
 
         logoutBtn = new JLabel();
         try {
@@ -92,7 +90,6 @@ public class principal extends JFrame {
         } catch(Exception e) {}
         logoutBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         
-     
         gbcH.gridx = 3; gbcH.weightx = 0; gbcH.anchor = GridBagConstraints.EAST; gbcH.insets = new Insets(0, 0, 0, 20);
         header.add(logoutBtn, gbcH);
 
@@ -289,5 +286,9 @@ public class principal extends JFrame {
         btn.setFocusPainted(false);
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         return btn;
+    }
+
+    public void setNombreUsuario(String nombre) {
+        lblUsuario.setText("<html>Bienvenido<br>" + nombre + "</html>");
     }
 }
