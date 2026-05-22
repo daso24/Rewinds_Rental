@@ -1,16 +1,18 @@
 package view;
 
+import models.Sesion;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-public class principal extends JFrame {
-
+public class principal extends JFrame
+{
     public JLabel btnInicio, btnOperacion, btnClientes, btnVideojuegos, btnPeliculas, logoutBtn, lblUsuario;
     public JButton btnVerClientes, btnVerRentas, btnVerJuegosComprados, btnVerJuegosRentados, btnVerPelisCompradas, btnVerPelisRentadas;
 
-    public principal() {
+    public principal()
+    {
         setTitle("Principal");
         setSize(1000, 600);
         setMinimumSize(new Dimension(850, 550));
@@ -18,10 +20,14 @@ public class principal extends JFrame {
         setLayout(new BorderLayout());
         getContentPane().setBackground(Color.WHITE);
 
-        try {
+        try
+        {
             Image icono = new ImageIcon(getClass().getResource("/img/logo3.png")).getImage();
             this.setIconImage(icono);
-        } catch(Exception e) {}
+        }
+        catch(Exception e)
+        {
+        }
 
         JPanel sidebar = new JPanel();
         sidebar.setBackground(new Color(0, 51, 102));
@@ -38,9 +44,11 @@ public class principal extends JFrame {
         mainPanel.setOpaque(false);
         mainPanel.setBorder(new EmptyBorder(10, 20, 10, 20));
 
-        JPanel header = new JPanel(new GridBagLayout()) {
+        JPanel header = new JPanel(new GridBagLayout())
+        {
             @Override
-            protected void paintComponent(Graphics g) {
+            protected void paintComponent(Graphics g)
+            {
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -53,43 +61,57 @@ public class principal extends JFrame {
         GridBagConstraints gbcH = new GridBagConstraints();
 
         JLabel logoLabel = new JLabel();
-        try {
+        try
+        {
             logoLabel.setIcon(new ImageIcon(new ImageIcon(getClass().getResource("/img/logo0.png"))
                 .getImage().getScaledInstance(90, 90, Image.SCALE_SMOOTH)));
-        } catch(Exception e) {}
-        
+        }
+        catch(Exception e)
+        {
+        }
+
         gbcH.gridx = 0; gbcH.weightx = 0.1; gbcH.anchor = GridBagConstraints.WEST; gbcH.insets = new Insets(0, 20, 0, 0);
         header.add(logoLabel, gbcH);
 
         JLabel lblBienvenidoCentro = new JLabel("Bienvenido", SwingConstants.CENTER);
         lblBienvenidoCentro.setFont(new Font("Inter", Font.BOLD, 24));
-        lblBienvenidoCentro.setForeground(new Color(0, 51, 102)); 
-        
-        gbcH.gridx = 1; 
-        gbcH.weightx = 1.0; 
-        gbcH.anchor = GridBagConstraints.CENTER; 
+        lblBienvenidoCentro.setForeground(new Color(0, 51, 102));
+
+        gbcH.gridx = 1;
+        gbcH.weightx = 1.0;
+        gbcH.anchor = GridBagConstraints.CENTER;
         gbcH.insets = new Insets(0, 50, 0, 0);
         header.add(lblBienvenidoCentro, gbcH);
-       
-        lblUsuario = new JLabel("<html>Bienvenido<br>Usuario</html>", SwingConstants.LEFT);
+
+        String nombreActual = Sesion.getNombreUsuario();
+        lblUsuario = new JLabel("<html>Bienvenido<br>" + nombreActual + "</html>", SwingConstants.LEFT);
         lblUsuario.setFont(new Font("Inter", Font.BOLD, 14));
-        try {
+
+        try
+        {
             ImageIcon userIcon = new ImageIcon(new ImageIcon(getClass().getResource("/img/simboloclientesazul.png"))
                 .getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
             lblUsuario.setIcon(userIcon);
             lblUsuario.setIconTextGap(5);
-        } catch(Exception e) {}
-        
+        }
+        catch(Exception e)
+        {
+        }
+
         gbcH.gridx = 2; gbcH.weightx = 0.1; gbcH.anchor = GridBagConstraints.EAST; gbcH.insets = new Insets(0, 0, 0, 20);
         header.add(lblUsuario, gbcH);
 
         logoutBtn = new JLabel();
-        try {
+        try
+        {
             logoutBtn.setIcon(new ImageIcon(new ImageIcon(getClass().getResource("/img/simbolo_logoutrojo.png"))
                 .getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));
-        } catch(Exception e) {}
+        }
+        catch(Exception e)
+        {
+        }
         logoutBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        
+
         gbcH.gridx = 3; gbcH.weightx = 0; gbcH.anchor = GridBagConstraints.EAST; gbcH.insets = new Insets(0, 0, 0, 20);
         header.add(logoutBtn, gbcH);
 
@@ -126,7 +148,8 @@ public class principal extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    public void mostrarConfirmacionSalir(ActionListener accionSi, ActionListener accionNo) {
+    public void mostrarConfirmacionSalir(ActionListener accionSi, ActionListener accionNo)
+    {
         JDialog dialogo = new JDialog(this, true);
         dialogo.setUndecorated(true);
         dialogo.setSize(350, 205);
@@ -144,25 +167,31 @@ public class principal extends JFrame {
         panel.add(lblMsg);
 
         panel.add(Box.createVerticalGlue());
-        try {
+        try
+        {
             JLabel icono = new JLabel(new ImageIcon(new ImageIcon(getClass().getResource("/img/mingcute_warning-fill.png"))
                 .getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH)));
             icono.setAlignmentX(Component.CENTER_ALIGNMENT);
             panel.add(icono);
-        } catch (Exception e) {}
+        }
+        catch (Exception e)
+        {
+        }
         panel.add(Box.createVerticalGlue());
 
         JPanel pBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         pBotones.setOpaque(false);
 
         JButton btnSi = crearBotonRedondo("Sí, salir", new Color(220, 50, 50), 110, 35);
-        btnSi.addActionListener(e -> {
+        btnSi.addActionListener(e ->
+        {
             dialogo.dispose();
             accionSi.actionPerformed(e);
         });
 
         JButton btnNo = crearBotonRedondo("Cancelar", new Color(130, 130, 130), 110, 35);
-        btnNo.addActionListener(e -> {
+        btnNo.addActionListener(e ->
+        {
             dialogo.dispose();
             if (accionNo != null) accionNo.actionPerformed(e);
         });
@@ -176,17 +205,22 @@ public class principal extends JFrame {
         dialogo.setVisible(true);
     }
 
-    private JLabel crearItemMenu(JPanel panel, String texto, String ruta) {
+    private JLabel crearItemMenu(JPanel panel, String texto, String ruta)
+    {
         JPanel item = new JPanel();
         item.setLayout(new BoxLayout(item, BoxLayout.Y_AXIS));
         item.setOpaque(false);
         item.setPreferredSize(new Dimension(140, 90));
 
         JLabel iconLabel = new JLabel();
-        try {
+        try
+        {
             iconLabel.setIcon(new ImageIcon(new ImageIcon(getClass().getResource(ruta))
                 .getImage().getScaledInstance(45, 45, Image.SCALE_SMOOTH)));
-        } catch(Exception e) {}
+        }
+        catch(Exception e)
+        {
+        }
         iconLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel label = new JLabel(texto, SwingConstants.CENTER);
@@ -202,7 +236,8 @@ public class principal extends JFrame {
         return label;
     }
 
-    private JPanel Card(String titulo, String numero) {
+    private JPanel Card(String titulo, String numero)
+    {
         JPanel panel = crearContenedorRedondeado(220, 140);
         panel.setLayout(new BorderLayout(10, 10));
         panel.setBorder(new EmptyBorder(15, 15, 15, 15));
@@ -224,7 +259,8 @@ public class principal extends JFrame {
         return panel;
     }
 
-    private JPanel crearCardDoble(String titulo) {
+    private JPanel crearCardDoble(String titulo)
+    {
         JPanel panel = crearContenedorRedondeado(220, 150);
         panel.setLayout(new BorderLayout(5, 5));
         panel.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -251,10 +287,13 @@ public class principal extends JFrame {
         return panel;
     }
 
-    private JPanel crearContenedorRedondeado(int w, int h) {
-        JPanel panel = new JPanel() {
+    private JPanel crearContenedorRedondeado(int w, int h)
+    {
+        JPanel panel = new JPanel()
+        {
             @Override
-            protected void paintComponent(Graphics g) {
+            protected void paintComponent(Graphics g)
+            {
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setColor(new Color(215, 215, 215));
@@ -266,10 +305,13 @@ public class principal extends JFrame {
         return panel;
     }
 
-    private JButton crearBotonRedondo(String texto, Color color, int w, int h) {
-        JButton btn = new JButton(texto) {
+    private JButton crearBotonRedondo(String texto, Color color, int w, int h)
+    {
+        JButton btn = new JButton(texto)
+        {
             @Override
-            protected void paintComponent(Graphics g) {
+            protected void paintComponent(Graphics g)
+            {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setColor(color);
@@ -288,7 +330,8 @@ public class principal extends JFrame {
         return btn;
     }
 
-    public void setNombreUsuario(String nombre) {
+    public void setNombreUsuario(String nombre)
+    {
         lblUsuario.setText("<html>Bienvenido<br>" + nombre + "</html>");
     }
 }
