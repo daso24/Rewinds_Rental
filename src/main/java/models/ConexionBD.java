@@ -1,27 +1,33 @@
 package models;
 
+import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.util.Properties;
 
 public class ConexionBD
 {
-    private static final String URL = "jdbc:mysql://localhost:3306/rewinds_rental_db";
-    private static final String USER = "rewinds_app";
-    private static final String PASSWORD = "rewinds123";
-
     public Connection conectar()
     {
         Connection conexion = null;
-        try
+        Properties propiedadesConfiguracion = new Properties();
+
+        try (FileInputStream flujoEntrada = new FileInputStream("config.properties"))
         {
-            conexion = DriverManager.getConnection(URL, USER, PASSWORD);
+            propiedadesConfiguracion.load(flujoEntrada);
+
+            String urlBaseDatos = propiedadesConfiguracion.getProperty("db.url");
+            String usuarioBaseDatos = propiedadesConfiguracion.getProperty("db.user");
+            String contrasenaBaseDatos = propiedadesConfiguracion.getProperty("db.password");
+
+            conexion = DriverManager.getConnection(urlBaseDatos, usuarioBaseDatos, contrasenaBaseDatos);
             System.out.println("Conexión exitosa");
         }
-        catch (SQLException e)
+        catch (Exception e)
         {
             System.err.println("Error de conexión: " + e.getMessage());
         }
+        
         return conexion;
     }
 }

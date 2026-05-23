@@ -3,21 +3,26 @@ package view;
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.net.URL;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
-public class InfoCliente extends JFrame {
-
-    public JTextField txtId, txtFecha, txtTelefono;
-    public JLabel lblNombreValor, lblFoto; 
+public class InfoCliente extends JFrame 
+{
+    public JTextField txtId, txtFecha, txtTelefono, txtNombres, txtApellidos;
+    public JLabel lblFoto; 
     public JLabel lblInicio, lblOperacion, lblClientes, lblVideojuegos, lblPeliculas, lblLogoDerecha;
     public JButton btnAtras, btnEditar, btnHistoVentas, btnHistoRentas, btnDescargar, btnGenerar;
+    public String rutaFotoActual = "";
+    public boolean modoEdicion = false;
 
     private final Font INTER_BOLD_20 = new Font("Inter", Font.BOLD, 20);
     private final Font INTER_BOLD_16 = new Font("Inter", Font.BOLD, 16);
     private final Font INTER_BOLD_14 = new Font("Inter", Font.BOLD, 14);
     private final Font INTER_REGULAR_13 = new Font("Inter", Font.PLAIN, 13);
 
-    public InfoCliente() {
+    public InfoCliente() 
+    {
         setTitle("Información de Cliente");
         setMinimumSize(new Dimension(1000, 750));
         setSize(1000, 750);
@@ -26,10 +31,12 @@ public class InfoCliente extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        try {
+        try 
+        {
             URL urlLogo = obtenerRecurso("/img/logo3.png");
             if (urlLogo != null) setIconImage(Toolkit.getDefaultToolkit().getImage(urlLogo));
-        } catch(Exception e) {}
+        } 
+        catch(Exception e) {}
 
         JPanel sidebar = new JPanel();
         sidebar.setPreferredSize(new Dimension(160, 0));
@@ -62,11 +69,7 @@ public class InfoCliente extends JFrame {
 
         JLabel lblTituloSuperior = new JLabel("Información de cliente", SwingConstants.CENTER);
         lblTituloSuperior.setFont(INTER_BOLD_20);
-        
         lblTituloSuperior.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 50)); 
-        
-        header.add(lblTituloSuperior, BorderLayout.CENTER);
-        
         header.add(lblTituloSuperior, BorderLayout.CENTER);
 
         lblLogoDerecha = new JLabel();
@@ -83,6 +86,24 @@ public class InfoCliente extends JFrame {
         lblFoto.setOpaque(true);
         lblFoto.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
         
+        lblFoto.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseClicked(MouseEvent e)
+            {
+                if (modoEdicion)
+                {
+                    JFileChooser selector = new JFileChooser();
+                    selector.setFileFilter(new FileNameExtensionFilter("Imágenes", "jpg", "png", "jpeg"));
+                    if (selector.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
+                    {
+                        rutaFotoActual = selector.getSelectedFile().getAbsolutePath();
+                        setImagenCliente(rutaFotoActual);
+                    }
+                }
+            }
+        });
+
         gbc.gridy = 1; gbc.fill = GridBagConstraints.NONE;
         mainPanel.add(lblFoto, gbc);
 
@@ -91,14 +112,13 @@ public class InfoCliente extends JFrame {
         card.setBackground(Color.WHITE);
         card.setBorder(new LineBorder(new Color(200, 200, 200), 1, true));
 
-        lblNombreValor = new JLabel("", SwingConstants.CENTER);
-        lblNombreValor.setFont(INTER_BOLD_16);
-        lblNombreValor.setBounds(0, 35, 780, 20);
-        card.add(lblNombreValor);
+        txtNombres = CampoEditable(card, "Nombres:", "", 140, 10, 240);
+        txtApellidos = CampoEditable(card, "Apellidos:", "", 400, 10, 240);
+        txtId = CampoEditable(card, "ID del Cliente:", "", 140, 80, 240);
+        txtFecha = CampoEditable(card, "Fecha de nacimiento:", "", 400, 80, 240);
+        txtTelefono = CampoEditable(card, "Teléfono:", "", 270, 150, 240);
 
-        txtId = CampoEditable(card, "ID del Cliente:", "", 140, 70, 180);
-        txtFecha = CampoEditable(card, "Fecha de nacimiento:", "", 460, 70, 180);
-        txtTelefono = CampoEditable(card, "Teléfono:", "", 300, 145, 180);
+        txtId.setEditable(false);
 
         btnHistoVentas = crearBotonRedondeado("Historial de ventas", new Color(45, 62, 80), Color.WHITE, 15);
         btnHistoVentas.setBounds(50, 225, 180, 35);
@@ -120,45 +140,100 @@ public class InfoCliente extends JFrame {
         mainPanel.add(card, gbc);
 
         btnEditar = crearBotonRedondeado("Editar Cliente", new Color(0, 170, 255), Color.WHITE, 25);
-        btnEditar.setPreferredSize(new Dimension(160, 40));
+        btnEditar.setPreferredSize(new Dimension(200, 40));
         btnEditar.setFont(INTER_BOLD_14);
 
         gbc.gridy = 3; gbc.fill = GridBagConstraints.NONE; gbc.insets = new Insets(20, 20, 20, 20);
         mainPanel.add(btnEditar, gbc);
     }
 
-    private URL obtenerRecurso(String ruta) {
+    private URL obtenerRecurso(String ruta) 
+    {
         URL url = getClass().getResource(ruta);
-        if (url == null) {
+        if (url == null) 
+        {
             String limpia = ruta.startsWith("/") ? ruta.substring(1) : ruta;
             url = getClass().getClassLoader().getResource(limpia);
         }
         return url;
     }
 
-    public void setDatosCliente(String nombre, String id, String telefono, String fechaNacimiento) {
-        this.lblNombreValor.setText(nombre);
+    public void setDatosCliente(String nombres, String apellidos, String id, String telefono, String fechaNacimiento) 
+    {
+        this.txtNombres.setText(nombres);
+        this.txtApellidos.setText(apellidos);
         this.txtId.setText(id);
         this.txtTelefono.setText(telefono);
         this.txtFecha.setText(fechaNacimiento);
     }
 
-    public void setImagenCliente(String ruta) {
-        try {
-            URL url = obtenerRecurso(ruta);
-            if (url != null) {
-                ImageIcon icon = new ImageIcon(new ImageIcon(url).getImage()
-                        .getScaledInstance(120, 120, Image.SCALE_SMOOTH));
-                this.lblFoto.setIcon(icon);
-            } else {
-                this.lblFoto.setIcon(null);
+    public void setImagenCliente(String ruta) 
+    {
+        this.rutaFotoActual = ruta;
+        try 
+        {
+            ImageIcon icon = null;
+            if (ruta != null && ruta.startsWith("/")) 
+            {
+                URL url = obtenerRecurso(ruta);
+                if (url != null) icon = new ImageIcon(url);
+            } 
+            else if (ruta != null && !ruta.isEmpty()) 
+            {
+                icon = new ImageIcon(ruta);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+
+            if (icon != null && icon.getIconWidth() > 0) 
+            {
+                Image img = icon.getImage().getScaledInstance(120, 120, Image.SCALE_SMOOTH);
+                this.lblFoto.setIcon(new ImageIcon(img));
+            } 
+            else 
+            {
+                URL url = obtenerRecurso("/img/placeholder_usuario.png");
+                if (url != null) 
+                {
+                    Image img = new ImageIcon(url).getImage().getScaledInstance(120, 120, Image.SCALE_SMOOTH);
+                    this.lblFoto.setIcon(new ImageIcon(img));
+                } 
+                else 
+                {
+                    this.lblFoto.setIcon(null);
+                }
+            }
+        } 
+        catch (Exception e) 
+        {
+            this.lblFoto.setIcon(null);
         }
     }
 
-    private JTextField CampoEditable(JPanel panel, String titulo, String valor, int x, int y, int w) {
+    public void toggleEdicion()
+    {
+        modoEdicion = !modoEdicion;
+        txtNombres.setEditable(modoEdicion);
+        txtApellidos.setEditable(modoEdicion);
+        txtTelefono.setEditable(modoEdicion);
+        txtFecha.setEditable(modoEdicion);
+        
+        if (modoEdicion)
+        {
+            btnEditar.setText("Guardar Cambios");
+            btnEditar.setBackground(new Color(46, 204, 113));
+            lblFoto.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            lblFoto.setBorder(BorderFactory.createLineBorder(new Color(0, 170, 255), 3));
+        }
+        else
+        {
+            btnEditar.setText("Editar Cliente");
+            btnEditar.setBackground(new Color(0, 170, 255));
+            lblFoto.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            lblFoto.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
+        }
+    }
+
+    private JTextField CampoEditable(JPanel panel, String titulo, String valor, int x, int y, int w) 
+    {
         JLabel lbl = new JLabel(titulo, SwingConstants.CENTER);
         lbl.setBounds(x, y, w, 20);
         lbl.setFont(INTER_BOLD_14);
@@ -174,20 +249,23 @@ public class InfoCliente extends JFrame {
         return txt;
     }
 
-    private JLabel Menu(JPanel panel, String texto, String ruta) {
+    private JLabel Menu(JPanel panel, String texto, String ruta) 
+    {
         JPanel item = new JPanel();
         item.setLayout(new BoxLayout(item, BoxLayout.Y_AXIS));
         item.setOpaque(false);
         item.setPreferredSize(new Dimension(140, 90));
 
         JLabel iconLabel = new JLabel();
-        try {
+        try 
+        {
             URL url = obtenerRecurso(ruta);
-            if (url != null) {
-                iconLabel.setIcon(new ImageIcon(new ImageIcon(url)
-                    .getImage().getScaledInstance(45, 45, Image.SCALE_SMOOTH)));
+            if (url != null) 
+            {
+                iconLabel.setIcon(new ImageIcon(new ImageIcon(url).getImage().getScaledInstance(45, 45, Image.SCALE_SMOOTH)));
             }
-        } catch(Exception e) {}
+        } 
+        catch(Exception e) {}
         iconLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel label = new JLabel(texto, SwingConstants.CENTER);
@@ -203,18 +281,22 @@ public class InfoCliente extends JFrame {
         return label;
     }
 
-    private JButton crearBotonRedondeado(String texto, Color bg, Color fg, int radio) {
-        JButton btn = new JButton(texto) {
+    private JButton crearBotonRedondeado(String texto, Color bg, Color fg, int radio) 
+    {
+        JButton btn = new JButton(texto) 
+        {
             @Override
-            protected void paintComponent(Graphics g) {
+            protected void paintComponent(Graphics g) 
+            {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(bg);
+                g2.setColor(getBackground());
                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), radio, radio);
                 g2.dispose();
                 super.paintComponent(g);
             }
         };
+        btn.setBackground(bg);
         btn.setForeground(fg);
         btn.setContentAreaFilled(false);
         btn.setBorderPainted(false);
@@ -223,24 +305,31 @@ public class InfoCliente extends JFrame {
         return btn;
     }
 
-    private void cargarIconoLabel(JLabel l, String p, int w, int h) {
-        try {
+    private void cargarIconoLabel(JLabel l, String p, int w, int h) 
+    {
+        try 
+        {
             URL u = obtenerRecurso(p);
             if (u != null) l.setIcon(new ImageIcon(new ImageIcon(u).getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH)));
-        } catch(Exception e) {}
+        } 
+        catch(Exception e) {}
     }
 
-    private void cargarIconoBoton(JButton b, String p, int w, int h) {
-        try {
+    private void cargarIconoBoton(JButton b, String p, int w, int h) 
+    {
+        try 
+        {
             URL u = obtenerRecurso(p);
             if (u != null) b.setIcon(new ImageIcon(new ImageIcon(u).getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH)));
-        } catch(Exception e) {}
+        } 
+        catch(Exception e) {}
     }
 
     public void mostrarError(String mensaje) { VentanaAlerta(mensaje, "/img/simbolotachaverde.png", new Color(220, 50, 50)); }
     public void mostrarExito(String mensaje) { VentanaAlerta(mensaje, "/img/palomitaverde.png", new Color(0, 51, 102)); }
 
-    private void VentanaAlerta(String mensaje, String rutaIcono, Color colorBoton) {
+    private void VentanaAlerta(String mensaje, String rutaIcono, Color colorBoton) 
+    {
         JDialog dialogo = new JDialog(this, true);
         dialogo.setUndecorated(true);
         dialogo.setSize(350, 205);
@@ -257,15 +346,18 @@ public class InfoCliente extends JFrame {
         lblMsg.setAlignmentX(Component.CENTER_ALIGNMENT);
         panelContenido.add(lblMsg);
         panelContenido.add(Box.createVerticalGlue());
-        try {
+        try 
+        {
             URL u = obtenerRecurso(rutaIcono);
-            if (u != null) {
+            if (u != null) 
+            {
                 ImageIcon img = new ImageIcon(new ImageIcon(u).getImage().getScaledInstance(65, 65, Image.SCALE_SMOOTH));
                 JLabel iconoCentro = new JLabel(img);
                 iconoCentro.setAlignmentX(Component.CENTER_ALIGNMENT);
                 panelContenido.add(iconoCentro);
             }
-        } catch (Exception e) {}
+        } 
+        catch (Exception e) {}
         panelContenido.add(Box.createVerticalGlue());
         JButton btnOk = crearBotonRedondeado("Aceptar", colorBoton, Color.WHITE, 20);
         btnOk.setPreferredSize(new Dimension(120, 38));

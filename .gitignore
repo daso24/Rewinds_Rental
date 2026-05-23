@@ -30,3 +30,6 @@ replay_pid*
 
 # Carpetas de compilación
 bin/
+
+# Credenciales
+config.properties

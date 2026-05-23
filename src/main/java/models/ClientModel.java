@@ -2,47 +2,192 @@ package models;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClientModel
 {
-    private ConexionBD conexionBD;
-
-    public ClientModel()
+    public boolean registrarCliente(String nombres, String apellidos, String telefono, String correo, String rutaFoto, String fechaNacimiento)
     {
-        this.conexionBD = new ConexionBD();
-    }
+        ConexionBD conexionBD = new ConexionBD();
+        Connection conexion = null;
+        PreparedStatement ps = null;
 
-    public boolean registrarCliente(String correo, String contrasena, String nombreCompleto, String telefono, String genero)
-    {
-        String[] partesNombre = nombreCompleto.split(" ", 2);
-        String nombres = partesNombre[0];
-        String apellidos = partesNombre.length > 1 ? partesNombre[1] : ""; 
-
-        String sql = "INSERT INTO CLIENTE (correo_electronico, contrasena, nombres, apellidos, nivel_fidelidad, telefono, genero) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        Connection con = conexionBD.conectar();
-        
-        try (PreparedStatement ps = con.prepareStatement(sql))
+        try
         {
-            ps.setString(1, correo);
-            ps.setString(2, contrasena);
-            ps.setString(3, nombres);
-            ps.setString(4, apellidos);
-            ps.setString(5, "Basico"); // Nivel por defecto
-            ps.setString(6, telefono);
-            ps.setString(7, genero);
-            
-            ps.execute();
-            return true;
+            conexion = conexionBD.conectar();
+            String sql = "INSERT INTO cliente (nombres, apellidos, telefono, correo_electronico, foto, contrasena, nivel_fidelidad, fecha_nacimiento) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            ps = conexion.prepareStatement(sql);
+            ps.setString(1, nombres);
+            ps.setString(2, apellidos);
+            ps.setString(3, telefono);
+            ps.setString(4, correo);
+            ps.setString(5, rutaFoto);
+            ps.setString(6, "1234");
+            ps.setString(7, "Basico");
+            ps.setString(8, fechaNacimiento);
+
+            return ps.executeUpdate() > 0;
         }
-        catch (SQLException e)
+        catch (Exception e)
         {
-            System.err.println("Error en el registro: " + e.getMessage());
             return false;
         }
         finally
         {
-            try { if (con != null) con.close(); } catch (SQLException e) { }
+            try { if (ps != null) ps.close(); if (conexion != null) conexion.close(); } catch (Exception ex) {}
+        }
+    }
+
+    public boolean registrarUsuario(String correo, String pass, String usuario, String telefono, String genero)
+    {
+        ConexionBD conexionBD = new ConexionBD();
+        Connection conexion = null;
+        PreparedStatement ps = null;
+
+        try
+        {
+            conexion = conexionBD.conectar();
+            String sql = "INSERT INTO usuarios (correo, password, usuario, telefono, genero) VALUES (?, ?, ?, ?, ?)";
+            ps = conexion.prepareStatement(sql);
+            ps.setString(1, correo);
+            ps.setString(2, pass);
+            ps.setString(3, usuario);
+            ps.setString(4, telefono);
+            ps.setString(5, genero);
+
+            return ps.executeUpdate() > 0;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+        finally
+        {
+            try { if (ps != null) ps.close(); if (conexion != null) conexion.close(); } catch (Exception ex) {}
+        }
+    }
+
+    public List<Object[]> obtenerClientes()
+    {
+        List<Object[]> lista = new ArrayList<>();
+        ConexionBD conexionBD = new ConexionBD();
+        Connection conexion = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try 
+        {
+            conexion = conexionBD.conectar();
+            String sql = "SELECT id_cliente, nombres, apellidos, foto FROM cliente";
+            ps = conexion.prepareStatement(sql);
+            rs = ps.executeQuery();
+
+            while (rs.next())
+            {
+                String nombreCompleto = rs.getString("nombres") + " " + rs.getString("apellidos");
+                String rutaFoto = rs.getString("foto");
+                lista.add(new Object[]{rs.getInt("id_cliente"), nombreCompleto, rutaFoto});
+            }
+        } 
+        catch (Exception e) 
+        {
+        }
+        finally
+        {
+            try { if (rs != null) rs.close(); if (ps != null) ps.close(); if (conexion != null) conexion.close(); } catch (Exception ex) {}
+        }
+
+        return lista;
+    }
+
+    public Object[] obtenerDetalleCliente(int idCliente)
+    {
+        ConexionBD conexionBD = new ConexionBD();
+        Connection conexion = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try 
+        {
+            conexion = conexionBD.conectar();
+            String sql = "SELECT nombres, apellidos, telefono, foto, fecha_nacimiento FROM cliente WHERE id_cliente = ?";
+            ps = conexion.prepareStatement(sql);
+            ps.setInt(1, idCliente);
+            rs = ps.executeQuery();
+
+            if (rs.next())
+            {
+                String nombres = rs.getString("nombres");
+                String apellidos = rs.getString("apellidos");
+                String telefono = rs.getString("telefono");
+                String rutaFoto = rs.getString("foto");
+                String fechaNac = rs.getString("fecha_nacimiento");
+                return new Object[]{nombres, apellidos, telefono, rutaFoto, fechaNac};
+            }
+        } 
+        catch (Exception e) 
+        {
+        }
+        finally
+        {
+            try { if (rs != null) rs.close(); if (ps != null) ps.close(); if (conexion != null) conexion.close(); } catch (Exception ex) {}
+        }
+        return null;
+    }
+
+    public boolean actualizarCliente(int idCliente, String nombres, String apellidos, String telefono, String fechaNac, String rutaFoto)
+    {
+        ConexionBD conexionBD = new ConexionBD();
+        Connection conexion = null;
+        PreparedStatement ps = null;
+
+        try
+        {
+            conexion = conexionBD.conectar();
+            String sql = "UPDATE cliente SET nombres = ?, apellidos = ?, telefono = ?, fecha_nacimiento = ?, foto = ? WHERE id_cliente = ?";
+            ps = conexion.prepareStatement(sql);
+            ps.setString(1, nombres);
+            ps.setString(2, apellidos);
+            ps.setString(3, telefono);
+            ps.setString(4, fechaNac);
+            ps.setString(5, rutaFoto);
+            ps.setInt(6, idCliente);
+            
+            return ps.executeUpdate() > 0;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+        finally
+        {
+            try { if (ps != null) ps.close(); if (conexion != null) conexion.close(); } catch (Exception ex) {}
+        }
+    }
+
+    public boolean eliminarCliente(int idCliente)
+    {
+        ConexionBD conexionBD = new ConexionBD();
+        Connection conexion = null;
+        PreparedStatement ps = null;
+
+        try
+        {
+            conexion = conexionBD.conectar();
+            String sql = "DELETE FROM cliente WHERE id_cliente = ?";
+            ps = conexion.prepareStatement(sql);
+            ps.setInt(1, idCliente);
+            return ps.executeUpdate() > 0;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+        finally
+        {
+            try { if (ps != null) ps.close(); if (conexion != null) conexion.close(); } catch (Exception ex) {}
         }
     }
 }

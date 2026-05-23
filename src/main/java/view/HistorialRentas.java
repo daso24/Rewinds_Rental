@@ -5,29 +5,33 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
 
-public class HistorialRentas extends JFrame {
-
+public class HistorialRentas extends JFrame 
+{
     public JButton btnAtras;
     public JLabel btnInicio, btnOperacion, btnClientes, btnVideojuegos, btnPeliculas;
     public JTable tabla;
     public DefaultTableModel modelo;
 
-    public HistorialRentas() {
+    public HistorialRentas() 
+    {
         setTitle("Historial de rentas del cliente");
         setMinimumSize(new Dimension(1100, 700));
         setSize(1100, 700);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        // CORRECCIÓN IMPORTANTE AQUÍ: DISPOSE_ON_CLOSE
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         getContentPane().setBackground(Color.WHITE);
 
-        try {
+        try 
+        {
             Image icono = new ImageIcon(getClass().getResource("/img/logo3.png")).getImage();
             this.setIconImage(icono);
-        } catch(Exception e) {}
+        } 
+        catch(Exception e) {}
 
         setLayout(new BorderLayout());
 
-        // --- SIDEBAR ---
         JPanel sidebar = new JPanel();
         sidebar.setPreferredSize(new Dimension(160, 0));
         sidebar.setBackground(new Color(0, 51, 102));
@@ -40,14 +44,15 @@ public class HistorialRentas extends JFrame {
         btnVideojuegos = Menu(sidebar, "Videojuegos", "/img/simbolovideojuegosazul.png");
         btnPeliculas = Menu(sidebar, "Peliculas", "/img/simbolopeliculasazul.png");
 
-        // --- MAIN CONTAINER ---
         JPanel mainContainer = new JPanel(new GridBagLayout());
         mainContainer.setOpaque(false);
         add(mainContainer, BorderLayout.CENTER);
 
-        JPanel panelFondo = new JPanel(null) {
+        JPanel panelFondo = new JPanel(null) 
+        {
             @Override
-            protected void paintComponent(Graphics g) {
+            protected void paintComponent(Graphics g) 
+            {
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -65,10 +70,11 @@ public class HistorialRentas extends JFrame {
         btnAtras = crearBotonRedondo("  Atrás", new Color(225, 225, 225), new Color(45, 59, 72));
         btnAtras.setBounds(25, 20, 110, 35);
         btnAtras.setFont(new Font("Inter", Font.BOLD, 13));
-        try {
-            btnAtras.setIcon(new ImageIcon(new ImageIcon(getClass().getResource("/img/lets-icons_back.png"))
-                    .getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)));
-        } catch (Exception e) {}
+        try 
+        {
+            btnAtras.setIcon(new ImageIcon(new ImageIcon(getClass().getResource("/img/lets-icons_back.png")).getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)));
+        } 
+        catch (Exception e) {}
         panelFondo.add(btnAtras);
 
         JLabel lblTitulo = new JLabel("Historial de rentas del cliente", SwingConstants.CENTER);
@@ -76,7 +82,6 @@ public class HistorialRentas extends JFrame {
         lblTitulo.setBounds(280, 20, 350, 35);
         panelFondo.add(lblTitulo);
 
-        // --- TABLA ---
         String[] columnas = {"Producto", "Plataforma", "Monto de pago", "Fecha de Renta", "Descuento"};
         Object[][] datos = {
             {"Dragon Ball Sparking Zero", "Playstation 5", "$1000.00", "08 / 07 / 2025", "0%"},
@@ -86,7 +91,8 @@ public class HistorialRentas extends JFrame {
             {"God of War Ragnarok", "Playstation 5", "$800.00", "08 / 11 / 2025", "0%"}
         };
 
-        modelo = new DefaultTableModel(datos, columnas) {
+        modelo = new DefaultTableModel(datos, columnas) 
+        {
             @Override
             public boolean isCellEditable(int row, int column) { return false; }
         };
@@ -112,8 +118,8 @@ public class HistorialRentas extends JFrame {
         panelFondo.add(scroll);
     }
 
-    // --- METODO MOSTRAR ALERTA ---
-    public void mostrarAlerta(String mensaje, boolean esError) {
+    public void mostrarAlerta(String mensaje, boolean esError) 
+    {
         JDialog dialogo = new JDialog(this, true);
         dialogo.setUndecorated(true);
         dialogo.setSize(350, 280);
@@ -149,16 +155,18 @@ public class HistorialRentas extends JFrame {
         dialogo.setVisible(true);
     }
 
-    public JLabel Menu(JPanel panel, String texto, String ruta) {
+    public JLabel Menu(JPanel panel, String texto, String ruta) 
+    {
         JPanel item = new JPanel();
         item.setLayout(new BoxLayout(item, BoxLayout.Y_AXIS));
         item.setOpaque(false);
         item.setPreferredSize(new Dimension(140, 90));
         JLabel iconLabel = new JLabel();
-        try {
-            iconLabel.setIcon(new ImageIcon(new ImageIcon(getClass().getResource(ruta))
-                .getImage().getScaledInstance(45, 45, Image.SCALE_SMOOTH)));
-        } catch(Exception e) {}
+        try 
+        {
+            iconLabel.setIcon(new ImageIcon(new ImageIcon(getClass().getResource(ruta)).getImage().getScaledInstance(45, 45, Image.SCALE_SMOOTH)));
+        } 
+        catch(Exception e) {}
         iconLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         JLabel label = new JLabel(texto, SwingConstants.CENTER);
         label.setForeground(new Color(4, 180, 255));
@@ -172,10 +180,13 @@ public class HistorialRentas extends JFrame {
         return label;
     }
 
-    private JButton crearBotonRedondo(String texto, Color bg, Color fg) {
-        JButton btn = new JButton(texto) {
+    private JButton crearBotonRedondo(String texto, Color bg, Color fg) 
+    {
+        JButton btn = new JButton(texto) 
+        {
             @Override
-            protected void paintComponent(Graphics g) {
+            protected void paintComponent(Graphics g) 
+            {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setColor(bg);
