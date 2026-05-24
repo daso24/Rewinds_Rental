@@ -34,6 +34,6 @@ bin/
 # Credenciales
 config.properties
 
-# Pdfs
-pdfs/
+# Ignorar PDFs generados por el sistema
+src/main/java/pdfs/
 *.pdf
