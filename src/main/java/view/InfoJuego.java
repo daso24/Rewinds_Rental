@@ -2,20 +2,25 @@ package view;
 
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.table.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.awt.geom.RoundRectangle2D;
 import java.net.URL;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
-public class InfoJuego extends JFrame {
-
+public class InfoJuego extends JFrame
+{
     public JLabel btnInicio, btnOperacion, btnClientes, btnVideojuegos, btnPeliculas;
     public JButton btnAtras, btnDescargar, btnEditar;
     public JTextField txtNombreProd, txtIdProd, txtPlataforma, txtGenero, txtStock;
     public JTextField txtTipoProd, txtPrecioVenta, txtPrecioRenta, txtDescuento, txtClasificacion, txtAnio, txtStockRenta;
     public JLabel lblImg;
+    public String rutaFotoNueva = "";
+    public boolean enModoEdicion = false;
 
-    public InfoJuego() {
+    public InfoJuego()
+    {
         setTitle("Información de Videojuego");
         setMinimumSize(new Dimension(1000, 700));
         setSize(1000, 700);
@@ -24,9 +29,13 @@ public class InfoJuego extends JFrame {
         setResizable(true);
         setLayout(new BorderLayout());
 
-        try {
+        try
+        {
             setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/img/logo3.png")));
-        } catch (Exception e) {}
+        }
+        catch (Exception e)
+        {
+        }
 
         JPanel sidebar = new JPanel();
         sidebar.setPreferredSize(new Dimension(160, 0));
@@ -71,17 +80,16 @@ public class InfoJuego extends JFrame {
         gbc.gridx = 0; gbc.gridy = 0; gbc.weightx = 1.0; gbc.weighty = 0.0;
         mainPanel.add(header, gbc);
 
-        JPanel panelGris = new JPanel(null) {
+        JPanel panelGris = new JPanel(null)
+        {
             @Override
-            protected void paintComponent(Graphics g) {
+            protected void paintComponent(Graphics g)
+            {
                 super.paintComponent(g);
-
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
                 g2.setColor(new Color(217, 217, 217));
                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
-
                 g2.dispose();
             }
         };
@@ -111,6 +119,29 @@ public class InfoJuego extends JFrame {
         lblImg.setBackground(Color.LIGHT_GRAY);
         lblImg.setHorizontalAlignment(SwingConstants.CENTER);
         lblImg.setOpaque(true);
+
+        lblImg.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseClicked(MouseEvent e)
+            {
+                if (enModoEdicion)
+                {
+                    JFileChooser selector = new JFileChooser();
+                    selector.setFileFilter(new FileNameExtensionFilter("Imágenes", "jpg", "png", "jpeg"));
+                    
+                    if (selector.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
+                    {
+                        rutaFotoNueva = selector.getSelectedFile().getAbsolutePath();
+                        ImageIcon icon = new ImageIcon(rutaFotoNueva);
+                        Image img = icon.getImage().getScaledInstance(lblImg.getWidth(), lblImg.getHeight(), Image.SCALE_SMOOTH);
+                        lblImg.setIcon(new ImageIcon(img));
+                        lblImg.setText("");
+                    }
+                }
+            }
+        });
+
         panelGris.add(lblImg);
 
         txtClasificacion = crearCampo(panelGris, "Clasificación:", 500, 335, 120);
@@ -138,7 +169,8 @@ public class InfoJuego extends JFrame {
         mainPanel.add(panelGris, gbc);
     }
 
-    public InfoJuego setDatosJuego(String nombre, String id, String tipo, String plataforma, String precioVenta, String descuento, String stockVenta, String stockRenta, String precioRenta, String clasificacion, String anio, String genero, String caratula) {
+    public void setDatosJuego(String nombre, String id, String tipo, String plataforma, String precioVenta, String descuento, String stockVenta, String stockRenta, String precioRenta, String clasificacion, String anio, String genero, String caratula)
+    {
         txtNombreProd.setText(nombre);
         txtIdProd.setText(id);
         txtTipoProd.setText(tipo);
@@ -151,64 +183,68 @@ public class InfoJuego extends JFrame {
         txtClasificacion.setText(clasificacion);
         txtAnio.setText(anio);
         txtGenero.setText(genero);
-        
         cargarImagenPortada(caratula);
-        return this;
     }
 
-    private void cargarImagenPortada(String caratula) {
-        try {
-            if (caratula == null || caratula.trim().isEmpty()) {
+    public void cargarImagenPortada(String caratula)
+    {
+        try
+        {
+            if (caratula == null || caratula.trim().isEmpty())
+            {
                 lblImg.setIcon(null);
                 lblImg.setText("Sin portada disponible");
                 return;
             }
-
             String nombreArchivo = caratula.trim();
-            
-            if (nombreArchivo.contains("/img/")) {
+            if (nombreArchivo.contains("/img/"))
+            {
                 int index = nombreArchivo.indexOf("/img/");
                 nombreArchivo = nombreArchivo.substring(index + 5);
-            } else if (nombreArchivo.contains("img/")) {
+            }
+            else if (nombreArchivo.contains("img/"))
+            {
                 int index = nombreArchivo.indexOf("img/");
                 nombreArchivo = nombreArchivo.substring(index + 4);
             }
-            
-            nombreArchivo = nombreArchivo.replace("\"", "")
-                                         .replace("'", "")
-                                         .trim();
-
+            nombreArchivo = nombreArchivo.replace("\"", "").replace("'", "").trim();
             String rutaFinal = "/img/" + nombreArchivo;
             URL urlImg = getClass().getResource(rutaFinal);
-            
-            if (urlImg != null) {
+            if (urlImg != null)
+            {
                 ImageIcon portada = new ImageIcon(new ImageIcon(urlImg).getImage().getScaledInstance(260, 280, Image.SCALE_SMOOTH));
                 lblImg.setIcon(portada);
                 lblImg.setText("");
-            } else {
-                lblImg.setIcon(null);
-                lblImg.setText("<html><center>No se encontró:<br>" + nombreArchivo + "</center></html>");
-                lblImg.setFont(new Font("Arial", Font.ITALIC, 11));
             }
-        } catch (Exception e) {
-            lblImg.setIcon(null);
+            else
+            {
+                java.io.File archivoExterno = new java.io.File(caratula);
+                if (archivoExterno.exists())
+                {
+                    ImageIcon portadaExt = new ImageIcon(new ImageIcon(caratula).getImage().getScaledInstance(260, 280, Image.SCALE_SMOOTH));
+                    lblImg.setIcon(portadaExt);
+                    lblImg.setText("");
+                }
+                else
+                {
+                    lblImg.setIcon(null);
+                    lblImg.setText("<html><center>No se encontró:<br>" + nombreArchivo + "</center></html>");
+                }
+            }
+        }
+        catch (Exception e)
+        {
             lblImg.setText("Error al cargar imagen");
         }
     }
 
-    public void mostrarAvisoDescarga(String mensaje) {
-        mostrarPopUpGris(mensaje, new Color(130, 130, 130), "/img/mingcute_warning-fill.png", null);
+    public void setModoEdicionActivo(boolean activo)
+    {
+        enModoEdicion = activo;
     }
 
-    public void mostrarExito(String mensaje) {
-        mostrarPopUpGris(mensaje, new Color(50, 180, 50), "/img/palomitaverde.png", null);
-    }
-
-    public void mostrarConfirmacion(String mensaje, ActionListener accionSi) {
-        mostrarPopUpGris(mensaje, new Color(0, 51, 102), "/img/palomitaverde.png", accionSi);
-    }
-
-    private void mostrarPopUpGris(String mensaje, Color colorBoton, String rutaIcono, ActionListener accionSi) {
+    public void mostrarConfirmacion(String mensaje, ActionListener accionSi)
+    {
         JDialog dialogo = new JDialog(this, true);
         dialogo.setUndecorated(true);
         dialogo.setSize(350, 205);
@@ -228,64 +264,34 @@ public class InfoJuego extends JFrame {
         contenido.add(lblMsg);
         contenido.add(Box.createVerticalGlue());
         
-        try {
-            ImageIcon img = new ImageIcon(new ImageIcon(getClass().getResource(rutaIcono)).getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH));
-            JLabel lblIcono = new JLabel(img);
-            lblIcono.setAlignmentX(Component.CENTER_ALIGNMENT);
-            contenido.add(lblIcono);
-        } catch (Exception e) {}
+        JButton btnSi = new JButton("Confirmar");
+        btnSi.setPreferredSize(new Dimension(110, 35));
+        btnSi.setBackground(new Color(0, 51, 102));
+        btnSi.setForeground(Color.WHITE);
+        btnSi.addActionListener(e -> { accionSi.actionPerformed(e); dialogo.dispose(); });
         
-        contenido.add(Box.createVerticalGlue());
-        
-        JPanel pBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 15));
-        pBotones.setOpaque(false);
-
-        if (accionSi != null) {
-            JButton btnSi = new JButton("Confirmar");
-            btnSi.setPreferredSize(new Dimension(110, 35));
-            btnSi.setBackground(colorBoton);
-            btnSi.setForeground(Color.WHITE);
-            btnSi.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            btnSi.addActionListener(e -> {
-                accionSi.actionPerformed(e);
-                dialogo.dispose();
-            });
-            
-            JButton btnNo = new JButton("Cancelar");
-            btnNo.setPreferredSize(new Dimension(110, 35));
-            btnNo.setBackground(new Color(150, 150, 150));
-            btnNo.setForeground(Color.WHITE);
-            btnNo.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            btnNo.addActionListener(e -> dialogo.dispose());
-            
-            pBotones.add(btnSi);
-            pBotones.add(btnNo);
-        } else {
-            JButton btnOk = new JButton("Aceptar");
-            btnOk.setPreferredSize(new Dimension(120, 35));
-            btnOk.setBackground(colorBoton);
-            btnOk.setForeground(Color.WHITE);
-            btnOk.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            btnOk.addActionListener(e -> dialogo.dispose());
-            pBotones.add(btnOk);
-        }
+        JPanel pBot = new JPanel(new FlowLayout());
+        pBot.setOpaque(false);
+        pBot.add(btnSi);
         
         contenedor.add(contenido, BorderLayout.CENTER);
-        contenedor.add(pBotones, BorderLayout.SOUTH);
+        contenedor.add(pBot, BorderLayout.SOUTH);
         dialogo.add(contenedor);
         dialogo.setVisible(true);
     }
 
-    public JLabel Menu(JPanel panel, String texto, String ruta) {
+    public JLabel Menu(JPanel panel, String texto, String ruta)
+    {
         JPanel item = new JPanel();
         item.setLayout(new BoxLayout(item, BoxLayout.Y_AXIS));
         item.setOpaque(false);
         item.setPreferredSize(new Dimension(140, 90));
         JLabel iconLabel = new JLabel();
-        try { 
-            iconLabel.setIcon(new ImageIcon(new ImageIcon(getClass().getResource(ruta))
-                .getImage().getScaledInstance(45, 45, Image.SCALE_SMOOTH))); 
-        } catch (Exception e) {}
+        try
+        { 
+            iconLabel.setIcon(new ImageIcon(new ImageIcon(getClass().getResource(ruta)).getImage().getScaledInstance(45, 45, Image.SCALE_SMOOTH))); 
+        }
+        catch (Exception e) {}
         iconLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         JLabel label = new JLabel(texto, SwingConstants.CENTER);
         label.setForeground(new Color(4, 180, 255)); 
@@ -299,7 +305,8 @@ public class InfoJuego extends JFrame {
         return label;
     }
 
-    private JTextField crearCampo(JPanel p, String titulo, int x, int y, int w) {
+    private JTextField crearCampo(JPanel p, String titulo, int x, int y, int w)
+    {
         JLabel lbl = new JLabel(titulo);
         lbl.setBounds(x, y, w + 50, 20);
         lbl.setFont(new Font("Arial", Font.BOLD, 13));
@@ -313,26 +320,35 @@ public class InfoJuego extends JFrame {
         return tf;
     }
 
-    private void cargarIconoLabel(JLabel l, String p, int w, int h) {
-        try {
+    private void cargarIconoLabel(JLabel l, String p, int w, int h)
+    {
+        try
+        {
             URL u = getClass().getResource(p);
             if (u != null) l.setIcon(new ImageIcon(new ImageIcon(u).getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH)));
-        } catch (Exception e) {}
+        }
+        catch (Exception e) {}
     }
 
-    private void cargarIconoBoton(JButton b, String p, int w, int h) {
-        try {
+    private void cargarIconoBoton(JButton b, String p, int w, int h)
+    {
+        try
+        {
             URL u = getClass().getResource(p);
-            if (u != null) {
+            if (u != null)
+            {
                 b.setIcon(new ImageIcon(new ImageIcon(u).getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH)));
                 b.setHorizontalTextPosition(SwingConstants.LEADING);
             }
-        } catch (Exception e) {}
+        }
+        catch (Exception e) {}
     }
 
-    class RoundedButton extends JButton {
+    class RoundedButton extends JButton
+    {
         private int radius;
-        public RoundedButton(String label, int radius) {
+        public RoundedButton(String label, int radius)
+        {
             super(label);
             this.radius = radius;
             setContentAreaFilled(false);
@@ -340,7 +356,8 @@ public class InfoJuego extends JFrame {
             setBorderPainted(false);
         }
         @Override
-        protected void paintComponent(Graphics g) {
+        protected void paintComponent(Graphics g)
+        {
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2.setColor(getBackground());
@@ -348,5 +365,23 @@ public class InfoJuego extends JFrame {
             super.paintComponent(g2);
             g2.dispose();
         }
+    }
+    public void cargarDatos(Object[] datos)
+    {
+        
+        txtIdProd.setText(String.valueOf(datos[0]));
+        txtNombreProd.setText(String.valueOf(datos[1]));
+        txtTipoProd.setText("Videojuego");
+        txtPlataforma.setText(String.valueOf(datos[2]));
+        txtPrecioVenta.setText("$" + datos[3]);
+        txtPrecioRenta.setText("$" + datos[4]);
+        txtDescuento.setText(String.valueOf(datos[5]) + "%");
+        txtStock.setText(String.valueOf(datos[6]));
+        txtStockRenta.setText(String.valueOf(datos[7]));
+        txtClasificacion.setText(String.valueOf(datos[8]));
+        txtAnio.setText(String.valueOf(datos[9]));
+        txtGenero.setText("Acción"); // O el índice que corresponda
+        
+        cargarImagenPortada((String) datos[10]);
     }
 }

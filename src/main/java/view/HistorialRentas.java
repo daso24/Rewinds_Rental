@@ -17,8 +17,6 @@ public class HistorialRentas extends JFrame
         setTitle("Historial de rentas del cliente");
         setMinimumSize(new Dimension(1100, 700));
         setSize(1100, 700);
-        
-        // CORRECCIÓN IMPORTANTE AQUÍ: DISPOSE_ON_CLOSE
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         getContentPane().setBackground(Color.WHITE);
@@ -83,15 +81,8 @@ public class HistorialRentas extends JFrame
         panelFondo.add(lblTitulo);
 
         String[] columnas = {"Producto", "Plataforma", "Monto de pago", "Fecha de Renta", "Descuento"};
-        Object[][] datos = {
-            {"Dragon Ball Sparking Zero", "Playstation 5", "$1000.00", "08 / 07 / 2025", "0%"},
-            {"Spider-man Into the Spiderverse", "Blu-Ray", "$250.00", "02 / 02 / 2026", "0%"},
-            {"Volver al Futuro", "DVD", "$250.00", "20 / 01 / 2026", "30%"},
-            {"Superman (James Gunn)", "Blu-Ray", "$500.00", "08 / 07 / 2025", "0%"},
-            {"God of War Ragnarok", "Playstation 5", "$800.00", "08 / 11 / 2025", "0%"}
-        };
-
-        modelo = new DefaultTableModel(datos, columnas) 
+        
+        modelo = new DefaultTableModel(null, columnas) 
         {
             @Override
             public boolean isCellEditable(int row, int column) { return false; }

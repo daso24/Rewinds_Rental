@@ -10,6 +10,9 @@ public class principal extends JFrame
 {
     public JLabel btnInicio, btnOperacion, btnClientes, btnVideojuegos, btnPeliculas, logoutBtn, lblUsuario;
     public JButton btnVerClientes, btnVerRentas, btnVerJuegosComprados, btnVerJuegosRentados, btnVerPelisCompradas, btnVerPelisRentadas;
+    public JLabel lblTotalClientes, lblTotalOperaciones;
+    
+    public JLabel lblPeliMasComprado, lblPeliMasRentado, lblJuegoMasComprado, lblJuegoMasRentado;
 
     public principal()
     {
@@ -244,9 +247,19 @@ public class principal extends JFrame
 
         JLabel t = new JLabel(titulo, SwingConstants.CENTER);
         t.setFont(new Font("Inter", Font.BOLD, 18));
+        
         JLabel n = new JLabel(numero, SwingConstants.CENTER);
         n.setForeground(new Color(4, 180, 255));
         n.setFont(new Font("Inter", Font.BOLD, 26));
+
+        if (titulo.equals("Clientes"))
+        {
+            this.lblTotalClientes = n;
+        }
+        else if (titulo.equals("Rentas y Ventas"))
+        {
+            this.lblTotalOperaciones = n;
+        }
 
         JButton btn = crearBotonRedondo("Ver", new Color(4, 180, 255), 80, 30);
         JPanel pBtn = new JPanel(new FlowLayout());
@@ -275,6 +288,15 @@ public class principal extends JFrame
         JLabel m2 = new JLabel("Más Rentado", SwingConstants.CENTER);
         m2.setFont(new Font("Inter", Font.PLAIN, 11));
         pLabels.add(m1); pLabels.add(m2);
+
+        // Vinculamos los labels para que el controlador pueda cambiarlos
+        if (titulo.equals("Películas")) {
+            this.lblPeliMasComprado = m1;
+            this.lblPeliMasRentado = m2;
+        } else {
+            this.lblJuegoMasComprado = m1;
+            this.lblJuegoMasRentado = m2;
+        }
 
         JPanel pBtns = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
         pBtns.setOpaque(false);

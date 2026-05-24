@@ -33,3 +33,7 @@ bin/
 
 # Credenciales
 config.properties
+
+# Pdfs
+pdfs/
+*.pdf

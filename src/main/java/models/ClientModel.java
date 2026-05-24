@@ -190,4 +190,38 @@ public class ClientModel
             try { if (ps != null) ps.close(); if (conexion != null) conexion.close(); } catch (Exception ex) {}
         }
     }
+    
+    public int obtenerTotalClientes()
+    {
+        ConexionBD conexionBD = new ConexionBD();
+        Connection conexion = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try
+        {
+            conexion = conexionBD.conectar();
+            String sql = "SELECT COUNT(*) FROM cliente";
+            ps = conexion.prepareStatement(sql);
+            rs = ps.executeQuery();
+            
+            if (rs.next())
+            {
+                return rs.getInt(1);
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            try { if (rs != null) rs.close(); if (ps != null) ps.close(); if (conexion != null) conexion.close(); } catch (Exception ex) {}
+        }
+        return 0;
+    }
+    
+    
+    
+    
 }

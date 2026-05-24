@@ -287,4 +287,24 @@ public class AñadirOperacion extends JFrame {
             g2.dispose();
         }
     }
+    public void setImagenProducto(Object origenImagen)
+    {
+        if (origenImagen == null)
+        {
+        	lblFoto.setIcon(null);
+            return;
+        }
+        ImageIcon iconoOriginal = null;
+        if (origenImagen instanceof String)
+        {
+            java.net.URL url = getClass().getResource(origenImagen.toString());
+            if (url != null) iconoOriginal = new ImageIcon(url);
+            else if (new java.io.File(origenImagen.toString()).exists()) iconoOriginal = new ImageIcon(origenImagen.toString());
+        }
+        if (iconoOriginal != null)
+        {
+            Image imagenEscalada = iconoOriginal.getImage().getScaledInstance(lblFoto.getWidth(), lblFoto.getHeight(), Image.SCALE_SMOOTH);
+            lblFoto.setIcon(new ImageIcon(imagenEscalada));
+        }
+    }
 }
