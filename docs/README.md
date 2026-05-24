@@ -1,39 +1,52 @@
 # Proyecto Rewinds Rentals
 
-Usuario para entrar al programa(login): usuario: admin, contraseña: 1234
-
 **Descripción**
+El proyecto consiste en el diseño y desarrollo de una plataforma administrativa orientada a la gestión de operaciones de un establecimiento de renta y venta de videojuegos y contenido multimedia. El sistema permite un control integral sobre el inventario, la base de datos de clientes y las transacciones financieras.
 
-El proyecto consiste en el diseño y desarrollo de una plataforma administrativa orientada a la gestión de operaciones de un establecimiento de renta y venta de videojuegos y contenido multimedia. El sistema está diseñado específicamente para ser utilizado por los empleados del establecimiento, permitiendo un control integral sobre el inventario, los clientes y las transacciones financieras.
+## 🛠️ Tecnologías Utilizadas
+* **Lenguaje:** Java (JDK 21+)
+* **IDE:** Eclipse
+* **Control de Versiones:** Git / GitHub
+* **Diseño:** Figma
 
-**Módulos del Sistema**
+## 📚 Dependencias del Proyecto
+El proyecto requiere las siguientes librerías externas configuradas en el *Build Path*:
 
-Siguiendo el modelo diseñado en Figma, la plataforma incluye los siguientes módulos y funcionalidades:
+* **Base de datos:** `mysql-connector-j-8.4.0.jar`
+* **Generación de PDFs (iText Suite):** *
+    * `commons-7.2.5.jar`
+    * `io-7.2.5.jar`
+    * `kernel-7.2.5.jar`
+    * `layout-7.2.5.jar`
+    * `slf4j-api-1.7.36.jar`
 
-* Autenticación: Pantallas de inicio de sesión y registro.
-* Inicio: Panel principal de navegación.
-* Módulo de Operación: Gestión de las transacciones diarias.
-* Módulo de Clientes: Administración de la base de datos de socios.
-* Módulo de Videojuegos: Control del catálogo de juegos.
-* Módulo de Películas: Gestión del inventario multimedia.
 
-Dentro de cada sección se pueden ejecutar acciones clave como visualizar información detallada de clientes, añadir nuevos videojuegos al sistema y procesar operaciones de renta o venta.
+## 🚀 Requisitos Previos
+* Las librerías listadas anteriormente deben estar agregadas al *Build Path* de tu proyecto en Eclipse. Puedes encontrar las librerías en la carpeta `lib`
 
-**Diseño y Frontend**
+## 📥 Instalación y Configuración (Importante)
+Para asegurar el correcto funcionamiento del sistema y la generación de archivos, sigue estos pasos:
 
-La interfaz de usuario se está implementando bajo los siguientes parámetros estéticos y técnicos:
+1. **Estructura de paquetes:** Al importar el proyecto, verifica la ruta de los archivos fuente.
+    * **Nota sobre la carpeta de origen:** Si al importar observas una carpeta llamada `java` fuera de `src/main`, muévela dentro de `src/main/` para que la ruta sea `src/main/java`.
+    * **Carpeta de reportes:** El sistema genera archivos PDF automáticamente en `src/main/java/pdfs`.
 
-* Prototipo: Diseñado para una resolución de 1440 x 1024 píxeles o similares.
-* Tipografía: Se utiliza la fuente Inter para garantizar una visualización clara y profesional.
-* Estructura: El desarrollo se organiza mediante el paquete view para separar la interfaz de la lógica de control.
+## 🔑 Instrucciones de Ejecución
+1. Ejecuta la clase `Main` (o la clase de inicio de sesión).
+2. **Credenciales de acceso:**
+   * **Usuario:** `prueba@gmail.com`
+   * **Contraseña:** `1234`
 
-**Tecnologías Utilizadas**
+## 📑 Funcionalidades Principales
+* **Autenticación:** Sistema de login seguro.
+* **Módulos de Gestión:**
+    * **Operación:** Registro y detalle de transacciones (Renta/Venta).
+    * **Clientes:** Base de datos de socios con edición de perfiles.
+    * **Videojuegos & Películas:** Catálogos interactivos con gestión de stock y detalles.
+* **Generación de Reportes:** El sistema permite exportar a **PDF** fichas técnicas y tarjetas de cliente.
+    * Los archivos generados se guardan automáticamente en la carpeta `pdfs/` dentro de tu proyecto. 
 
-* Lenguaje: Java
-* IDE: Eclipse
-* Control de Versiones: Git / GitHub
-* Diseño: Figma
-
-**Requisito Obligatorio (importante):**
-Antes de usar por favor revise que no se haya creado una carpeta llamada java donde tenga los archivos iguales a los de carpeta src/main/java, en caso de ser asi favor de poner los archivos de la carpeta java en su respectivo lugar en la carpeta src/main/java, arrástrelos y dele yes to all.
-
+## 🎨 Diseño y Frontend
+* **Prototipo:** Implementado bajo un diseño UI moderno basado en Figma.
+* **Tipografía:** Inter (limpia y profesional).
+* **Interacción:** Interfaz intuitiva con menús laterales y modales de confirmación personalizados.
