@@ -45,7 +45,6 @@ Para asegurar el correcto funcionamiento del sistema y la generación de archivo
     * **Videojuegos & Películas:** Catálogos interactivos con gestión de stock y detalles.
 * **Generación de Reportes:** El sistema permite exportar a **PDF** fichas técnicas y tarjetas de cliente.
     * Los archivos generados se guardan automáticamente en la carpeta `pdfs/` dentro de tu proyecto. 
-    * *Tip:* Si no ves el archivo recién generado en Eclipse, haz clic derecho sobre la carpeta `pdfs` y selecciona **Refresh (F5)**.
 
 ## 🎨 Diseño y Frontend
 * **Prototipo:** Implementado bajo un diseño UI moderno basado en Figma.
