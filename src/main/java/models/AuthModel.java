@@ -16,7 +16,7 @@ public class AuthModel
 
     public String validarLogin(String correo, String contrasena)
     {
-        String sql = "SELECT nombres FROM CLIENTE WHERE correo_electronico = ? AND contrasena = ?";
+        String sql = "SELECT nombres FROM cliente WHERE correo_electronico = ? AND contrasena = ?";
         Connection con = conexionBD.conectar();
         
         try (PreparedStatement ps = con.prepareStatement(sql))

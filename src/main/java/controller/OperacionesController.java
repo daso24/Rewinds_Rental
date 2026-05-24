@@ -54,9 +54,9 @@ public class OperacionesController
             listaOperaciones = modelo.obtenerOperaciones();
             
             Icon iconInfo = getImgPequeño("/img/Vector.png");
-            Icon iconUser = escalarImagenHD(new ImageIcon(getClass().getResource("/img/placeholder_usuario.png")).getImage(), 35, 35);
             Icon iconGame = getImgPequeño("/img/carbon_game-console.png");
             Icon iconMovie = getImgPequeño("/img/fluent_movies-and-tv-16-filled.png");
+            Image defaultUserImage = new ImageIcon(getClass().getResource("/img/placeholder_usuario.png")).getImage();
 
             for (Object[] op : listaOperaciones)
             {
@@ -65,8 +65,35 @@ public class OperacionesController
                 String tipoProd = (String) op[3];
                 String titulo = (String) op[4];
                 int idProd = (int) op[7];
+                String rutaFotoCliente = (op.length > 13) ? (String) op[13] : null;
 
                 Icon iconTipo = tipoProd.equals("Videojuego") ? iconGame : iconMovie;
+                Icon iconUser = null;
+
+                if (rutaFotoCliente != null && !rutaFotoCliente.trim().isEmpty())
+                {
+                    try
+                    {
+                        ImageIcon iconOriginal;
+                        if (rutaFotoCliente.startsWith("/"))
+                        {
+                            iconOriginal = new ImageIcon(getClass().getResource(rutaFotoCliente));
+                        }
+                        else
+                        {
+                            iconOriginal = new ImageIcon(rutaFotoCliente);
+                        }
+                        iconUser = escalarImagenHD(iconOriginal.getImage(), 35, 35);
+                    }
+                    catch (Exception e)
+                    {
+                        iconUser = escalarImagenHD(defaultUserImage, 35, 35);
+                    }
+                }
+                else
+                {
+                    iconUser = escalarImagenHD(defaultUserImage, 35, 35);
+                }
 
                 vista.modeloTabla.addRow(new Object[]{ false, new Object[]{iconUser, cliente}, tipoOp, titulo, new Object[]{iconTipo, tipoProd}, "ID: " + idProd, new Object[]{iconInfo, "Ver info"} });
             }
@@ -367,7 +394,7 @@ public class OperacionesController
             
             vInfo.btnDescargar.addActionListener(e -> 
             {
-            	String id = vInfo.txtIdOp.getText();
+                String id = vInfo.txtIdOp.getText();
                 String cliente = vInfo.txtNombreCli.getText();
                 String tipo = vInfo.rbRenta.isSelected() ? "Renta" : "Venta";
                 String monto = vInfo.txtMonto.getText();
@@ -379,25 +406,36 @@ public class OperacionesController
 
         vInfo.btnEditar.addActionListener(e -> vInfo.setModoEdicion(true));
 
-        vInfo.btnGuardar.addActionListener(e -> {
-            if (!vInfo.enModoEdicion) {
+        vInfo.btnGuardar.addActionListener(e -> 
+        {
+            if (!vInfo.enModoEdicion)
+            {
                 vInfo.setModoEdicion(true);
-            } else {
-                mostrarConfirmacionFigma(vInfo, "¿Estás seguro que quieres<br>modificar esta operación?", "Esta acción no se puede deshacer", eSi -> {
-                    try {
+            }
+            else
+            {
+                mostrarConfirmacionFigma(vInfo, "¿Estás seguro que quieres<br>modificar esta operación?", "Esta acción no se puede deshacer", eSi -> 
+                {
+                    try
+                    {
                         int idRenta = Integer.parseInt(vInfo.txtIdOp.getText());
                         int idCli = Integer.parseInt(vInfo.txtIdCli.getText());
                         int idProd = Integer.parseInt(vInfo.txtIdProd.getText());
                         double monto = Double.parseDouble(vInfo.txtMonto.getText().replace("$", "").trim());
                         String tipo = vInfo.rbRenta.isSelected() ? "Renta" : "Venta";
                         
-                        if (modelo.actualizarOperacion(idRenta, idCli, tipo, vInfo.txtTipoProd.getText(), idProd, vInfo.txtFechaOp.getText(), vInfo.txtFechaDev.getText(), monto)) {
+                        if (modelo.actualizarOperacion(idRenta, idCli, tipo, vInfo.txtTipoProd.getText(), idProd, vInfo.txtFechaOp.getText(), vInfo.txtFechaDev.getText(), monto))
+                        {
                             mostrarAlertaFigma(vInfo, "Se ha modificado correctamente<br>la operación.", true);
                             vInfo.setModoEdicion(false);
-                        } else {
+                        }
+                        else
+                        {
                             mostrarAlertaFigma(vInfo, "Error al actualizar", false);
                         }
-                    } catch (Exception ex) {
+                    }
+                    catch (Exception ex)
+                    {
                         mostrarAlertaFigma(vInfo, "Los datos ingresados no son válidos", false);
                     }
                 });

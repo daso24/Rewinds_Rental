@@ -19,7 +19,7 @@ public class OperacionModel
         try
         {
             conexion = conexionBD.conectar();
-            String sql = "SELECT r.id_renta, c.id_cliente, c.nombres, c.apellidos, r.tipo_operacion, r.tipo_producto, r.id_producto, " +
+            String sql = "SELECT r.id_renta, c.id_cliente, c.nombres, c.apellidos, c.foto AS c_foto, r.tipo_operacion, r.tipo_producto, r.id_producto, " +
                          "r.fecha_operacion, r.fecha_devolucion, r.monto_total, r.estado, " +
                          "v.titulo AS v_titulo, v.foto AS v_foto, v.plataforma AS v_plat, " +
                          "p.titulo AS p_titulo, p.foto AS p_foto, p.formato AS p_plat " +
@@ -47,15 +47,18 @@ public class OperacionModel
                 String titulo = tipoProd.equals("Videojuego") ? rs.getString("v_titulo") : rs.getString("p_titulo");
                 String foto = tipoProd.equals("Videojuego") ? rs.getString("v_foto") : rs.getString("p_foto");
                 String plataforma = tipoProd.equals("Videojuego") ? rs.getString("v_plat") : rs.getString("p_plat");
+                
+                String fotoCliente = rs.getString("c_foto");
 
                 if (titulo == null) titulo = "Producto Eliminado";
                 if (plataforma == null) plataforma = "-";
 
-                lista.add(new Object[]{idRenta, cliente, tipoOp, tipoProd, titulo, foto, plataforma, idProd, fechaOp, fechaDev, monto, idCliente, estado});
+                lista.add(new Object[]{idRenta, cliente, tipoOp, tipoProd, titulo, foto, plataforma, idProd, fechaOp, fechaDev, monto, idCliente, estado, fotoCliente});
             }
         }
         catch (Exception e)
         {
+            e.printStackTrace();
         }
         finally
         {
@@ -99,6 +102,7 @@ public class OperacionModel
         }
         catch (Exception e)
         {
+            e.printStackTrace();
         }
         finally
         {
@@ -159,6 +163,7 @@ public class OperacionModel
         }
         catch (Exception e)
         {
+            e.printStackTrace();
             try { if (conexion != null) conexion.rollback(); } catch (Exception ex) {}
             return false;
         }
@@ -191,6 +196,7 @@ public class OperacionModel
         }
         catch (Exception e)
         {
+            e.printStackTrace();
             return false;
         }
         finally
@@ -237,6 +243,7 @@ public class OperacionModel
         }
         catch (Exception e)
         {
+            e.printStackTrace();
         }
         finally
         {
@@ -283,6 +290,7 @@ public class OperacionModel
         }
         catch (Exception e)
         {
+            e.printStackTrace();
         }
         finally
         {
@@ -340,7 +348,10 @@ public class OperacionModel
         {
             if (rs.next()) return rs.getInt(1);
         }
-        catch (Exception e) { e.printStackTrace(); }
+        catch (Exception e) 
+        { 
+            e.printStackTrace(); 
+        }
         return 0;
     }
 }
