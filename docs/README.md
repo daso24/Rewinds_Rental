@@ -12,7 +12,11 @@ El proyecto consiste en el diseño y desarrollo de una plataforma administrativa
 ## 📚 Dependencias del Proyecto
 El proyecto requiere las siguientes librerías externas configuradas en el *Build Path*:
 
-* **Base de datos:** `mysql-connector-j-8.4.0.jar`
+* **Base de datos:**
+* `mysql-connector-j-8.4.0.jar`
+* `commons-pool2-2.12.0.jar`
+* `jedis-5.1.0.jar`
+  
 * **Generación de PDFs (iText Suite):** *
     * `commons-7.2.5.jar`
     * `io-7.2.5.jar`
