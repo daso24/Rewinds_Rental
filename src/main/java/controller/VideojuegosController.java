@@ -1,6 +1,7 @@
 package controller;
 
 import models.VideojuegoModel;
+import models.ArbolBinarioBusqueda;
 import view.*;
 import javax.swing.*;
 import java.awt.*;
@@ -12,11 +13,13 @@ public class VideojuegosController
     private videojuegos vista;
     private AgregarJuego vistaAdd;
     private VideojuegoModel modelo;
+    private ArbolBinarioBusqueda arbolJuegos;
 
     public VideojuegosController(videojuegos vista)
     {
         this.vista = vista;
         this.modelo = new VideojuegoModel();
+        this.arbolJuegos = new ArbolBinarioBusqueda();
         initEvents();
         cargarTabla();
     }
@@ -33,6 +36,12 @@ public class VideojuegosController
         if (vista != null)
         {
             List<Object[]> lista = modelo.obtenerVideojuegos();
+            this.arbolJuegos = new ArbolBinarioBusqueda();
+            for (Object[] juego : lista) {
+                if (juego.length > 1 && juego[1] != null) {
+                    arbolJuegos.insertar(juego[1].toString(), juego);
+                }
+            }
             vista.cargarDatosTabla(lista);
         }
     }
@@ -54,18 +63,21 @@ public class VideojuegosController
             String texto = vista.buscador.getText().trim();
             if (texto.isEmpty())
             {
-                vista.sorter.setRowFilter(null);
+                cargarTabla();
             }
             else
             {
-                vista.sorter.setRowFilter(RowFilter.regexFilter("(?i)" + texto));
+                List<Object[]> juegosEncontrados = arbolJuegos.buscarParcial(texto);
+                if (!juegosEncontrados.isEmpty()) {
+                    vista.cargarDatosTabla(juegosEncontrados);
+                } else {
+                    vista.cargarDatosTabla(new java.util.ArrayList<>());
+                    mostrarAvisoGris("No se encontró ningún videojuego.");
+                }
             }
         });
 
-        vista.btnFiltrar.addActionListener(e ->
-        {
-            abrirDialogoFiltrar();
-        });
+        vista.btnFiltrar.addActionListener(e -> abrirDialogoFiltrar());
 
         vista.btnEliminar.addActionListener(e ->
         {
@@ -90,7 +102,9 @@ public class VideojuegosController
                         if (isSelected != null && isSelected)
                         {
                             int idVideojuego = (int) vista.tabla.getValueAt(i, 3);
+                            String titulo = vista.tabla.getValueAt(i, 2).toString();
                             modelo.eliminarVideojuego(idVideojuego);
+                            arbolJuegos.eliminar(titulo);
                         }
                     }
                     cargarTabla();
@@ -98,7 +112,7 @@ public class VideojuegosController
             }
             else
             {
-                mostrarAvisoGris("Selecciona al menos un juego de la lista.");
+                mostrarAvisoGris("Selecciona al menos un juego.");
             }
         });
 
@@ -127,7 +141,6 @@ public class VideojuegosController
                             vista.dispose();
                             InfoJuego vInfo = new InfoJuego();
                             vInfo.cargarDatos(datos);
-                           
                             new InfoJuegoInternalController(vInfo, idVideojuego, (String)datos[10]);
                             vInfo.setVisible(true);
                         }
@@ -148,7 +161,6 @@ public class VideojuegosController
     private void initEventsAdd()
     {
         configurarMenuLateral(vistaAdd.btnInicio, vistaAdd.btnOperacion, vistaAdd.btnClientes, vistaAdd.btnVideojuegos, vistaAdd.btnPeliculas, vistaAdd);
-
         vistaAdd.btnAtras.addActionListener(e ->
         {
             vistaAdd.dispose();
@@ -156,7 +168,6 @@ public class VideojuegosController
             new VideojuegosController(vVid);
             vVid.setVisible(true);
         });
-
         vistaAdd.btnAgregar.addActionListener(e -> validarYMostrarPopUp());
     }
 
@@ -183,25 +194,19 @@ public class VideojuegosController
         panelContenido.add(lblMsg);
         panelContenido.add(Box.createVerticalGlue());
 
-        try
-        {
+        try {
             JLabel iconoCentro = new JLabel(new ImageIcon(new ImageIcon(getClass().getResource("/img/mingcute_warning-fill.png")).getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH)));
             iconoCentro.setAlignmentX(Component.CENTER_ALIGNMENT);
             panelContenido.add(iconoCentro);
-        }
-        catch (Exception e)
-        {
-        }
+        } catch (Exception e) {}
+        
         panelContenido.add(Box.createVerticalGlue());
 
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 15));
         panelBotones.setOpaque(false);
 
-        JButton btnOk = new JButton("OK")
-        {
-            @Override
-            protected void paintComponent(Graphics g)
-            {
+        JButton btnOk = new JButton("OK") {
+            @Override protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setColor(new Color(0, 51, 102));
@@ -257,24 +262,14 @@ public class VideojuegosController
         btnAplicar.addActionListener(evt ->
         {
             String criterio = txtCriterio.getText().trim();
-            int columnaSeleccionada = comboColumnas.getSelectedIndex();
-            int indexColumnaTabla = 2;
-            if (columnaSeleccionada == 1) indexColumnaTabla = 3;
-            if (columnaSeleccionada == 2) indexColumnaTabla = 5;
-
-            if (criterio.isEmpty())
-            {
-                vista.sorter.setRowFilter(null);
-            }
-            else
-            {
-                try
-                {
-                    vista.sorter.setRowFilter(RowFilter.regexFilter("(?i)" + criterio, indexColumnaTabla));
-                }
-                catch (Exception ex)
-                {
-                    mostrarAvisoGris("Error en la expresión de filtrado.");
+            if (criterio.isEmpty()) {
+                cargarTabla();
+            } else {
+                List<Object[]> juegosEncontrados = arbolJuegos.buscarParcial(criterio);
+                if (!juegosEncontrados.isEmpty()) {
+                    vista.cargarDatosTabla(juegosEncontrados);
+                } else {
+                    vista.cargarDatosTabla(new java.util.ArrayList<>());
                 }
             }
             dialogo.dispose();
@@ -282,8 +277,8 @@ public class VideojuegosController
 
         btnLimpiar.addActionListener(evt ->
         {
-            vista.sorter.setRowFilter(null);
             vista.buscador.setText("");
+            cargarTabla();
             dialogo.dispose();
         });
 
@@ -294,74 +289,11 @@ public class VideojuegosController
 
     private void configurarMenuLateral(JComponent inicio, JComponent operacion, JComponent clientes, JComponent videojuegosLbl, JComponent peliculas, JFrame ventanaActual)
     {
-        if (inicio != null)
-        {
-            inicio.addMouseListener(new MouseAdapter()
-            {
-                @Override public void mouseClicked(MouseEvent e)
-                {
-                    ventanaActual.dispose();
-                    principal v = new principal();
-                    new PrincipalController(v);
-                    v.setVisible(true);
-                }
-            });
-        }
-        if (operacion != null)
-        {
-            operacion.addMouseListener(new MouseAdapter()
-            {
-                @Override public void mouseClicked(MouseEvent e)
-                {
-                    ventanaActual.dispose();
-                    operaciones v = new operaciones();
-                    new OperacionesController(v);
-                    v.setVisible(true);
-                }
-            });
-        }
-        if (clientes != null)
-        {
-            clientes.addMouseListener(new MouseAdapter()
-            {
-                @Override public void mouseClicked(MouseEvent e)
-                {
-                    ventanaActual.dispose();
-                    clientes v = new clientes();
-                    new ClienteController(v);
-                    v.setVisible(true);
-                }
-            });
-        }
-        if (videojuegosLbl != null)
-        {
-            videojuegosLbl.addMouseListener(new MouseAdapter()
-            {
-                @Override public void mouseClicked(MouseEvent e)
-                {
-                    if (!(ventanaActual instanceof videojuegos))
-                    {
-                        ventanaActual.dispose();
-                        videojuegos v = new videojuegos();
-                        new VideojuegosController(v);
-                        v.setVisible(true);
-                    }
-                }
-            });
-        }
-        if (peliculas != null)
-        {
-            peliculas.addMouseListener(new MouseAdapter()
-            {
-                @Override public void mouseClicked(MouseEvent e)
-                {
-                    ventanaActual.dispose();
-                    peliculas v = new peliculas();
-                    new PeliculasController(v);
-                    v.setVisible(true);
-                }
-            });
-        }
+        if (inicio != null) { inicio.addMouseListener(new MouseAdapter() { @Override public void mouseClicked(MouseEvent e) { ventanaActual.dispose(); principal v = new principal(); new PrincipalController(v); v.setVisible(true); } }); }
+        if (operacion != null) { operacion.addMouseListener(new MouseAdapter() { @Override public void mouseClicked(MouseEvent e) { ventanaActual.dispose(); operaciones v = new operaciones(); new OperacionesController(v); v.setVisible(true); } }); }
+        if (clientes != null) { clientes.addMouseListener(new MouseAdapter() { @Override public void mouseClicked(MouseEvent e) { ventanaActual.dispose(); clientes v = new clientes(); new ClienteController(v); v.setVisible(true); } }); }
+        if (videojuegosLbl != null) { videojuegosLbl.addMouseListener(new MouseAdapter() { @Override public void mouseClicked(MouseEvent e) { if (!(ventanaActual instanceof videojuegos)) { ventanaActual.dispose(); videojuegos v = new videojuegos(); new VideojuegosController(v); v.setVisible(true); } } }); }
+        if (peliculas != null) { peliculas.addMouseListener(new MouseAdapter() { @Override public void mouseClicked(MouseEvent e) { ventanaActual.dispose(); peliculas v = new peliculas(); new PeliculasController(v); v.setVisible(true); } }); }
     }
 
     private void validarYMostrarPopUp()

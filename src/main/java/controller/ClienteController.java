@@ -1,17 +1,24 @@
 package controller;
+
 import models.ClientModel;
 import models.OperacionModel;
+import models.ArbolBinarioBusqueda;
 import view.AñadirClientes;
 import view.clientes;
 import view.InfoCliente;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+
 public class ClienteController {
     private AñadirClientes vistaAgregar;
     private clientes vistaTabla;
     private ClientModel modelo;
+    private ArbolBinarioBusqueda arbolClientes;
+
     public ClienteController(AñadirClientes vistaAgregar, ClientModel modelo) {
         this.vistaAgregar = vistaAgregar;
         this.modelo = modelo;
@@ -30,9 +37,27 @@ public class ClienteController {
             }
         });
     }
+
     public ClienteController(clientes vistaTabla) {
         this.vistaTabla = vistaTabla;
         this.modelo = new ClientModel();
+        this.arbolClientes = new ArbolBinarioBusqueda();
+        
+        cargarDatosEnArbol();
+        initEvents();
+    }
+
+    private void cargarDatosEnArbol() {
+        List<Object[]> listaClientes = modelo.obtenerClientes();
+        this.arbolClientes = new ArbolBinarioBusqueda();
+        for (Object[] cliente : listaClientes) {
+            if (cliente.length > 1 && cliente[1] != null) {
+                arbolClientes.insertar(cliente[1].toString(), cliente);
+            }
+        }
+    }
+
+    private void initEvents() {
         if (this.vistaTabla.btnAgregar != null) {
             this.vistaTabla.btnAgregar.addActionListener(e -> {
                 vistaTabla.dispose();
@@ -41,26 +66,80 @@ public class ClienteController {
                 addVista.setVisible(true);
             });
         }
+        
+        if (this.vistaTabla.btnBuscar != null) {
+            this.vistaTabla.btnBuscar.addActionListener(e -> {
+                String texto = vistaTabla.buscador.getText().trim();
+                if (texto.isEmpty()) {
+                    vistaTabla.cargarTabla();
+                } else {
+                    List<Object[]> clientesEncontrados = arbolClientes.buscarParcial(texto);
+                    vistaTabla.modelo.setRowCount(0); 
+                    
+                    if (!clientesEncontrados.isEmpty()) {
+                        Object infoIcon = null;
+                        try { infoIcon = new ImageIcon(new ImageIcon(getClass().getResource("/img/Vector.png")).getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)); } catch (Exception ex) {}
+
+                        for (Object[] clienteEncontrado : clientesEncontrados) {
+                            Object userIcon = null;
+                            String rutaDB = (String) clienteEncontrado[2];
+                            try {
+                                ImageIcon icon;
+                                if (rutaDB != null && rutaDB.startsWith("/")) icon = new ImageIcon(getClass().getResource(rutaDB));
+                                else icon = new ImageIcon(rutaDB != null ? rutaDB : "/img/placeholder_usuario.png");
+                                Image img = icon.getImage().getScaledInstance(35, 35, Image.SCALE_SMOOTH);
+                                userIcon = new ImageIcon(img);
+                            } catch (Exception ex) {
+                                try { userIcon = new ImageIcon(new ImageIcon(getClass().getResource("/img/placeholder_usuario.png")).getImage().getScaledInstance(35, 35, Image.SCALE_SMOOTH)); } catch(Exception ignored){}
+                            }
+                            
+                            Object[] filaEstetica = {
+                                false,
+                                new Object[]{userIcon, clienteEncontrado[1]},
+                                String.valueOf(clienteEncontrado[0]),
+                                "0",
+                                "N/A",
+                                "N/A",
+                                new Object[]{infoIcon, "Ver info"}
+                            };
+                            vistaTabla.modelo.addRow(filaEstetica);
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(vistaTabla, "No se encontró ningún cliente con ese nombre.");
+                    }
+                }
+            });
+        }
+
         if (this.vistaTabla.btnEliminar != null) {
             this.vistaTabla.btnEliminar.addActionListener(e -> {
                 List<Integer> idsAEliminar = new ArrayList<>();
+                List<String> nombresAEliminar = new ArrayList<>();
+
                 for (int i = 0; i < vistaTabla.tabla.getRowCount(); i++) {
                     Boolean isChecked = (Boolean) vistaTabla.tabla.getValueAt(i, 0);
                     if (isChecked != null && isChecked) {
                         idsAEliminar.add(Integer.parseInt(vistaTabla.tabla.getValueAt(i, 2).toString()));
+                        Object cellVal = vistaTabla.tabla.getValueAt(i, 1);
+                        String nombre = (cellVal instanceof Object[]) ? ((Object[]) cellVal)[1].toString() : cellVal.toString();
+                        nombresAEliminar.add(nombre);
                     }
                 }
+                
                 if (!idsAEliminar.isEmpty()) {
                     vistaTabla.mostrarAdvertenciaEliminar(evt -> {
-                        for (int id : idsAEliminar) {
-                            modelo.eliminarCliente(id);
+                        for (int i = 0; i < idsAEliminar.size(); i++) {
+                            modelo.eliminarCliente(idsAEliminar.get(i));
+                            arbolClientes.eliminar(nombresAEliminar.get(i));
                         }
                         vistaTabla.mostrarExitoEliminar();
                         vistaTabla.cargarTabla();
+                        cargarDatosEnArbol();
                     });
                 }
             });
         }
+        
         if (this.vistaTabla.btnAtras != null) {
             this.vistaTabla.btnAtras.addActionListener(e -> {
                 vistaTabla.dispose();
@@ -69,6 +148,7 @@ public class ClienteController {
                 vistaHome.setVisible(true);
             });
         }
+        
         if (this.vistaTabla.tabla != null) {
             this.vistaTabla.tabla.addMouseListener(new MouseAdapter() {
                 @Override
@@ -85,9 +165,11 @@ public class ClienteController {
                             String tel = (String) info[2];
                             String foto = (String) info[3];
                             String fechaNac = (String) info[4];
+                            
                             vistaInfo.setDatosCliente(nombres != null ? nombres : "", apellidos != null ? apellidos : "", String.valueOf(id), tel != null ? tel : "N/A", fechaNac != null ? fechaNac : "N/A");
                             vistaInfo.setImagenCliente(foto != null && !foto.isEmpty() ? foto : "/img/placeholder_usuario.png");
                             vistaInfo.btnAtras.addActionListener(eAtras -> vistaInfo.dispose());
+                            
                             vistaInfo.btnHistoVentas.addActionListener(eHistoVentas -> {
                                 try {
                                     view.HistorialVentas vistaVentas = new view.HistorialVentas();
@@ -98,10 +180,9 @@ public class ClienteController {
                                     }
                                     vistaVentas.btnAtras.addActionListener(eBack -> vistaVentas.dispose());
                                     vistaVentas.setVisible(true);
-                                } catch (Exception ex) {
-                                    vistaInfo.mostrarError("Error al cargar el historial de ventas.");
-                                }
+                                } catch (Exception ex) {}
                             });
+                            
                             vistaInfo.btnHistoRentas.addActionListener(eHistoRentas -> {
                                 try {
                                     view.HistorialRentas vistaRentas = new view.HistorialRentas();
@@ -112,10 +193,9 @@ public class ClienteController {
                                     }
                                     vistaRentas.btnAtras.addActionListener(eBack -> vistaRentas.dispose());
                                     vistaRentas.setVisible(true);
-                                } catch (Exception ex) {
-                                    vistaInfo.mostrarError("Error al cargar el historial de rentas.");
-                                }
+                                } catch (Exception ex) {}
                             });
+                            
                             vistaInfo.btnEditar.addActionListener(eEditar -> {
                                 if (!vistaInfo.modoEdicion) {
                                     vistaInfo.toggleEdicion();
@@ -129,26 +209,19 @@ public class ClienteController {
                                         vistaInfo.mostrarExito("Cliente actualizado correctamente.");
                                         vistaInfo.toggleEdicion();
                                         vistaTabla.cargarTabla();
+                                        cargarDatosEnArbol();
                                     } else {
                                         vistaInfo.mostrarError("Error al actualizar el cliente.");
                                     }
                                 }
                             });
+                            
                             vistaInfo.btnDescargar.addActionListener(eDescargar -> {
-                                String idFicha = vistaInfo.txtId.getText();
-                                String nomFicha = vistaInfo.txtNombres.getText();
-                                String apeFicha = vistaInfo.txtApellidos.getText();
-                                String telFicha = vistaInfo.txtTelefono.getText();
-                                String fechaFicha = vistaInfo.txtFecha.getText();
-                                utils.PDFGenerator.generarFicha(idFicha, nomFicha + " " + apeFicha, "N/A", "N/A", fechaFicha);
+                                utils.PDFGenerator.generarFicha(vistaInfo.txtId.getText(), vistaInfo.txtNombres.getText() + " " + vistaInfo.txtApellidos.getText(), "N/A", "N/A", vistaInfo.txtFecha.getText());
                             });
+                            
                             vistaInfo.btnGenerar.addActionListener(eGenerar -> {
-                                String idTarjeta = vistaInfo.txtId.getText();
-                                String nomTarjeta = vistaInfo.txtNombres.getText();
-                                String apeTarjeta = vistaInfo.txtApellidos.getText();
-                                String telTarjeta = vistaInfo.txtTelefono.getText();
-                                String fechaTarjeta = vistaInfo.txtFecha.getText();
-                                utils.PDFGenerator.generarFichaCliente(idTarjeta, nomTarjeta, apeTarjeta, telTarjeta, fechaTarjeta);
+                                utils.PDFGenerator.generarFichaCliente(vistaInfo.txtId.getText(), vistaInfo.txtNombres.getText(), vistaInfo.txtApellidos.getText(), vistaInfo.txtTelefono.getText(), vistaInfo.txtFecha.getText());
                             });
                             vistaInfo.setVisible(true);
                         }
