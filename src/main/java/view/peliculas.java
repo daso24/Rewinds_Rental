@@ -29,6 +29,15 @@ public class peliculas extends JFrame {
         setResizable(true); 
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
+        
+        try
+        {
+            Image icono = new ImageIcon(getClass().getResource("/img/logo3.png")).getImage();
+            this.setIconImage(icono);
+        }
+        catch(Exception e)
+        {
+        }
 
         JPanel sidebar = new JPanel();
         sidebar.setPreferredSize(new Dimension(160, 0));
