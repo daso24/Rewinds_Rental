@@ -32,7 +32,7 @@ public class ClientModel
         }
         catch (Exception e)
         {
-        	System.out.println("ERROR SQL AL GUARDAR CLIENTE:");
+            System.out.println("❌ ERROR SQL AL GUARDAR CLIENTE:");
             e.printStackTrace();
             return false;
         }
@@ -51,18 +51,19 @@ public class ClientModel
         try
         {
             conexion = conexionBD.conectar();
-            String sql = "INSERT INTO usuarios (correo, password, usuario, telefono, genero) VALUES (?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO cliente (nombres, apellidos, telefono, correo_electronico, contrasena, nivel_fidelidad, fecha_nacimiento) VALUES (?, 'Prueba', ?, ?, ?, 'Basico', '2000-01-01')";
             ps = conexion.prepareStatement(sql);
-            ps.setString(1, correo);
-            ps.setString(2, pass);
-            ps.setString(3, usuario);
-            ps.setString(4, telefono);
-            ps.setString(5, genero);
+            ps.setString(1, usuario);
+            ps.setString(2, telefono);
+            ps.setString(3, correo);
+            ps.setString(4, pass);
 
             return ps.executeUpdate() > 0;
         }
         catch (Exception e)
         {
+            System.out.println("ERROR SQL AL REGISTRAR USUARIO:");
+            e.printStackTrace();
             return false;
         }
         finally
@@ -95,6 +96,8 @@ public class ClientModel
         } 
         catch (Exception e) 
         {
+            System.out.println("ERROR SQL AL OBTENER CLIENTES:");
+            e.printStackTrace();
         }
         finally
         {
@@ -131,6 +134,8 @@ public class ClientModel
         } 
         catch (Exception e) 
         {
+            System.out.println("ERROR SQL AL OBTENER DETALLE DEL CLIENTE:");
+            e.printStackTrace();
         }
         finally
         {
@@ -161,6 +166,8 @@ public class ClientModel
         }
         catch (Exception e)
         {
+            System.out.println("❌ ERROR SQL AL ACTUALIZAR CLIENTE:");
+            e.printStackTrace();
             return false;
         }
         finally
@@ -185,6 +192,8 @@ public class ClientModel
         }
         catch (Exception e)
         {
+            System.out.println("❌ ERROR SQL AL ELIMINAR CLIENTE:");
+            e.printStackTrace();
             return false;
         }
         finally
@@ -214,6 +223,7 @@ public class ClientModel
         }
         catch (Exception e)
         {
+            System.out.println("ERROR SQL AL OBTENER TOTAL DE CLIENTES:");
             e.printStackTrace();
         }
         finally
@@ -222,8 +232,4 @@ public class ClientModel
         }
         return 0;
     }
-    
-    
-    
-    
 }

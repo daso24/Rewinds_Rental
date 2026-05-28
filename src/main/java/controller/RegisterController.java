@@ -2,6 +2,9 @@ package controller;
 
 import models.ClientModel;
 import view.registro;
+import view.login;
+import models.AuthModel;
+
 import java.awt.Color;
 import javax.swing.border.LineBorder;
 import javax.swing.UIManager;
@@ -16,7 +19,16 @@ public class RegisterController
         this.vista = vista;
         this.modelo = modelo;
         this.vista.registerBtn.addActionListener(e -> registrarUsuario());
-        this.vista.backBtn.addActionListener(e -> vista.dispose());
+        this.vista.backBtn.addActionListener(e -> regresarLogin());
+    }
+
+    private void regresarLogin()
+    {
+        vista.dispose();
+        login vistaLogin = new login();
+        AuthModel modeloAuth = new AuthModel();
+        new AuthController(vistaLogin, modeloAuth);
+        vistaLogin.setVisible(true);
     }
 
     private void registrarUsuario()
@@ -28,29 +40,77 @@ public class RegisterController
         String telefono = vista.phoneField.getText().trim();
         
         String genero = "";
-        if (vista.masculino.isSelected()) genero = "Masculino";
-        else if (vista.femenino.isSelected()) genero = "Femenino";
-        else if (vista.otro.isSelected()) genero = "Otro";
+        
+        if (vista.masculino.isSelected())
+        {
+            genero = "Masculino";
+        }
+        else if (vista.femenino.isSelected())
+        {
+            genero = "Femenino";
+        }
+        else if (vista.otro.isSelected())
+        {
+            genero = "Otro";
+        }
         
         String mensajeError = "";
         boolean camposVacios = false;
 
-        if (usuario.isEmpty()) { vista.userField.setBorder(new LineBorder(Color.RED, 2)); camposVacios = true; }
-        else { vista.userField.setBorder(UIManager.getBorder("TextField.border")); }
+        if (usuario.isEmpty())
+        {
+            vista.userField.setBorder(new LineBorder(Color.RED, 2));
+            camposVacios = true;
+        }
+        else
+        {
+            vista.userField.setBorder(UIManager.getBorder("TextField.border"));
+        }
 
-        if (correo.isEmpty()) { vista.emailField.setBorder(new LineBorder(Color.RED, 2)); camposVacios = true; }
-        else { vista.emailField.setBorder(UIManager.getBorder("TextField.border")); }
+        if (correo.isEmpty())
+        {
+            vista.emailField.setBorder(new LineBorder(Color.RED, 2));
+            camposVacios = true;
+        }
+        else
+        {
+            vista.emailField.setBorder(UIManager.getBorder("TextField.border"));
+        }
 
-        if (pass.isEmpty()) { vista.passField.setBorder(new LineBorder(Color.RED, 2)); camposVacios = true; }
-        else { vista.passField.setBorder(UIManager.getBorder("TextField.border")); }
+        if (pass.isEmpty())
+        {
+            vista.passField.setBorder(new LineBorder(Color.RED, 2));
+            camposVacios = true;
+        }
+        else
+        {
+            vista.passField.setBorder(UIManager.getBorder("TextField.border"));
+        }
         
-        if (confirmPass.isEmpty()) { vista.confirmField.setBorder(new LineBorder(Color.RED, 2)); camposVacios = true; }
-        else { vista.confirmField.setBorder(UIManager.getBorder("TextField.border")); }
+        if (confirmPass.isEmpty())
+        {
+            vista.confirmField.setBorder(new LineBorder(Color.RED, 2));
+            camposVacios = true;
+        }
+        else
+        {
+            vista.confirmField.setBorder(UIManager.getBorder("TextField.border"));
+        }
 
-        if (telefono.isEmpty()) { vista.phoneField.setBorder(new LineBorder(Color.RED, 2)); camposVacios = true; }
-        else { vista.phoneField.setBorder(UIManager.getBorder("TextField.border")); }
+        if (telefono.isEmpty())
+        {
+            vista.phoneField.setBorder(new LineBorder(Color.RED, 2));
+            camposVacios = true;
+        }
+        else
+        {
+            vista.phoneField.setBorder(UIManager.getBorder("TextField.border"));
+        }
 
-        if (camposVacios) mensajeError += "Llene los campos marcados en rojo.<br>";
+        if (camposVacios)
+        {
+            mensajeError += "Llene los campos marcados en rojo.<br>";
+        }
 
         if (!correo.isEmpty() && !correo.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"))
         {
@@ -88,11 +148,7 @@ public class RegisterController
         if (modelo.registrarUsuario(correo, pass, usuario, telefono, genero))
         {
             vista.mostrarMensajeExito("Usuario registrado con éxito.");
-            vista.dispose();
-            view.login vistaLogin = new view.login();
-            models.AuthModel modeloAuth = new models.AuthModel();
-            new AuthController(vistaLogin, modeloAuth);
-            vistaLogin.setVisible(true);
+            regresarLogin();
         }
         else
         {
