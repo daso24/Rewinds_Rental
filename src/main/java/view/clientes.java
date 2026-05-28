@@ -349,12 +349,12 @@ public class clientes extends JFrame
         panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
         panelCentral.add(Box.createVerticalStrut(35));
 
-        JLabel lblTitulo = new JLabel("<html><center>Se han eliminado correctamente<br>los clientes.</center></html>", SwingConstants.CENTER);
+        JLabel lblTitulo = new JLabel("<html><center>Clientes eliminados correctamente.</center></html>", SwingConstants.CENTER);
         lblTitulo.setFont(INTER_BOLD_26);
         lblTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
         panelCentral.add(lblTitulo);
 
-        panelCentral.add(Box.createVerticalStrut(20));
+        panelCentral.add(Box.createVerticalStrut(10));
         
         try 
         {

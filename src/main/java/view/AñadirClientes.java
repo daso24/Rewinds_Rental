@@ -13,7 +13,7 @@ public class AñadirClientes extends JFrame
     public JButton btnAtras, btnAgregarCliente;
     public JTextField txtNombres, txtApellidos, txtFechaNac, txtTelefono, txtCorreo;
     public JLabel lblFoto;
-    public String rutaFoto = "/img/placeholder_usuario.png";
+    public String rutaFoto = "/img/agregar-contacto.png";
 
     public AñadirClientes()
     {
