@@ -77,8 +77,10 @@ public class VideojuegosController
             }
         });
 
-        vista.btnFiltrar.addActionListener(e -> abrirDialogoFiltrar());
-
+        if (this.vista.btnFiltrar != null) {
+            this.vista.btnFiltrar.addActionListener(e -> abrirDialogoFiltrar());
+        }
+        
         vista.btnEliminar.addActionListener(e ->
         {
             boolean haySeleccion = false;
@@ -261,15 +263,32 @@ public class VideojuegosController
 
         btnAplicar.addActionListener(evt ->
         {
-            String criterio = txtCriterio.getText().trim();
+            String criterio = txtCriterio.getText().trim().toLowerCase();
+            
             if (criterio.isEmpty()) {
                 cargarTabla();
             } else {
-                List<Object[]> juegosEncontrados = arbolJuegos.buscarParcial(criterio);
-                if (!juegosEncontrados.isEmpty()) {
+                int opcionSeleccionada = comboColumnas.getSelectedIndex();
+                
+                if (opcionSeleccionada == 0) {
+                    List<Object[]> juegosEncontrados = arbolJuegos.buscarParcial(criterio);
                     vista.cargarDatosTabla(juegosEncontrados);
                 } else {
-                    vista.cargarDatosTabla(new java.util.ArrayList<>());
+                    List<Object[]> todosLosJuegos = modelo.obtenerVideojuegos();
+                    java.util.List<Object[]> juegosFiltrados = new java.util.ArrayList<>();
+                    
+                    for (Object[] juego : todosLosJuegos) {
+                        if (opcionSeleccionada == 1) {
+                            if (String.valueOf(juego[0]).toLowerCase().equals(criterio)) {
+                                juegosFiltrados.add(juego);
+                            }
+                        } else if (opcionSeleccionada == 2) {
+                            if (String.valueOf(juego[2]).toLowerCase().contains(criterio)) {
+                                juegosFiltrados.add(juego);
+                            }
+                        }
+                    }
+                    vista.cargarDatosTabla(juegosFiltrados);
                 }
             }
             dialogo.dispose();
@@ -425,4 +444,6 @@ public class VideojuegosController
             });
         }
     }
+    
+    
 }

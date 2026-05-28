@@ -129,6 +129,10 @@ public class PeliculasController
                 }
             }
         });
+        
+        if (vista.btnFiltrar != null) {
+            vista.btnFiltrar.addActionListener(e -> abrirDialogoFiltrar());
+        }
 
         vista.btnEliminar.addActionListener(e ->
         {
@@ -301,5 +305,91 @@ public class PeliculasController
                 } 
             }); 
         }
+    }
+    
+    private void abrirDialogoFiltrar() {
+        JDialog dialogo = new JDialog(vista, "Filtro Películas", true);
+        dialogo.setSize(320, 200);
+        dialogo.setLocationRelativeTo(vista);
+        dialogo.setLayout(new BorderLayout(10, 10));
+
+        JPanel panelContenido = new JPanel(new GridLayout(3, 1, 10, 10));
+        panelContenido.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+
+        JLabel lblColumna = new JLabel("Filtrar por columna:");
+        String[] opcionesColumnas = {"Título", "Id", "Formato"};
+        JComboBox<String> comboColumnas = new JComboBox<>(opcionesColumnas);
+
+        JLabel lblCriterio = new JLabel("Texto a buscar:");
+        JTextField txtCriterio = new JTextField();
+
+        panelContenido.add(lblColumna);
+        panelContenido.add(comboColumnas);
+        panelContenido.add(lblCriterio);
+        panelContenido.add(txtCriterio);
+
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton btnAplicar = new JButton("Aplicar");
+        JButton btnLimpiar = new JButton("Quitar Filtros");
+
+        panelBotones.add(btnLimpiar);
+        panelBotones.add(btnAplicar);
+
+        btnAplicar.addActionListener(evt -> {
+            String criterio = txtCriterio.getText().trim().toLowerCase();
+            if (criterio.isEmpty()) {
+                cargarTabla();
+            } else {
+                int opcion = comboColumnas.getSelectedIndex();
+                vista.modelo.setRowCount(0);
+                
+                List<Object[]> pelisFiltradas = new java.util.ArrayList<>();
+
+                if (opcion == 0) { 
+                    List<Object[]> encontradas = arbolPeliculas.buscarParcial(criterio);
+                    for (Object[] p : encontradas) {
+                        if (String.valueOf(p[1]).toLowerCase().contains(criterio)) {
+                            pelisFiltradas.add(p);
+                        }
+                    }
+                } else { 
+                    List<Object[]> todas = modelo.obtenerPeliculas();
+                    for (Object[] p : todas) {
+                        if (opcion == 1) { 
+                            if (String.valueOf(p[0]).toLowerCase().equals(criterio)) {
+                                pelisFiltradas.add(p);
+                            }
+                        } else if (opcion == 2) { 
+                            if (String.valueOf(p[2]).toLowerCase().contains(criterio)) {
+                                pelisFiltradas.add(p);
+                            }
+                        }
+                    }
+                }
+
+                Icon iconoPeli = getImg("/img/fluent_movies-and-tv-16-filled.png", 40, 40);
+                Icon iconoVector = getImg("/img/Vector.png", 20, 20);
+
+                for (Object[] peli : pelisFiltradas) {
+                    int id = (int) peli[0];
+                    String titulo = (String) peli[1];
+                    String formato = (String) peli[2];
+                    String rutaFoto = (String) peli[4];
+                    Icon foto = (rutaFoto != null && !rutaFoto.isEmpty()) ? getImg(rutaFoto, 50, 60) : null;
+                    vista.modelo.addRow(new Object[]{ false, foto, titulo, id, new Object[]{iconoPeli, "Película"}, formato, new Object[]{iconoVector, "Ver info"} });
+                }
+            }
+            dialogo.dispose();
+        });
+
+        btnLimpiar.addActionListener(evt -> {
+            vista.buscador.setText("");
+            cargarTabla();
+            dialogo.dispose();
+        });
+
+        dialogo.add(panelContenido, BorderLayout.CENTER);
+        dialogo.add(panelBotones, BorderLayout.SOUTH);
+        dialogo.setVisible(true);
     }
 }

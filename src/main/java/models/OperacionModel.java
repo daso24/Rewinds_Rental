@@ -354,4 +354,23 @@ public class OperacionModel
         }
         return 0;
     }
+    
+    public boolean eliminarOperacion(int idRenta) {
+        ConexionBD conexionBD = new ConexionBD();
+        Connection conexion = null;
+        PreparedStatement ps = null;
+
+        try {
+            conexion = conexionBD.conectar();
+            String sql = "DELETE FROM renta WHERE id_renta = ?";
+            ps = conexion.prepareStatement(sql);
+            ps.setInt(1, idRenta);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try { if (ps != null) ps.close(); if (conexion != null) conexion.close(); } catch (Exception ex) {}
+        }
+    }
 }

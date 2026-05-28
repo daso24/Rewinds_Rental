@@ -97,6 +97,10 @@ public class ClienteController {
                 }
             });
         }
+        
+        if (this.vistaTabla.btnFiltrar != null) {
+            this.vistaTabla.btnFiltrar.addActionListener(e -> abrirDialogoFiltrar());
+        }
 
         if (this.vistaTabla.btnEliminar != null) {
             this.vistaTabla.btnEliminar.addActionListener(e -> {
@@ -155,7 +159,14 @@ public class ClienteController {
                             
                             vistaInfo.setDatosCliente(nombres != null ? nombres : "", apellidos != null ? apellidos : "", String.valueOf(id), tel != null ? tel : "N/A", fechaNac != null ? fechaNac : "N/A");
                             vistaInfo.setImagenCliente(foto != null && !foto.isEmpty() ? foto : "/img/placeholder_usuario.png");
-                            vistaInfo.btnAtras.addActionListener(eAtras -> vistaInfo.dispose());
+                            vistaInfo.btnAtras.addActionListener(eAtras -> {
+                                vistaInfo.dispose();
+                                clientes vistaCli = new clientes();
+                                new ClienteController(vistaCli);
+                                vistaCli.setVisible(true);
+                            });
+                            
+                            vistaTabla.dispose();
                             
                             vistaInfo.btnHistoVentas.addActionListener(eHistoVentas -> {
                                 try {
@@ -262,5 +273,90 @@ public class ClienteController {
         if (clientesBtn != null) { clientesBtn.addMouseListener(new MouseAdapter() { @Override public void mouseClicked(MouseEvent e) { if (!(ventanaActual instanceof clientes)) { ventanaActual.dispose(); clientes vCli = new clientes(); new ClienteController(vCli); vCli.setVisible(true); } } }); }
         if (videojuegosLbl != null) { videojuegosLbl.addMouseListener(new MouseAdapter() { @Override public void mouseClicked(MouseEvent e) { ventanaActual.dispose(); videojuegos vVid = new videojuegos(); new VideojuegosController(vVid); vVid.setVisible(true); } }); }
         if (peliculasLbl != null) { peliculasLbl.addMouseListener(new MouseAdapter() { @Override public void mouseClicked(MouseEvent e) { ventanaActual.dispose(); peliculas vPel = new peliculas(); new PeliculasController(vPel); vPel.setVisible(true); } }); }
+    }
+    
+    private void abrirDialogoFiltrar() {
+        JDialog dialogo = new JDialog(vistaTabla, "Filtro Clientes", true);
+        dialogo.setSize(320, 200);
+        dialogo.setLocationRelativeTo(vistaTabla);
+        dialogo.setLayout(new BorderLayout(10, 10));
+
+        JPanel panelContenido = new JPanel(new GridLayout(3, 1, 10, 10));
+        panelContenido.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+
+        JLabel lblColumna = new JLabel("Filtrar por columna:");
+        String[] opcionesColumnas = {"Nombre", "ID"};
+        JComboBox<String> comboColumnas = new JComboBox<>(opcionesColumnas);
+
+        JLabel lblCriterio = new JLabel("Texto a buscar:");
+        JTextField txtCriterio = new JTextField();
+
+        panelContenido.add(lblColumna);
+        panelContenido.add(comboColumnas);
+        panelContenido.add(lblCriterio);
+        panelContenido.add(txtCriterio);
+
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton btnAplicar = new JButton("Aplicar");
+        JButton btnLimpiar = new JButton("Quitar Filtros");
+
+        panelBotones.add(btnLimpiar);
+        panelBotones.add(btnAplicar);
+
+        btnAplicar.addActionListener(evt -> {
+            String criterio = txtCriterio.getText().trim().toLowerCase();
+            if (criterio.isEmpty()) {
+                vistaTabla.cargarTabla();
+            } else {
+                int opcion = comboColumnas.getSelectedIndex();
+                vistaTabla.modelo.setRowCount(0); 
+                
+                List<Object[]> clientesFiltrados = new java.util.ArrayList<>();
+
+                if (opcion == 0) { 
+                    List<Object[]> encontrados = arbolClientes.buscarParcial(criterio);
+                    for (Object[] c : encontrados) {
+                        if (String.valueOf(c[1]).toLowerCase().contains(criterio)) {
+                            clientesFiltrados.add(c);
+                        }
+                    }
+                } else { 
+                    List<Object[]> todos = modelo.obtenerClientes();
+                    for (Object[] c : todos) {
+                        if (String.valueOf(c[0]).toLowerCase().equals(criterio)) {
+                            clientesFiltrados.add(c);
+                        }
+                    }
+                }
+
+                Object infoIcon = null;
+                try { infoIcon = new ImageIcon(new ImageIcon(getClass().getResource("/img/Vector.png")).getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)); } catch (Exception ex) {}
+
+                for (Object[] clienteEncontrado : clientesFiltrados) {
+                    Object userIcon = null;
+                    String rutaDB = (String) clienteEncontrado[2];
+                    try {
+                        ImageIcon icon;
+                        if (rutaDB != null && rutaDB.startsWith("/")) icon = new ImageIcon(getClass().getResource(rutaDB));
+                        else icon = new ImageIcon(rutaDB != null ? rutaDB : "/img/placeholder_usuario.png");
+                        userIcon = new ImageIcon(icon.getImage().getScaledInstance(35, 35, Image.SCALE_SMOOTH));
+                    } catch (Exception ex) {
+                        try { userIcon = new ImageIcon(new ImageIcon(getClass().getResource("/img/placeholder_usuario.png")).getImage().getScaledInstance(35, 35, Image.SCALE_SMOOTH)); } catch(Exception ignored){}
+                    }
+                    vistaTabla.modelo.addRow(new Object[]{ false, new Object[]{userIcon, clienteEncontrado[1]}, String.valueOf(clienteEncontrado[0]), "0", "N/A", "N/A", new Object[]{infoIcon, "Ver info"} });
+                }
+            }
+            dialogo.dispose();
+        });
+
+        btnLimpiar.addActionListener(evt -> {
+            vistaTabla.buscador.setText("");
+            vistaTabla.cargarTabla();
+            dialogo.dispose();
+        });
+
+        dialogo.add(panelContenido, BorderLayout.CENTER);
+        dialogo.add(panelBotones, BorderLayout.SOUTH);
+        dialogo.setVisible(true);
     }
 }

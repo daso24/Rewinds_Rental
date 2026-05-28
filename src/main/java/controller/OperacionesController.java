@@ -133,6 +133,8 @@ public class OperacionesController
                 List<Object[]> opsEncontradas = arbolOperaciones.buscarParcial(texto);
                 vista.modeloTabla.setRowCount(0);
                 
+                listaOperaciones.clear(); 
+                
                 if (!opsEncontradas.isEmpty()) {
                     Icon iconInfo = getImgPequeño("/img/Vector.png");
                     Icon iconGame = getImgPequeño("/img/carbon_game-console.png");
@@ -140,6 +142,7 @@ public class OperacionesController
                     Image defaultUserImage = new ImageIcon(getClass().getResource("/img/placeholder_usuario.png")).getImage();
                     
                     for (Object[] opEncontrada : opsEncontradas) {
+                        listaOperaciones.add(opEncontrada); 
                         String cliente = (String) opEncontrada[1];
                         String tipoOp = (String) opEncontrada[2];
                         String tipoProd = (String) opEncontrada[3];
@@ -164,6 +167,10 @@ public class OperacionesController
                 }
             }
         });
+        
+        if (vista.btnFiltrar != null) {
+            vista.btnFiltrar.addActionListener(e -> abrirDialogoFiltrar());
+        }
 
         vista.buscador.addKeyListener(new KeyAdapter() { 
             @Override public void keyReleased(KeyEvent e) { 
@@ -183,12 +190,18 @@ public class OperacionesController
                         Boolean isSelected = (Boolean) vista.tabla.getValueAt(i, 0);
                         if (isSelected != null && isSelected) {
                             int modelIndex = vista.tabla.convertRowIndexToModel(i);
-                            Object cellVal = vista.tabla.getValueAt(i, 1);
-                            String cliente = (cellVal instanceof Object[]) ? ((Object[]) cellVal)[1].toString() : cellVal.toString();
-                            vista.modeloTabla.removeRow(modelIndex);
+                            
+                            Object[] opReal = listaOperaciones.get(modelIndex);
+                            int idRenta = (int) opReal[0];
+                            String cliente = (String) opReal[1];
+                            
+                            modelo.eliminarOperacion(idRenta);
                             arbolOperaciones.eliminar(cliente);
                         }
                     }
+                    cargarTablaOperaciones();
+                    vista.buscador.setText("");
+                    mostrarAlertaFigma(vista, "Operación eliminada permanentemente.", true);
                 });
             } else {
                 mostrarAlertaFigma(vista, "Selecciona al menos una operación de la lista.", false);
@@ -421,5 +434,105 @@ public class OperacionesController
         btnAceptar.addActionListener(e -> { d.dispose(); accionSi.actionPerformed(e); });
         pSouth.add(btnCancelar); pSouth.add(btnAceptar); p.add(pSouth, BorderLayout.SOUTH);
         d.add(p); d.setVisible(true);
+    }
+    
+    private void abrirDialogoFiltrar() {
+        JDialog dialogo = new JDialog(vista, "Filtro Operaciones", true);
+        dialogo.setSize(320, 200);
+        dialogo.setLocationRelativeTo(vista);
+        dialogo.setLayout(new BorderLayout(10, 10));
+
+        JPanel panelContenido = new JPanel(new GridLayout(3, 1, 10, 10));
+        panelContenido.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+
+        JLabel lblColumna = new JLabel("Filtrar por columna:");
+        String[] opcionesColumnas = {"Nombre del Cliente", "Tipo Operación", "Producto"};
+        JComboBox<String> comboColumnas = new JComboBox<>(opcionesColumnas);
+
+        JLabel lblCriterio = new JLabel("Texto a buscar:");
+        JTextField txtCriterio = new JTextField();
+
+        panelContenido.add(lblColumna);
+        panelContenido.add(comboColumnas);
+        panelContenido.add(lblCriterio);
+        panelContenido.add(txtCriterio);
+
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton btnAplicar = new JButton("Aplicar");
+        JButton btnLimpiar = new JButton("Quitar Filtros");
+
+        panelBotones.add(btnLimpiar);
+        panelBotones.add(btnAplicar);
+
+        btnAplicar.addActionListener(evt -> {
+            String criterio = txtCriterio.getText().trim().toLowerCase();
+            if (criterio.isEmpty()) {
+                cargarTablaOperaciones();
+            } else {
+                int opcion = comboColumnas.getSelectedIndex();
+                vista.modeloTabla.setRowCount(0);
+                
+                listaOperaciones.clear(); 
+
+                List<Object[]> opsFiltradas = new java.util.ArrayList<>();
+
+                if (opcion == 0) { 
+                    List<Object[]> encontradas = arbolOperaciones.buscarParcial(criterio);
+                    for (Object[] op : encontradas) {
+                        if (String.valueOf(op[1]).toLowerCase().contains(criterio)) {
+                            opsFiltradas.add(op);
+                        }
+                    }
+                } else { 
+                    List<Object[]> todas = modelo.obtenerOperaciones();
+                    for (Object[] op : todas) {
+                        if (opcion == 1 && String.valueOf(op[2]).toLowerCase().contains(criterio)) { 
+                            opsFiltradas.add(op);
+                        } else if (opcion == 2 && String.valueOf(op[4]).toLowerCase().contains(criterio)) { 
+                            opsFiltradas.add(op);
+                        }
+                    }
+                }
+
+                Icon iconInfo = getImgPequeño("/img/Vector.png");
+                Icon iconGame = getImgPequeño("/img/carbon_game-console.png");
+                Icon iconMovie = getImgPequeño("/img/fluent_movies-and-tv-16-filled.png");
+                Image defaultUserImage = new ImageIcon(getClass().getResource("/img/placeholder_usuario.png")).getImage();
+
+                for (Object[] opEncontrada : opsFiltradas) {
+                    listaOperaciones.add(opEncontrada); 
+                    
+                    String cliente = (String) opEncontrada[1];
+                    String tipoOp = (String) opEncontrada[2];
+                    String tipoProd = (String) opEncontrada[3];
+                    String titulo = (String) opEncontrada[4];
+                    int idProd = (int) opEncontrada[7];
+                    String rutaFotoCliente = (opEncontrada.length > 13) ? (String) opEncontrada[13] : null;
+
+                    Icon iconTipo = tipoProd.equals("Videojuego") ? iconGame : iconMovie;
+                    Icon iconUser = null;
+
+                    if (rutaFotoCliente != null && !rutaFotoCliente.trim().isEmpty()) {
+                        try {
+                            ImageIcon iconOriginal = rutaFotoCliente.startsWith("/") ? new ImageIcon(getClass().getResource(rutaFotoCliente)) : new ImageIcon(rutaFotoCliente);
+                            iconUser = escalarImagenHD(iconOriginal.getImage(), 35, 35);
+                        } catch (Exception ex) { iconUser = escalarImagenHD(defaultUserImage, 35, 35); }
+                    } else { iconUser = escalarImagenHD(defaultUserImage, 35, 35); }
+                    
+                    vista.modeloTabla.addRow(new Object[]{ false, new Object[]{iconUser, cliente}, tipoOp, titulo, new Object[]{iconTipo, tipoProd}, "ID: " + idProd, new Object[]{iconInfo, "Ver info"} });
+                }
+            }
+            dialogo.dispose();
+        });
+
+        btnLimpiar.addActionListener(evt -> {
+            vista.buscador.setText("");
+            cargarTablaOperaciones();
+            dialogo.dispose();
+        });
+
+        dialogo.add(panelContenido, BorderLayout.CENTER);
+        dialogo.add(panelBotones, BorderLayout.SOUTH);
+        dialogo.setVisible(true);
     }
 }
