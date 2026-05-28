@@ -12,7 +12,7 @@
 
 # Package Files #
 *.jar
-!lib/*.jar   # AÑADIDO: Esta es una excepción. Le dice a Git "Ignora todos los .jar, EXCEPTO los que estén en la carpeta lib"
+!lib/*.jar   
 *.war
 *.nar
 *.ear
@@ -26,14 +26,14 @@ replay_pid*
 
 # Archivos específicos de Eclipse
 .settings/
-#.classpath  # APAGADO: Le pusimos un # para que Git sí suba tu mapa de carpetas
-#.project    # APAGADO: Le pusimos un # para que Git sí suba la configuración
+#.classpath 
+#.project  
 
 # Carpetas de compilación
 bin/
 
 # Credenciales
-#config.properties # APAGADO: Le pusimos un # para que sí suba la contraseña a la laptop
+config.properties
 
 # Ignorar PDFs generados por el sistema
 src/main/java/pdfs/
