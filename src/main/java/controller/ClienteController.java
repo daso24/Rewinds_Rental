@@ -3,9 +3,7 @@ package controller;
 import models.ClientModel;
 import models.OperacionModel;
 import models.ArbolBinarioBusqueda;
-import view.AñadirClientes;
-import view.clientes;
-import view.InfoCliente;
+import view.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -22,20 +20,7 @@ public class ClienteController {
     public ClienteController(AñadirClientes vistaAgregar, ClientModel modelo) {
         this.vistaAgregar = vistaAgregar;
         this.modelo = modelo;
-        this.vistaAgregar.btnAgregarCliente.addActionListener(e -> {
-            String nombres = vistaAgregar.txtNombres.getText().trim();
-            String apellidos = vistaAgregar.txtApellidos.getText().trim();
-            String telefono = vistaAgregar.txtTelefono.getText().trim();
-            String correo = vistaAgregar.txtCorreo.getText().trim();
-            String ruta = vistaAgregar.rutaFoto;
-            String fechaNac = vistaAgregar.txtFechaNac.getText().trim();
-            if (modelo.registrarCliente(nombres, apellidos, telefono, correo, ruta, fechaNac)) {
-                vistaAgregar.dispose();
-                clientes vistaCli = new clientes();
-                new ClienteController(vistaCli);
-                vistaCli.setVisible(true);
-            }
-        });
+        initEventsAdd(); 
     }
 
     public ClienteController(clientes vistaTabla) {
@@ -58,6 +43,8 @@ public class ClienteController {
     }
 
     private void initEvents() {
+        configurarMenuLateral(vistaTabla.btnInicio, vistaTabla.btnOperacion, vistaTabla.btnClientes, vistaTabla.btnVideojuegos, vistaTabla.btnPeliculas, vistaTabla);
+
         if (this.vistaTabla.btnAgregar != null) {
             this.vistaTabla.btnAgregar.addActionListener(e -> {
                 vistaTabla.dispose();
@@ -229,5 +216,51 @@ public class ClienteController {
                 }
             });
         }
+    }
+
+    private void initEventsAdd() {
+    	configurarMenuLateral(vistaAgregar.lblInicio, vistaAgregar.lblOperacion, vistaAgregar.lblClientes, vistaAgregar.lblVideojuegos, vistaAgregar.lblPeliculas, vistaAgregar);
+        
+        if (vistaAgregar.btnAtras != null) {
+            vistaAgregar.btnAtras.addActionListener(e -> {
+                vistaAgregar.dispose();
+                clientes vistaCli = new clientes();
+                new ClienteController(vistaCli);
+                vistaCli.setVisible(true);
+            });
+        }
+
+        if (vistaAgregar.btnAgregarCliente != null) {
+            vistaAgregar.btnAgregarCliente.addActionListener(e -> {
+                String nombres = vistaAgregar.txtNombres.getText().trim();
+                String apellidos = vistaAgregar.txtApellidos.getText().trim();
+                String telefono = vistaAgregar.txtTelefono.getText().trim();
+                String correo = vistaAgregar.txtCorreo.getText().trim();
+                String ruta = vistaAgregar.rutaFoto;
+                String fechaNac = vistaAgregar.txtFechaNac.getText().trim();
+                
+                System.out.println("Intentando guardar a: " + nombres); 
+
+                if (modelo.registrarCliente(nombres, apellidos, telefono, correo, ruta, fechaNac)) {
+                    JOptionPane.showMessageDialog(vistaAgregar, "¡Cliente guardado con éxito!");
+                    vistaAgregar.dispose();
+                    clientes vistaCli = new clientes();
+                    new ClienteController(vistaCli);
+                    vistaCli.setVisible(true);
+                } else {
+                    JOptionPane.showMessageDialog(vistaAgregar, "Error al guardar. Verifica que llenaste todos los campos obligatorios y que el correo/teléfono no estén repetidos en la BD.", "Error de BD", JOptionPane.ERROR_MESSAGE);
+                }
+            });
+        } else {
+            System.out.println("ADVERTENCIA: El botón btnAgregarCliente no está conectado correctamente.");
+        }
+    }
+
+    private void configurarMenuLateral(JComponent inicio, JComponent operacion, JComponent clientesBtn, JComponent videojuegosLbl, JComponent peliculasLbl, JFrame ventanaActual) {
+        if (inicio != null) { inicio.addMouseListener(new MouseAdapter() { @Override public void mouseClicked(MouseEvent e) { ventanaActual.dispose(); principal vPrin = new principal(); new PrincipalController(vPrin); vPrin.setVisible(true); } }); }
+        if (operacion != null) { operacion.addMouseListener(new MouseAdapter() { @Override public void mouseClicked(MouseEvent e) { ventanaActual.dispose(); operaciones vOp = new operaciones(); new OperacionesController(vOp); vOp.setVisible(true); } }); }
+        if (clientesBtn != null) { clientesBtn.addMouseListener(new MouseAdapter() { @Override public void mouseClicked(MouseEvent e) { if (!(ventanaActual instanceof clientes)) { ventanaActual.dispose(); clientes vCli = new clientes(); new ClienteController(vCli); vCli.setVisible(true); } } }); }
+        if (videojuegosLbl != null) { videojuegosLbl.addMouseListener(new MouseAdapter() { @Override public void mouseClicked(MouseEvent e) { ventanaActual.dispose(); videojuegos vVid = new videojuegos(); new VideojuegosController(vVid); vVid.setVisible(true); } }); }
+        if (peliculasLbl != null) { peliculasLbl.addMouseListener(new MouseAdapter() { @Override public void mouseClicked(MouseEvent e) { ventanaActual.dispose(); peliculas vPel = new peliculas(); new PeliculasController(vPel); vPel.setVisible(true); } }); }
     }
 }

@@ -32,6 +32,8 @@ public class ClientModel
         }
         catch (Exception e)
         {
+        	System.out.println("ERROR SQL AL GUARDAR CLIENTE:");
+            e.printStackTrace();
             return false;
         }
         finally
