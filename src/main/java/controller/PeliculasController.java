@@ -62,11 +62,19 @@ public class PeliculasController
         try
         {
             java.net.URL url = getClass().getResource(ruta);
-            if (url != null) return new ImageIcon(new ImageIcon(url).getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH));
+            if (url != null) 
+            {
+                return new ImageIcon(new ImageIcon(url).getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH));
+            }
             java.io.File archivo = new java.io.File(ruta);
-            if (archivo.exists()) return new ImageIcon(new ImageIcon(ruta).getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH));
+            if (archivo.exists()) 
+            {
+                return new ImageIcon(new ImageIcon(ruta).getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH));
+            }
         }
-        catch (Exception e) {}
+        catch (Exception e) 
+        {
+        }
         return null;
     }
 
@@ -88,19 +96,25 @@ public class PeliculasController
             vAdd.setVisible(true);
         });
 
-        vista.btnBuscar.addActionListener(e -> {
+        vista.btnBuscar.addActionListener(e -> 
+        {
             String texto = vista.buscador.getText().trim();
-            if (texto.isEmpty()) {
+            if (texto.isEmpty()) 
+            {
                 cargarTabla();
-            } else {
+            } 
+            else 
+            {
                 List<Object[]> pelisEncontradas = arbolPeliculas.buscarParcial(texto);
                 vista.modelo.setRowCount(0);
                 
-                if (!pelisEncontradas.isEmpty()) {
+                if (!pelisEncontradas.isEmpty()) 
+                {
                     Icon iconoPeli = getImg("/img/fluent_movies-and-tv-16-filled.png", 40, 40);
                     Icon iconoVector = getImg("/img/Vector.png", 20, 20);
                     
-                    for (Object[] peliEncontrada : pelisEncontradas) {
+                    for (Object[] peliEncontrada : pelisEncontradas) 
+                    {
                         int id = (int) peliEncontrada[0];
                         String titulo = (String) peliEncontrada[1];
                         String formato = (String) peliEncontrada[2];
@@ -108,10 +122,47 @@ public class PeliculasController
                         Icon foto = (rutaFoto != null && !rutaFoto.isEmpty()) ? getImg(rutaFoto, 50, 60) : null;
                         vista.modelo.addRow(new Object[]{ false, foto, titulo, id, new Object[]{iconoPeli, "Película"}, formato, new Object[]{iconoVector, "Ver info"} });
                     }
-                } else {
+                } 
+                else 
+                {
                     JOptionPane.showMessageDialog(vista, "No se encontró ninguna película con ese nombre.");
                 }
             }
+        });
+
+        vista.btnEliminar.addActionListener(e ->
+        {
+            boolean haySeleccion = false;
+
+            for (int i = 0; i < vista.tabla.getRowCount(); i++)
+            {
+                Boolean isSelected = (Boolean) vista.tabla.getValueAt(i, 0);
+                if (isSelected != null && isSelected)
+                {
+                    haySeleccion = true;
+                    break;
+                }
+            }
+
+            if (!haySeleccion)
+            {
+                vista.mostrarAlerta("Selecciona al menos una película de la lista.");
+                return;
+            }
+
+            vista.mostrarConfirmacion("¿Seguro que deseas eliminar las películas seleccionadas?", evt ->
+            {
+                for (int i = vista.tabla.getRowCount() - 1; i >= 0; i--)
+                {
+                    Boolean isSelected = (Boolean) vista.tabla.getValueAt(i, 0);
+                    if (isSelected != null && isSelected)
+                    {
+                        int idPelicula = (int) vista.tabla.getValueAt(i, 3);
+                        modelo.eliminarPelicula(idPelicula);
+                    }
+                }
+                cargarTabla();
+            });
         });
 
         configurarMenuLateral(vista.btnInicio, vista.btnOperacion, vista.btnClientes, vista.btnVideojuegos, vista.btnPeliculas, vista);
@@ -177,10 +228,78 @@ public class PeliculasController
 
     private void configurarMenuLateral(JComponent inicio, JComponent operacion, JComponent clientes, JComponent videojuegosLbl, JComponent peliculasLbl, JFrame ventanaActual)
     {
-        if (inicio != null) { inicio.addMouseListener(new MouseAdapter() { @Override public void mouseClicked(MouseEvent e) { ventanaActual.dispose(); principal vPrin = new principal(); new PrincipalController(vPrin); vPrin.setVisible(true); } }); }
-        if (operacion != null) { operacion.addMouseListener(new MouseAdapter() { @Override public void mouseClicked(MouseEvent e) { ventanaActual.dispose(); operaciones vOp = new operaciones(); new OperacionesController(vOp); vOp.setVisible(true); } }); }
-        if (clientes != null) { clientes.addMouseListener(new MouseAdapter() { @Override public void mouseClicked(MouseEvent e) { ventanaActual.dispose(); clientes vCli = new clientes(); new ClienteController(vCli); vCli.setVisible(true); } }); }
-        if (videojuegosLbl != null) { videojuegosLbl.addMouseListener(new MouseAdapter() { @Override public void mouseClicked(MouseEvent e) { ventanaActual.dispose(); videojuegos vVid = new videojuegos(); new VideojuegosController(vVid); vVid.setVisible(true); } }); }
-        if (peliculasLbl != null) { peliculasLbl.addMouseListener(new MouseAdapter() { @Override public void mouseClicked(MouseEvent e) { if (!(ventanaActual instanceof peliculas)) { ventanaActual.dispose(); peliculas vPel = new peliculas(); new PeliculasController(vPel); vPel.setVisible(true); } } }); }
+        if (inicio != null) 
+        { 
+            inicio.addMouseListener(new MouseAdapter() 
+            { 
+                @Override 
+                public void mouseClicked(MouseEvent e) 
+                { 
+                    ventanaActual.dispose(); 
+                    principal vPrin = new principal(); 
+                    new PrincipalController(vPrin); 
+                    vPrin.setVisible(true); 
+                } 
+            }); 
+        }
+        if (operacion != null) 
+        { 
+            operacion.addMouseListener(new MouseAdapter() 
+            { 
+                @Override 
+                public void mouseClicked(MouseEvent e) 
+                { 
+                    ventanaActual.dispose(); 
+                    operaciones vOp = new operaciones(); 
+                    new OperacionesController(vOp); 
+                    vOp.setVisible(true); 
+                } 
+            }); 
+        }
+        if (clientes != null) 
+        { 
+            clientes.addMouseListener(new MouseAdapter() 
+            { 
+                @Override 
+                public void mouseClicked(MouseEvent e) 
+                { 
+                    ventanaActual.dispose(); 
+                    clientes vCli = new clientes(); 
+                    new ClienteController(vCli); 
+                    vCli.setVisible(true); 
+                } 
+            }); 
+        }
+        if (videojuegosLbl != null) 
+        { 
+            videojuegosLbl.addMouseListener(new MouseAdapter() 
+            { 
+                @Override 
+                public void mouseClicked(MouseEvent e) 
+                { 
+                    ventanaActual.dispose(); 
+                    videojuegos vVid = new videojuegos(); 
+                    new VideojuegosController(vVid); 
+                    vVid.setVisible(true); 
+                } 
+            }); 
+        }
+        if (peliculasLbl != null) 
+        { 
+            peliculasLbl.addMouseListener(new MouseAdapter() 
+            { 
+                @Override 
+                public void mouseClicked(MouseEvent e) 
+                { 
+                    if (!(ventanaActual instanceof peliculas)) 
+                    { 
+                        ventanaActual.dispose(); 
+                        peliculas vPel = new peliculas(); 
+                        new PeliculasController(vPel); 
+                        vPel.setVisible(true); 
+                    } 
+                } 
+            }); 
+        }
     }
 }
