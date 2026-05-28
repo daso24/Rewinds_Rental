@@ -9,6 +9,8 @@ El proyecto consiste en el diseño y desarrollo de una plataforma administrativa
 * **Control de Versiones:** Git / GitHub
 * **Diseño:** Figma
 
+Link a la carpeta de Drop box: https://www.dropbox.com/scl/fo/pjj50k8f1jl69alkw1h7a/ANTDuSoRUGBvK0uDmlHpeAE?rlkey=exrez8uhpkykuhde83tfkyg0h&st=5sxo8hpx&dl=0
+
 ## 📚 Dependencias del Proyecto
 El proyecto requiere las siguientes librerías externas configuradas en el *Build Path*:
 
