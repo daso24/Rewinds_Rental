@@ -1,64 +1,50 @@
 # Proyecto Rewinds Rentals
 
 **Descripción**
-El proyecto consiste en el diseño y desarrollo de una plataforma administrativa orientada a la gestión de operaciones de un establecimiento de renta y venta de videojuegos y contenido multimedia. El sistema permite un control integral sobre el inventario, la base de datos de clientes y las transacciones financieras.
+Rewinds Rentals es un sistema creado para administrar un local de renta y venta de videojuegos y películas. El programa permite llevar el control del inventario, registrar a los clientes y manejar las transacciones del día a día.
 
-## 🛠️ Tecnologías Utilizadas
+## Tecnologías utilizadas
 * **Lenguaje:** Java (JDK 21+)
 * **IDE:** Eclipse
+* **Base de Datos:** MySQL
+* **Diseño de Interfaz:** Figma
 * **Control de Versiones:** Git / GitHub
-* **Diseño:** Figma
 
-Link a la carpeta de Drop box: https://www.dropbox.com/scl/fo/pjj50k8f1jl69alkw1h7a/ANTDuSoRUGBvK0uDmlHpeAE?rlkey=exrez8uhpkykuhde83tfkyg0h&st=5sxo8hpx&dl=0
+**Archivos del proyecto (Dropbox):** https://www.dropbox.com/scl/fo/pjj50k8f1jl69alkw1h7a/ANTDuSoRUGBvK0uDmlHpeAE?rlkey=exrez8uhpkykuhde83tfkyg0h&st=5sxo8hpx&dl=0
 
-## 📚 Dependencias del Proyecto
-El proyecto requiere las siguientes librerías externas configuradas en el *Build Path*:
+## Dependencias
+Para que el proyecto compile correctamente, es necesario agregar las siguientes librerías al Build Path de Eclipse (todas se encuentran en la carpeta lib del proyecto):
 
-* **Base de datos:**
-  * `mysql-connector-j-8.4.0.jar`
-  * `commons-pool2-2.12.0.jar`
-  * `jedis-5.1.0.jar`
-  
-* **Generación de PDFs (iText Suite):**
-  * `commons-7.2.5.jar`
-  * `io-7.2.5.jar`
-  * `kernel-7.2.5.jar`
-  * `layout-7.2.5.jar`
-  * `slf4j-api-1.7.36.jar`
+**Conexión a Base de Datos:**
+* mysql-connector-j-8.4.0.jar
+* commons-pool2-2.12.0.jar
+* jedis-5.1.0.jar
 
-## 🚀 Requisitos Previos
-* Las librerías listadas anteriormente deben estar agregadas al *Build Path* de tu proyecto en Eclipse. Puedes encontrar las librerías en la carpeta `lib`.
+**Generación de reportes PDF (iText):**
+* commons-7.2.5.jar
+* io-7.2.5.jar
+* kernel-7.2.5.jar
+* layout-7.2.5.jar
+* slf4j-api-1.7.36.jar
 
-## 📥 Instalación y Configuración (Importante)
-Para asegurar el correcto funcionamiento del sistema y la generación de archivos, sigue estos pasos:
+## Instalación y Configuración
+1. **Importar el proyecto:** Al abrirlo en tu IDE, asegúrate de que la carpeta java esté dentro de src/main/. Si quedó fuera, muévela para que la ruta correcta sea src/main/java.
+2. **Conexión a la base de datos:** Por seguridad, las credenciales del servidor no están en el código fuente. Debes colocar el archivo config.properties directamente en la raíz del proyecto (al mismo nivel que la carpeta src). Si no lo tienes, solicítalo al administrador.
+3. **Carpeta de PDFs:** El sistema genera reportes automáticamente. Estos se guardarán en la ruta src/main/java/pdfs.
 
-1. **Estructura de paquetes:** Al importar el proyecto, verifica la ruta de los archivos fuente.
-    * **Nota sobre la carpeta de origen:** Si al importar observas una carpeta llamada `java` fuera de `src/main`, muévela dentro de `src/main/` para que la ruta sea `src/main/java`.
-    * **Carpeta de reportes:** El sistema genera archivos PDF automáticamente en `src/main/java/pdfs`.
+## Ejecución
+Para iniciar el sistema, corre la clase Main. 
 
-2. **Configuración de la Base de Datos (Conexión en la Nube):**
-    Por motivos de seguridad, las credenciales de acceso no se encuentran incluidas en el repositorio público. Para que el programa pueda conectarse al servidor de base de datos, se debe añadir el archivo de configuración manualmente:
-    * Solicita las credenciales de acceso al administrador.
-    * Crea un archivo llamado `config.properties` en tu equipo.
-    * Pega las credenciales correspondientes dentro de él.
-    * **Pega el archivo directamente en la raíz del proyecto** (al mismo nivel que la carpeta `src`).
+Puedes ingresar con estas credenciales de prueba:
+* **Usuario:** prueba@gmail.com
+* **Contraseña:** 1234
 
-## 🔑 Instrucciones de Ejecución
-1. Ejecuta la clase `Main` (o la clase de inicio de sesión).
-2. **Credenciales de acceso:**
-   * **Usuario:** `prueba@gmail.com`
-   * **Contraseña:** `1234`
+## Funcionalidades principales
+* **Login:** Autenticación de usuarios para entrar al sistema.
+* **Operaciones:** Pantalla para registrar las rentas y ventas de los artículos.
+* **Clientes:** Registro de socios donde se pueden editar sus datos y subir una foto de perfil.
+* **Inventario:** Catálogo de películas y videojuegos para consultar detalles y existencias.
+* **Reportes:** Generación de archivos PDF para crear tarjetas de clientes y fichas técnicas de los juegos/películas.
 
-## 📑 Funcionalidades Principales
-* **Autenticación:** Sistema de login seguro.
-* **Módulos de Gestión:**
-    * **Operación:** Registro y detalle de transacciones (Renta/Venta).
-    * **Clientes:** Base de datos de socios con edición de perfiles (incluyendo carga de imágenes de usuario).
-    * **Videojuegos & Películas:** Catálogos interactivos con gestión de stock y detalles.
-* **Generación de Reportes:** El sistema permite exportar a **PDF** fichas técnicas y tarjetas de cliente.
-    * Los archivos generados se guardan automáticamente en la carpeta `pdfs/` dentro de tu proyecto. 
-
-## 🎨 Diseño y Frontend
-* **Prototipo:** Implementado bajo un diseño UI moderno basado en Figma con soporte para un contraste profesional y simétrico.
-* **Tipografía:** Inter (limpia y profesional).
-* **Interacción:** Interfaz intuitiva con menús laterales y modales de confirmación personalizados.
+## Diseño
+La interfaz gráfica se maquetó primero en Figma buscando que fuera limpia, usando menús laterales y la tipografía Inter.
