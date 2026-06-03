@@ -165,6 +165,7 @@ public class PeliculasController
                         modelo.eliminarPelicula(idPelicula);
                     }
                 }
+                vista.mostrarExitoEliminar("Películas eliminadas correctamente.");
                 cargarTabla();
             });
         });

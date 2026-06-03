@@ -29,6 +29,15 @@ public class AgregarJuego extends JFrame
         setResizable(true); 
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
+        
+        try
+        {
+            Image icono = new ImageIcon(getClass().getResource("/img/logo3.png")).getImage();
+            this.setIconImage(icono);
+        }
+        catch(Exception e)
+        {
+        }
 
         JPanel sidebar = new JPanel();
         sidebar.setPreferredSize(new Dimension(160, 0));
@@ -46,9 +55,8 @@ public class AgregarJuego extends JFrame
         mainPanel.setBackground(new Color(245, 245, 245));
         add(mainPanel, BorderLayout.CENTER);
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
-        gbc.fill = GridBagConstraints.BOTH;
+        JPanel contenedorCentral = new JPanel(new BorderLayout(0, 10));
+        contenedorCentral.setOpaque(false);
 
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setOpaque(false);
@@ -77,8 +85,7 @@ public class AgregarJuego extends JFrame
         }
         catch(Exception e) {}
 
-        gbc.gridx = 0; gbc.gridy = 0; gbc.weightx = 1.0; gbc.weighty = 0.0;
-        mainPanel.add(headerPanel, gbc);
+        contenedorCentral.add(headerPanel, BorderLayout.NORTH);
 
         JPanel contentPanel = new JPanel(null)
         {
@@ -143,7 +150,7 @@ public class AgregarJuego extends JFrame
             {
                 JFileChooser selector = new JFileChooser();
                 selector.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Imágenes", "jpg", "png", "jpeg"));
-                if (selector.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
+                if (selector.showOpenDialog(AgregarJuego.this) == JFileChooser.APPROVE_OPTION)
                 {
                     rutaFotoActual = selector.getSelectedFile().getAbsolutePath();
                     ImageIcon icon = new ImageIcon(rutaFotoActual);
@@ -163,8 +170,7 @@ public class AgregarJuego extends JFrame
         crearLabel(contentPanel, "Año:", 640, 360);
         cbAnio = crearCombo(contentPanel, new String[]{"2024", "2025", "2026"}, 640, 385, 110);
 
-        gbc.gridy = 1; gbc.weighty = 1.0;
-        mainPanel.add(contentPanel, gbc);
+        contenedorCentral.add(contentPanel, BorderLayout.CENTER);
 
         btnAgregar = new JButton("Agregar Videojuego")
         {
@@ -191,8 +197,9 @@ public class AgregarJuego extends JFrame
         footerPanel.setOpaque(false);
         footerPanel.add(btnAgregar);
 
-        gbc.gridy = 2; gbc.weighty = 0.0;
-        mainPanel.add(footerPanel, gbc);
+        contenedorCentral.add(footerPanel, BorderLayout.SOUTH);
+
+        mainPanel.add(contenedorCentral, new GridBagConstraints());
     }
 
     public void mostrarError(String mensaje)

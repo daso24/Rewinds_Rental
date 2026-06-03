@@ -109,6 +109,7 @@ public class VideojuegosController
                             arbolJuegos.eliminar(titulo);
                         }
                     }
+                    vista.mostrarExitoEliminar("Videojuegos eliminados correctamente.");
                     cargarTabla();
                 });
             }

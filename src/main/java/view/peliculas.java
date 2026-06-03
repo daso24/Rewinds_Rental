@@ -327,6 +327,50 @@ public class peliculas extends JFrame {
         contenedor.add(panelBotones, BorderLayout.SOUTH);
         dialogo.setVisible(true);
     }
+    
+    public void mostrarExitoEliminar(String mensaje)
+    {
+        JDialog dialogo = new JDialog(this, true);
+        dialogo.setUndecorated(true);
+        dialogo.setSize(400, 240);
+        dialogo.setLocationRelativeTo(this);
+        
+        JPanel contenedor = new JPanel(new BorderLayout());
+        contenedor.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 1));
+        contenedor.setBackground(new Color(225, 225, 225));
+
+        JPanel panelCentral = new JPanel();
+        panelCentral.setOpaque(false);
+        panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
+        panelCentral.add(Box.createVerticalStrut(35));
+
+        JLabel lblTitulo = new JLabel("<html><center>" + mensaje + "</center></html>", SwingConstants.CENTER);
+        lblTitulo.setFont(INTER_BOLD_26);
+        lblTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panelCentral.add(lblTitulo);
+
+        panelCentral.add(Box.createVerticalStrut(10));
+        
+        try 
+        {
+            JLabel icono = new JLabel(new ImageIcon(new ImageIcon(getClass().getResource("/img/palomitaverde.png")).getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH)));
+            icono.setAlignmentX(Component.CENTER_ALIGNMENT);
+            panelCentral.add(icono);
+        } 
+        catch(Exception e) {}
+
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 15));
+        panelBotones.setOpaque(false);
+        JButton btnAceptar = crearBotonDialogo("Aceptar", new Color(0, 170, 255));
+        btnAceptar.addActionListener(e -> dialogo.dispose());
+
+        panelBotones.add(btnAceptar);
+
+        contenedor.add(panelCentral, BorderLayout.CENTER);
+        contenedor.add(panelBotones, BorderLayout.SOUTH);
+        dialogo.setContentPane(contenedor);
+        dialogo.setVisible(true);
+    }
 
     class IconArribaRenderer extends DefaultTableCellRenderer {
         @Override

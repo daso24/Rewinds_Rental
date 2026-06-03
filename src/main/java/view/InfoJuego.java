@@ -247,7 +247,7 @@ public class InfoJuego extends JFrame
     {
         JDialog dialogo = new JDialog(this, true);
         dialogo.setUndecorated(true);
-        dialogo.setSize(350, 205);
+        dialogo.setSize(360, 225); 
         dialogo.setLocationRelativeTo(this);
         JPanel contenedor = new JPanel(new BorderLayout());
         contenedor.setBorder(BorderFactory.createLineBorder(new Color(0, 51, 102), 2));
@@ -256,21 +256,46 @@ public class InfoJuego extends JFrame
         JPanel contenido = new JPanel();
         contenido.setOpaque(false);
         contenido.setLayout(new BoxLayout(contenido, BoxLayout.Y_AXIS));
-        contenido.add(Box.createVerticalStrut(5));
+        contenido.add(Box.createVerticalStrut(15));
         
         JLabel lblMsg = new JLabel("<html><center>" + mensaje + "</center></html>", SwingConstants.CENTER);
         lblMsg.setFont(new Font("Inter", Font.BOLD, 16));
         lblMsg.setAlignmentX(Component.CENTER_ALIGNMENT);
         contenido.add(lblMsg);
+        
         contenido.add(Box.createVerticalGlue());
         
-        JButton btnSi = new JButton("Confirmar");
-        btnSi.setPreferredSize(new Dimension(110, 35));
-        btnSi.setBackground(new Color(0, 51, 102));
+        try
+        {
+            ImageIcon img = new ImageIcon(new ImageIcon(getClass().getResource("/img/palomitaverde.png")).getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH));
+            JLabel lblIcono = new JLabel(img);
+            lblIcono.setAlignmentX(Component.CENTER_ALIGNMENT);
+            contenido.add(lblIcono);
+        }
+        catch (Exception e) {}
+        
+        contenido.add(Box.createVerticalGlue());
+        
+        JButton btnSi = new JButton("Confirmar") {
+            @Override protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(0, 170, 255)); 
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        btnSi.setPreferredSize(new Dimension(130, 35));
         btnSi.setForeground(Color.WHITE);
+        btnSi.setFont(new Font("Inter", Font.BOLD, 13));
+        btnSi.setContentAreaFilled(false);
+        btnSi.setBorderPainted(false);
+        btnSi.setFocusPainted(false);
+        btnSi.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnSi.addActionListener(e -> { accionSi.actionPerformed(e); dialogo.dispose(); });
         
-        JPanel pBot = new JPanel(new FlowLayout());
+        JPanel pBot = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 15));
         pBot.setOpaque(false);
         pBot.add(btnSi);
         

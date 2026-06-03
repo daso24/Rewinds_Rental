@@ -394,46 +394,130 @@ public class OperacionesController
     }
 
     private void mostrarAlertaFigma(JFrame frame, String mensaje, boolean exito) {
-        JDialog d = new JDialog(frame, true);
-        d.setUndecorated(true); d.setSize(350, 240); d.setLocationRelativeTo(frame);
-        JPanel p = new JPanel(new BorderLayout()); p.setBackground(Color.WHITE);
-        p.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 1));
-        JPanel pCenter = new JPanel(); pCenter.setOpaque(false); pCenter.setLayout(new BoxLayout(pCenter, BoxLayout.Y_AXIS));
-        pCenter.add(Box.createVerticalStrut(20));
-        try {
-            ImageIcon icon = new ImageIcon(new ImageIcon(getClass().getResource(exito ? "/img/palomitaverde.png" : "/img/mingcute_warning-fill.png")).getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH));
-            JLabel lblIcon = new JLabel(icon); lblIcon.setAlignmentX(Component.CENTER_ALIGNMENT); pCenter.add(lblIcon);
-        } catch(Exception e) {}
-        pCenter.add(Box.createVerticalStrut(15));
-        JLabel lblMsg = new JLabel("<html><center>" + mensaje + "</center></html>"); lblMsg.setFont(new Font("Inter", Font.PLAIN, 14));
-        lblMsg.setAlignmentX(Component.CENTER_ALIGNMENT); pCenter.add(lblMsg);
-        p.add(pCenter, BorderLayout.CENTER);
-        JPanel pSouth = new JPanel(); pSouth.setOpaque(false); pSouth.setBorder(BorderFactory.createEmptyBorder(10, 10, 20, 10));
-        JButton btnOk = new JButton("Aceptar"); btnOk.setPreferredSize(new Dimension(150, 35)); btnOk.setForeground(Color.WHITE);
-        btnOk.setBackground(new Color(0, 180, 255)); btnOk.addActionListener(e -> d.dispose()); pSouth.add(btnOk); p.add(pSouth, BorderLayout.SOUTH);
-        d.add(p); d.setVisible(true);
+        JDialog dialogo = new JDialog(frame, true);
+        dialogo.setUndecorated(true);
+        dialogo.setSize(400, 240);
+        dialogo.setLocationRelativeTo(frame);
+        
+        JPanel contenedor = new JPanel(new BorderLayout());
+        contenedor.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 1));
+        contenedor.setBackground(new Color(225, 225, 225));
+
+        JPanel panelCentral = new JPanel();
+        panelCentral.setOpaque(false);
+        panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
+        panelCentral.add(Box.createVerticalStrut(35));
+
+        JLabel lblTitulo = new JLabel("<html><center>" + mensaje + "</center></html>", SwingConstants.CENTER);
+        lblTitulo.setFont(new Font("Inter", Font.BOLD, 22));
+        lblTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panelCentral.add(lblTitulo);
+
+        panelCentral.add(Box.createVerticalStrut(15));
+        
+        try 
+        {
+            String rutaIcono = exito ? "/img/palomitaverde.png" : "/img/mingcute_warning-fill.png";
+            JLabel icono = new JLabel(new ImageIcon(new ImageIcon(getClass().getResource(rutaIcono)).getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH)));
+            icono.setAlignmentX(Component.CENTER_ALIGNMENT);
+            panelCentral.add(icono);
+        } 
+        catch(Exception e) {}
+
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 15));
+        panelBotones.setOpaque(false);
+        
+        Color colorBoton = exito ? new Color(0, 170, 255) : new Color(220, 50, 50);
+        JButton btnAceptar = crearBotonDialogoLocal("Aceptar", colorBoton);
+        btnAceptar.addActionListener(e -> dialogo.dispose());
+
+        panelBotones.add(btnAceptar);
+
+        contenedor.add(panelCentral, BorderLayout.CENTER);
+        contenedor.add(panelBotones, BorderLayout.SOUTH);
+        dialogo.setContentPane(contenedor);
+        dialogo.setVisible(true);
     }
 
     private void mostrarConfirmacionFigma(JFrame frame, String mensaje, String submensaje, ActionListener accionSi) {
-        JDialog d = new JDialog(frame, true); d.setUndecorated(true); d.setSize(380, 240); d.setLocationRelativeTo(frame);
-        JPanel p = new JPanel(new BorderLayout()); p.setBackground(Color.WHITE); p.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 1));
-        JPanel pCenter = new JPanel(); pCenter.setOpaque(false); pCenter.setLayout(new BoxLayout(pCenter, BoxLayout.Y_AXIS));
-        pCenter.add(Box.createVerticalStrut(20));
-        JLabel lblMsg = new JLabel("<html><center>" + mensaje + "</center></html>"); lblMsg.setFont(new Font("Inter", Font.BOLD, 16));
-        lblMsg.setAlignmentX(Component.CENTER_ALIGNMENT); pCenter.add(lblMsg); pCenter.add(Box.createVerticalStrut(15));
-        try {
-            ImageIcon icon = new ImageIcon(new ImageIcon(getClass().getResource("/img/mingcute_warning-fill.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH));
-            JLabel lblIcon = new JLabel(icon); lblIcon.setAlignmentX(Component.CENTER_ALIGNMENT); pCenter.add(lblIcon);
-        } catch(Exception e) {}
-        pCenter.add(Box.createVerticalStrut(15));
-        JLabel lblSub = new JLabel(submensaje); lblSub.setFont(new Font("Inter", Font.PLAIN, 12)); lblSub.setAlignmentX(Component.CENTER_ALIGNMENT); pCenter.add(lblSub);
-        p.add(pCenter, BorderLayout.CENTER);
-        JPanel pSouth = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 15)); pSouth.setOpaque(false);
-        JButton btnCancelar = new JButton("Cancelar"); btnCancelar.setPreferredSize(new Dimension(120, 35)); btnCancelar.addActionListener(e -> d.dispose());
-        JButton btnAceptar = new JButton("Aceptar"); btnAceptar.setPreferredSize(new Dimension(120, 35)); btnAceptar.setBackground(new Color(255, 87, 34));
-        btnAceptar.addActionListener(e -> { d.dispose(); accionSi.actionPerformed(e); });
-        pSouth.add(btnCancelar); pSouth.add(btnAceptar); p.add(pSouth, BorderLayout.SOUTH);
-        d.add(p); d.setVisible(true);
+        JDialog dialogo = new JDialog(frame, true);
+        dialogo.setUndecorated(true);
+        dialogo.setSize(400, 240);
+        dialogo.setLocationRelativeTo(frame);
+        
+        JPanel contenedor = new JPanel(new BorderLayout());
+        contenedor.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 1));
+        contenedor.setBackground(new Color(225, 225, 225));
+
+        JPanel panelCentral = new JPanel();
+        panelCentral.setOpaque(false);
+        panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
+        panelCentral.add(Box.createVerticalStrut(25));
+
+        JLabel lblTitulo = new JLabel("<html><center>" + mensaje + "</center></html>", SwingConstants.CENTER);
+        lblTitulo.setFont(new Font("Inter", Font.BOLD, 22));
+        lblTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panelCentral.add(lblTitulo);
+
+        panelCentral.add(Box.createVerticalStrut(15));
+        
+        try 
+        {
+            JLabel icono = new JLabel(new ImageIcon(new ImageIcon(getClass().getResource("/img/mingcute_warning-fill.png")).getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH)));
+            icono.setAlignmentX(Component.CENTER_ALIGNMENT);
+            panelCentral.add(icono);
+        } 
+        catch(Exception e) {}
+
+        panelCentral.add(Box.createVerticalStrut(15));
+
+        if (submensaje != null && !submensaje.isEmpty()) {
+            JLabel lblSub = new JLabel("<html><center>" + submensaje + "</center></html>", SwingConstants.CENTER);
+            lblSub.setFont(new Font("Inter", Font.BOLD, 14));
+            lblSub.setAlignmentX(Component.CENTER_ALIGNMENT);
+            panelCentral.add(lblSub);
+        }
+
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 15));
+        panelBotones.setOpaque(false);
+        
+        JButton btnCancelar = crearBotonDialogoLocal("Cancelar", Color.BLACK);
+        btnCancelar.addActionListener(e -> dialogo.dispose());
+        
+        JButton btnAceptar = crearBotonDialogoLocal("Aceptar", new Color(255, 87, 34));
+        btnAceptar.addActionListener(e -> {
+            dialogo.dispose();
+            accionSi.actionPerformed(e);
+        });
+
+        panelBotones.add(btnCancelar);
+        panelBotones.add(btnAceptar);
+
+        contenedor.add(panelCentral, BorderLayout.CENTER);
+        contenedor.add(panelBotones, BorderLayout.SOUTH);
+        dialogo.setContentPane(contenedor);
+        dialogo.setVisible(true);
+    }
+
+    private JButton crearBotonDialogoLocal(String texto, Color color) {
+        JButton btn = new JButton(texto) {
+            @Override protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(color);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20); 
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        btn.setPreferredSize(new Dimension(140, 40));
+        btn.setForeground(Color.WHITE);
+        btn.setFont(new Font("Inter", Font.BOLD, 14));
+        btn.setContentAreaFilled(false);
+        btn.setBorderPainted(false);
+        btn.setFocusPainted(false);
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return btn;
     }
     
     private void abrirDialogoFiltrar() {
