@@ -14,6 +14,8 @@ public class PeliculasController
     private AñadirPelicula vistaAdd;
     private PeliculaModel modelo;
     private ArbolBinarioBusqueda arbolPeliculas;
+    private double precioBaseVentaAdd = 0.0;
+    private double precioBaseRentaAdd = 0.0;
 
     public PeliculasController(peliculas vista)
     {
@@ -207,15 +209,52 @@ public class PeliculasController
 
         configurarMenuLateral(vistaAdd.btnInicio, vistaAdd.btnOperacion, vistaAdd.btnClientes, vistaAdd.btnVideojuegos, vistaAdd.btnPeliculas, vistaAdd);
 
+        KeyAdapter actualizadorBase = new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                String descActual = vistaAdd.txtDescuento.getText().replace("%", "").trim();
+                if (descActual.equals("0") || descActual.isEmpty()) {
+                    try { precioBaseVentaAdd = Double.parseDouble(vistaAdd.txtVenta.getText().replace("$", "").trim()); } catch (Exception ex) {}
+                    try { precioBaseRentaAdd = Double.parseDouble(vistaAdd.txtRenta.getText().replace("$", "").trim()); } catch (Exception ex) {}
+                }
+            }
+        };
+        vistaAdd.txtVenta.addKeyListener(actualizadorBase);
+        vistaAdd.txtRenta.addKeyListener(actualizadorBase);
+
+        vistaAdd.txtDescuento.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                actualizarPreciosEnPantallaAddPelicula();
+            }
+        });
+        
         vistaAdd.btnAgregar.addActionListener(e -> 
         {
-            try
+        	try
             {
-                if (modelo.registrarPelicula(vistaAdd.txtNombre.getText(), vistaAdd.cbPlataforma.getSelectedItem().toString(), 
-                   Double.parseDouble(vistaAdd.txtVenta.getText().replace("$", "")), Double.parseDouble(vistaAdd.txtRenta.getText().replace("$", "")), 
-                   Integer.parseInt(vistaAdd.txtDescuento.getText().replace("%", "")), Integer.parseInt(vistaAdd.cbStockVenta.getSelectedItem().toString()), 
-                   Integer.parseInt(vistaAdd.cbStockRenta.getSelectedItem().toString()), vistaAdd.cbClasif.getSelectedItem().toString(), 
-                   Integer.parseInt(vistaAdd.cbAnio.getSelectedItem().toString()), "")) 
+                String textoDesc = vistaAdd.txtDescuento.getText().replace("%", "").trim();
+                if (textoDesc.equals("0") || textoDesc.isEmpty()) {
+                    precioBaseVentaAdd = Double.parseDouble(vistaAdd.txtVenta.getText().replace("$", "").trim());
+                    precioBaseRentaAdd = Double.parseDouble(vistaAdd.txtRenta.getText().replace("$", "").trim());
+                }
+
+                int descuentoFinal = 0;
+                if (!textoDesc.isEmpty() && !textoDesc.equals("-")) {
+                    descuentoFinal = Integer.parseInt(textoDesc);
+                }
+
+                if (modelo.registrarPelicula(
+                        vistaAdd.txtNombre.getText(), 
+                        vistaAdd.cbPlataforma.getSelectedItem().toString(), 
+                        precioBaseVentaAdd, 
+                        precioBaseRentaAdd, 
+                        descuentoFinal,
+                        Integer.parseInt(vistaAdd.txtStockVenta.getText().trim()), 
+                        Integer.parseInt(vistaAdd.txtStockRenta.getText().trim()), 
+                        vistaAdd.cbClasif.getSelectedItem().toString(), 
+                        Integer.parseInt(vistaAdd.cbAnio.getSelectedItem().toString()), 
+                        "")) 
                 {
                     vistaAdd.mostrarAlerta("Registrado con éxito", false);
                     vistaAdd.dispose();
@@ -226,9 +265,42 @@ public class PeliculasController
             }
             catch (Exception ex)
             {
-                vistaAdd.mostrarAlerta("Error en datos", true);
+                vistaAdd.mostrarAlerta("Error en datos. Verifica que precios y stock sean números.", true);
             }
         });
+    }
+    
+    private void actualizarPreciosEnPantallaAddPelicula() {
+        try {
+            int descuento = 0;
+            String txtDesc = vistaAdd.txtDescuento.getText().replace("%", "").trim();
+            if (!txtDesc.isEmpty() && !txtDesc.equals("-")) {
+                descuento = Integer.parseInt(txtDesc);
+            }
+
+            if (descuento > 0 && descuento <= 100) {
+                if (precioBaseVentaAdd == 0.0) {
+                    try { precioBaseVentaAdd = Double.parseDouble(vistaAdd.txtVenta.getText().replace("$", "").trim()); } catch (Exception ex) {}
+                }
+                if (precioBaseRentaAdd == 0.0) {
+                    try { precioBaseRentaAdd = Double.parseDouble(vistaAdd.txtRenta.getText().replace("$", "").trim()); } catch (Exception ex) {}
+                }
+
+                double ventaFinal = precioBaseVentaAdd - (precioBaseVentaAdd * (descuento / 100.0));
+                double rentaFinal = precioBaseRentaAdd - (precioBaseRentaAdd * (descuento / 100.0));
+                vistaAdd.txtVenta.setText("$" + String.format("%.2f", ventaFinal).replace(",", "."));
+                vistaAdd.txtRenta.setText("$" + String.format("%.2f", rentaFinal).replace(",", "."));
+                
+                vistaAdd.txtVenta.setEditable(false);
+                vistaAdd.txtRenta.setEditable(false);
+            } else {
+                vistaAdd.txtVenta.setText("$" + (precioBaseVentaAdd > 0 ? String.format("%.2f", precioBaseVentaAdd).replace(",", ".") : "0.00"));
+                vistaAdd.txtRenta.setText("$" + (precioBaseRentaAdd > 0 ? String.format("%.2f", precioBaseRentaAdd).replace(",", ".") : "0.00"));
+                
+                vistaAdd.txtVenta.setEditable(true);
+                vistaAdd.txtRenta.setEditable(true);
+            }
+        } catch (Exception ignored) {}
     }
 
     private void configurarMenuLateral(JComponent inicio, JComponent operacion, JComponent clientes, JComponent videojuegosLbl, JComponent peliculasLbl, JFrame ventanaActual)

@@ -12,6 +12,8 @@ public class InfoPeliculaController
     private int id;
     private String fotoActual;
     private PeliculaModel modelo;
+    private double precioBaseVenta;
+    private double precioBaseRenta;
 
     public InfoPeliculaController(InfoPelicula v, int id, String fotoActual)
     {
@@ -19,6 +21,13 @@ public class InfoPeliculaController
         this.id = id;
         this.fotoActual = fotoActual;
         this.modelo = new PeliculaModel();
+        
+        try {
+            this.precioBaseVenta = Double.parseDouble(v.txtMonto.getText().replace("$", "").trim());
+            this.precioBaseRenta = Double.parseDouble(v.txtFechaOp.getText().replace("$", "").trim());
+        } catch (Exception e) {}
+        
+        actualizarPreciosEnPantalla();
         
         initEvents();
     }
@@ -44,6 +53,15 @@ public class InfoPeliculaController
                 v.txtMonto.getText()
             );
         });
+        
+        v.txtDescuento.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (v.enModoEdicion) {
+                    actualizarPreciosEnPantalla();
+                }
+            }
+        });
 
         v.btnEditar.addActionListener(e ->
         {
@@ -59,30 +77,49 @@ public class InfoPeliculaController
                 v.txtClasif.setEditable(true);
                 v.txtAnio.setEditable(true);
                 
+                String descActual = v.txtDescuento.getText().replace("%", "").trim();
+                if (descActual.equals("0") || descActual.isEmpty()) {
+                    v.txtMonto.setEditable(true);
+                    v.txtFechaOp.setEditable(true);
+                }
+                
                 v.btnEditar.setText("Guardar cambios");
                 v.btnEditar.setBackground(new Color(50, 180, 50));
                 v.setModoEdicionActivo(true);
             }
             else
             {
-                try
+            	try
                 {
+                    String descActual = v.txtDescuento.getText().replace("%", "").trim();
+                    if (descActual.equals("0") || descActual.isEmpty()) {
+                        precioBaseVenta = Double.parseDouble(v.txtMonto.getText().replace("$", "").trim());
+                        precioBaseRenta = Double.parseDouble(v.txtFechaOp.getText().replace("$", "").trim());
+                    }
+
+                    int desc = 0;
+                    if (!descActual.isEmpty() && !descActual.equals("-")) {
+                        desc = Integer.parseInt(descActual);
+                    }
+                    
                     boolean exito = modelo.actualizarPelicula(
-                        id, 
-                        v.txtNomProd.getText(), 
-                        v.txtFormato.getText(), 
-                        Double.parseDouble(v.txtMonto.getText().replace("$", "")),
-                        Double.parseDouble(v.txtFechaOp.getText().replace("$", "")), 
-                        Integer.parseInt(v.txtDescuento.getText().replace("%", "")), 
-                        Integer.parseInt(v.txtStockVenta.getText()), 
-                        Integer.parseInt(v.txtStockRenta.getText()), 
-                        v.txtClasif.getText(), 
-                        Integer.parseInt(v.txtAnio.getText()), 
-                        v.rutaFotoNueva.isEmpty() ? fotoActual : v.rutaFotoNueva
-                    );
+                            id, 
+                            v.txtNomProd.getText(), 
+                            v.txtFormato.getText(), 
+                            precioBaseVenta, 
+                            precioBaseRenta, 
+                            desc, 
+                            Integer.parseInt(v.txtStockVenta.getText()), 
+                            Integer.parseInt(v.txtStockRenta.getText()), 
+                            v.txtClasif.getText(), 
+                            Integer.parseInt(v.txtAnio.getText()), 
+                            v.rutaFotoNueva.isEmpty() ? fotoActual : v.rutaFotoNueva
+                        );
 
                     if (exito)
                     {
+                        v.txtDescuento.setText(desc + "%"); 
+                        
                         v.mostrarAlerta("Cambios guardados correctamente", false);
                         v.btnEditar.setText("Editar info de la película");
                         v.btnEditar.setBackground(new Color(45, 59, 72));
@@ -105,6 +142,34 @@ public class InfoPeliculaController
                 }
             }
         });
+    }
+    
+    private void actualizarPreciosEnPantalla() {
+        try {
+            int descuento = 0;
+            String txtDesc = v.txtDescuento.getText().replace("%", "").trim();
+            if (!txtDesc.isEmpty() && !txtDesc.equals("-")) {
+                descuento = Integer.parseInt(txtDesc);
+            }
+
+            if (descuento > 0 && descuento <= 100) {
+                double ventaFinal = precioBaseVenta - (precioBaseVenta * (descuento / 100.0));
+                double rentaFinal = precioBaseRenta - (precioBaseRenta * (descuento / 100.0));
+                v.txtMonto.setText("$" + String.format("%.2f", ventaFinal).replace(",", "."));
+                v.txtFechaOp.setText("$" + String.format("%.2f", rentaFinal).replace(",", "."));
+                
+                v.txtMonto.setEditable(false);
+                v.txtFechaOp.setEditable(false);
+            } else {
+                v.txtMonto.setText("$" + String.format("%.2f", precioBaseVenta).replace(",", "."));
+                v.txtFechaOp.setText("$" + String.format("%.2f", precioBaseRenta).replace(",", "."));
+                
+                if (v.enModoEdicion) {
+                    v.txtMonto.setEditable(true);
+                    v.txtFechaOp.setEditable(true);
+                }
+            }
+        } catch (Exception ignored) {}
     }
 
     private void configurarMenuLateral(JComponent inicio, JComponent op, JComponent cli, JComponent vid, JComponent pel, JFrame vActual)

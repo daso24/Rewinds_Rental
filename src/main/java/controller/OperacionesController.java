@@ -328,27 +328,88 @@ public class OperacionesController
             if (op[5] != null) vInfo.setImagenProducto((String)op[5]);
             vInfo.setModoEdicion(false);
             
+            try {
+                double montoActual = Double.parseDouble(op[10].toString());
+                double precioOriginal = 0.0;
+                for (Object[] p : modelo.obtenerTodosLosProductos()) {
+                    if (Integer.parseInt(p[0].toString()) == Integer.parseInt(op[7].toString()) && 
+                        p[2].toString().equalsIgnoreCase(op[3].toString())) {
+                        precioOriginal = op[2].toString().equalsIgnoreCase("Venta") ? 
+                                     Double.parseDouble(p[4].toString()) : 
+                                     Double.parseDouble(p[5].toString());
+                        break;
+                    }
+                }
+                
+                if (precioOriginal > 0 && montoActual < precioOriginal) {
+                    double descCalculado = (1 - (montoActual / precioOriginal)) * 100;
+                    vInfo.txtDescuento.setText(Math.round(descCalculado) + "%");
+                } else {
+                    vInfo.txtDescuento.setText("0%");
+                }
+            } catch (Exception ignored) {}
+            
             vInfo.btnDescargar.addActionListener(e -> {
                 utils.PDFGenerator.generarFichaOperacion(vInfo.txtIdOp.getText(), vInfo.txtNombreCli.getText(), vInfo.rbRenta.isSelected() ? "Renta" : "Venta", vInfo.txtMonto.getText());
             });
         } catch (Exception ex) {}
 
         vInfo.btnEditar.addActionListener(e -> vInfo.setModoEdicion(true));
+        
         vInfo.btnGuardar.addActionListener(e -> {
-            if (!vInfo.enModoEdicion) { vInfo.setModoEdicion(true); }
-            else {
+            if (!vInfo.enModoEdicion) { 
+                vInfo.setModoEdicion(true); 
+            } else {
                 mostrarConfirmacionFigma(vInfo, "¿Estás seguro que quieres<br>modificar esta operación?", "Esta acción no se puede deshacer", eSi -> {
                     try {
                         int idRenta = Integer.parseInt(vInfo.txtIdOp.getText());
                         int idCli = Integer.parseInt(vInfo.txtIdCli.getText());
                         int idProd = Integer.parseInt(vInfo.txtIdProd.getText());
-                        double monto = Double.parseDouble(vInfo.txtMonto.getText().replace("$", "").trim());
+                        
+                        double precioBase = 0.0;
+                        try {
+                            for (Object[] p : modelo.obtenerTodosLosProductos()) {
+                                if (Integer.parseInt(p[0].toString()) == idProd && 
+                                    p[2].toString().equalsIgnoreCase(vInfo.txtTipoProd.getText())) {
+                                    precioBase = vInfo.rbVenta.isSelected() ? 
+                                                 Double.parseDouble(p[4].toString()) : 
+                                                 Double.parseDouble(p[5].toString());
+                                    break;
+                                }
+                            }
+                        } catch(Exception ignored) {}
+
+                        if (precioBase <= 0.0) {
+                            precioBase = Double.parseDouble(vInfo.txtMonto.getText().replace("$", "").trim());
+                        }
+
+                        double montoFinal = precioBase;
+                        String textoDescuento = vInfo.txtDescuento.getText().replace("%", "").trim();
+                        
+                        if (!textoDescuento.isEmpty()) {
+                            double porcentaje = Double.parseDouble(textoDescuento);
+                            if (porcentaje > 0 && porcentaje <= 100) {
+                                montoFinal = precioBase - (precioBase * (porcentaje / 100.0));
+                                vInfo.txtDescuento.setText(Math.round(porcentaje) + "%"); 
+                            } else if (porcentaje <= 0) {
+                                montoFinal = precioBase; 
+                                vInfo.txtDescuento.setText("0%");
+                            }
+                        } else {
+                            vInfo.txtDescuento.setText("0%");
+                        }
+                        
+                        vInfo.txtMonto.setText("$" + String.format("%.2f", montoFinal).replace(",", "."));
+
                         String tipo = vInfo.rbRenta.isSelected() ? "Renta" : "Venta";
-                        if (modelo.actualizarOperacion(idRenta, idCli, tipo, vInfo.txtTipoProd.getText(), idProd, vInfo.txtFechaOp.getText(), vInfo.txtFechaDev.getText(), monto)) {
+                        
+                        if (modelo.actualizarOperacion(idRenta, idCli, tipo, vInfo.txtTipoProd.getText(), idProd, vInfo.txtFechaOp.getText(), vInfo.txtFechaDev.getText(), montoFinal)) {
                             mostrarAlertaFigma(vInfo, "Se ha modificado correctamente.", true);
                             vInfo.setModoEdicion(false);
                         }
-                    } catch (Exception ex) { mostrarAlertaFigma(vInfo, "Datos inválidos", false); }
+                    } catch (Exception ex) { 
+                        mostrarAlertaFigma(vInfo, "Datos inválidos. Verifica que los números sean correctos.", false); 
+                    }
                 });
             }
         });

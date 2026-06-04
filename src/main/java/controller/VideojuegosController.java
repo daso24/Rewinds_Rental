@@ -14,6 +14,8 @@ public class VideojuegosController
     private AgregarJuego vistaAdd;
     private VideojuegoModel modelo;
     private ArbolBinarioBusqueda arbolJuegos;
+    private double precioBaseVentaAdd = 0.0;
+    private double precioBaseRentaAdd = 0.0;
 
     public VideojuegosController(videojuegos vista)
     {
@@ -171,7 +173,61 @@ public class VideojuegosController
             new VideojuegosController(vVid);
             vVid.setVisible(true);
         });
+        
+        KeyAdapter actualizadorBase = new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                String descActual = vistaAdd.txtDescuento.getText().replace("%", "").trim();
+                if (descActual.equals("0") || descActual.isEmpty()) {
+                    try { precioBaseVentaAdd = Double.parseDouble(vistaAdd.txtVenta.getText().replace("$", "").trim()); } catch (Exception ex) {}
+                    try { precioBaseRentaAdd = Double.parseDouble(vistaAdd.txtRenta.getText().replace("$", "").trim()); } catch (Exception ex) {}
+                }
+            }
+        };
+        vistaAdd.txtVenta.addKeyListener(actualizadorBase);
+        vistaAdd.txtRenta.addKeyListener(actualizadorBase);
+
+        vistaAdd.txtDescuento.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                actualizarPreciosEnPantallaAddJuego();
+            }
+        });
+
         vistaAdd.btnAgregar.addActionListener(e -> validarYMostrarPopUp());
+    }
+    
+    private void actualizarPreciosEnPantallaAddJuego() {
+        try {
+            int descuento = 0;
+            String txtDesc = vistaAdd.txtDescuento.getText().replace("%", "").trim();
+            if (!txtDesc.isEmpty() && !txtDesc.equals("-")) {
+                descuento = Integer.parseInt(txtDesc);
+            }
+
+            if (descuento > 0 && descuento <= 100) {
+                if (precioBaseVentaAdd == 0.0) {
+                    try { precioBaseVentaAdd = Double.parseDouble(vistaAdd.txtVenta.getText().replace("$", "").trim()); } catch (Exception ex) {}
+                }
+                if (precioBaseRentaAdd == 0.0) {
+                    try { precioBaseRentaAdd = Double.parseDouble(vistaAdd.txtRenta.getText().replace("$", "").trim()); } catch (Exception ex) {}
+                }
+
+                double ventaFinal = precioBaseVentaAdd - (precioBaseVentaAdd * (descuento / 100.0));
+                double rentaFinal = precioBaseRentaAdd - (precioBaseRentaAdd * (descuento / 100.0));
+                vistaAdd.txtVenta.setText("$" + String.format("%.2f", ventaFinal).replace(",", "."));
+                vistaAdd.txtRenta.setText("$" + String.format("%.2f", rentaFinal).replace(",", "."));
+                
+                vistaAdd.txtVenta.setEditable(false);
+                vistaAdd.txtRenta.setEditable(false);
+            } else {
+                vistaAdd.txtVenta.setText("$" + (precioBaseVentaAdd > 0 ? String.format("%.2f", precioBaseVentaAdd).replace(",", ".") : "0.00"));
+                vistaAdd.txtRenta.setText("$" + (precioBaseRentaAdd > 0 ? String.format("%.2f", precioBaseRentaAdd).replace(",", ".") : "0.00"));
+                
+                vistaAdd.txtVenta.setEditable(true);
+                vistaAdd.txtRenta.setEditable(true);
+            }
+        } catch (Exception ignored) {}
     }
 
     private void mostrarAvisoGris(String mensaje)
@@ -328,17 +384,25 @@ public class VideojuegosController
 
         try
         {
+            String txtDesc = vistaAdd.txtDescuento.getText().replace("%", "").trim();
+            if (txtDesc.equals("0") || txtDesc.isEmpty()) {
+                precioBaseVentaAdd = Double.parseDouble(vistaAdd.txtVenta.getText().replace("$", "").trim());
+                precioBaseRentaAdd = Double.parseDouble(vistaAdd.txtRenta.getText().replace("$", "").trim());
+            }
+
             String titulo = vistaAdd.txtNombre.getText().trim();
             String plataforma = vistaAdd.cbPlataforma.getSelectedItem().toString();
-            double pVenta = Double.parseDouble(vistaAdd.txtVenta.getText().replace("$", "").trim());
-            double pRenta = Double.parseDouble(vistaAdd.txtRenta.getText().replace("$", "").trim());
+            
+            double pVenta = precioBaseVentaAdd;
+            double pRenta = precioBaseRentaAdd;
+            
             int desc = 0;
-            if (!vistaAdd.txtDescuento.getText().isEmpty())
+            if (!txtDesc.isEmpty() && !txtDesc.equals("-"))
             {
-                desc = Integer.parseInt(vistaAdd.txtDescuento.getText().replace("%", "").trim());
+                desc = Integer.parseInt(txtDesc);
             }
-            int sVenta = Integer.parseInt(vistaAdd.cbStockVenta.getSelectedItem().toString());
-            int sRenta = Integer.parseInt(vistaAdd.cbStockRenta.getSelectedItem().toString());
+            int sVenta = Integer.parseInt(vistaAdd.txtStockVenta.getText().trim());
+            int sRenta = Integer.parseInt(vistaAdd.txtStockRenta.getText().trim());
             String clasif = vistaAdd.cbClasif.getSelectedItem().toString();
             int anio = Integer.parseInt(vistaAdd.cbAnio.getSelectedItem().toString());
             String foto = "";
@@ -369,20 +433,38 @@ public class VideojuegosController
         private int idJuego;
         private String rutaFoto;
 
+        private double precioBaseVenta;
+        private double precioBaseRenta;
+
         public InfoJuegoInternalController(InfoJuego v, int idJuego, String rutaFoto)
         {
             this.v = v;
             this.idJuego = idJuego;
             this.rutaFoto = rutaFoto;
 
+            try {
+                this.precioBaseVenta = Double.parseDouble(v.txtPrecioVenta.getText().replace("$", "").trim());
+                this.precioBaseRenta = Double.parseDouble(v.txtPrecioRenta.getText().replace("$", "").trim());
+            } catch (Exception e) {}
+
+            actualizarPreciosEnPantalla();
+
             configurarMenuLateral(v.btnInicio, v.btnOperacion, v.btnClientes, v.btnVideojuegos, v.btnPeliculas, v);
 
-            v.btnAtras.addActionListener(e ->
-            {
+            v.btnAtras.addActionListener(e -> {
                 v.dispose();
                 videojuegos vVid = new videojuegos();
                 new VideojuegosController(vVid);
                 vVid.setVisible(true);
+            });
+
+            v.txtDescuento.addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyReleased(KeyEvent e) {
+                    if (v.enModoEdicion) {
+                        actualizarPreciosEnPantalla();
+                    }
+                }
             });
 
             v.btnEditar.addActionListener(e ->
@@ -391,13 +473,18 @@ public class VideojuegosController
                 {
                     v.txtNombreProd.setEditable(true);
                     v.txtPlataforma.setEditable(true);
-                    v.txtPrecioVenta.setEditable(true);
-                    v.txtPrecioRenta.setEditable(true);
                     v.txtDescuento.setEditable(true);
                     v.txtStock.setEditable(true);
                     v.txtStockRenta.setEditable(true);
                     v.txtClasificacion.setEditable(true);
                     v.txtAnio.setEditable(true);
+                    
+                    String descActual = v.txtDescuento.getText().replace("%", "").trim();
+                    if (descActual.equals("0") || descActual.isEmpty()) {
+                        v.txtPrecioVenta.setEditable(true);
+                        v.txtPrecioRenta.setEditable(true);
+                    }
+                    
                     v.btnEditar.setText("Guardar cambios");
                     v.btnEditar.setBackground(new Color(50, 180, 50));
                     v.setModoEdicionActivo(true);
@@ -406,11 +493,21 @@ public class VideojuegosController
                 {
                     try
                     {
+                        String descActual = v.txtDescuento.getText().replace("%", "").trim();
+                        if (descActual.equals("0") || descActual.isEmpty()) {
+                            precioBaseVenta = Double.parseDouble(v.txtPrecioVenta.getText().replace("$", "").trim());
+                            precioBaseRenta = Double.parseDouble(v.txtPrecioRenta.getText().replace("$", "").trim());
+                        }
+
                         String titulo = v.txtNombreProd.getText().trim();
                         String plataforma = v.txtPlataforma.getText().trim();
-                        double pVenta = Double.parseDouble(v.txtPrecioVenta.getText().replace("$", "").trim());
-                        double pRenta = Double.parseDouble(v.txtPrecioRenta.getText().replace("$", "").trim());
-                        int desc = Integer.parseInt(v.txtDescuento.getText().replace("%", "").trim());
+                        
+                        double pVenta = precioBaseVenta;
+                        double pRenta = precioBaseRenta;
+                        
+                        int desc = 0;
+                        if (!descActual.isEmpty() && !descActual.equals("-")) desc = Integer.parseInt(descActual);
+                        
                         int sVenta = Integer.parseInt(v.txtStock.getText().trim());
                         int sRenta = Integer.parseInt(v.txtStockRenta.getText().trim());
                         String clasif = v.txtClasificacion.getText().trim();
@@ -419,6 +516,7 @@ public class VideojuegosController
 
                         if (modelo.actualizarVideojuego(idJuego, titulo, plataforma, pVenta, pRenta, desc, sVenta, sRenta, clasif, anio, rutaFinal))
                         {
+                            v.txtDescuento.setText(desc + "%"); 
                             v.mostrarConfirmacion("¡Datos actualizados correctamente!", e2 ->
                             {
                                 v.dispose();
@@ -430,7 +528,7 @@ public class VideojuegosController
                     }
                     catch (Exception ex)
                     {
-                        v.mostrarConfirmacion("Error en parseo numérico.", e2 -> {});
+                        v.mostrarConfirmacion("Error: Precios y stock deben ser números.", e2 -> {});
                     }
                 }
             });
@@ -443,6 +541,34 @@ public class VideojuegosController
                 String precio = v.txtPrecioVenta.getText();
                 utils.PDFGenerator.generarFichaJuego(id, titulo, plataforma, precio);
             });
+        }
+
+        private void actualizarPreciosEnPantalla() {
+            try {
+                int descuento = 0;
+                String txtDesc = v.txtDescuento.getText().replace("%", "").trim();
+                if (!txtDesc.isEmpty() && !txtDesc.equals("-")) {
+                    descuento = Integer.parseInt(txtDesc);
+                }
+
+                if (descuento > 0 && descuento <= 100) {
+                    double ventaFinal = precioBaseVenta - (precioBaseVenta * (descuento / 100.0));
+                    double rentaFinal = precioBaseRenta - (precioBaseRenta * (descuento / 100.0));
+                    v.txtPrecioVenta.setText("$" + String.format("%.2f", ventaFinal).replace(",", "."));
+                    v.txtPrecioRenta.setText("$" + String.format("%.2f", rentaFinal).replace(",", "."));
+                    
+                    v.txtPrecioVenta.setEditable(false);
+                    v.txtPrecioRenta.setEditable(false);
+                } else {
+                    v.txtPrecioVenta.setText("$" + String.format("%.2f", precioBaseVenta).replace(",", "."));
+                    v.txtPrecioRenta.setText("$" + String.format("%.2f", precioBaseRenta).replace(",", "."));
+                    
+                    if (v.enModoEdicion) {
+                        v.txtPrecioVenta.setEditable(true);
+                        v.txtPrecioRenta.setEditable(true);
+                    }
+                }
+            } catch (Exception ignored) {}
         }
     }
     

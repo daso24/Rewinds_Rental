@@ -9,8 +9,8 @@ public class AgregarJuego extends JFrame
 {
     public JLabel btnInicio, btnOperacion, btnClientes, btnVideojuegos, btnPeliculas, lblLogoDerecha;
     public JButton btnAgregar, btnAtras;
-    public JTextField txtNombre, txtId, txtVenta, txtRenta, txtDescuento;
-    public JComboBox<String> cbPlataforma, cbStockVenta, cbStockRenta, cbClasif, cbAnio;
+    public JTextField txtNombre, txtId, txtVenta, txtRenta, txtDescuento, txtStockVenta, txtStockRenta;
+    public JComboBox<String> cbPlataforma, cbClasif, cbAnio;
     public JLabel lblFoto;
     public String rutaFotoActual = "";
 
@@ -123,10 +123,10 @@ public class AgregarJuego extends JFrame
         txtDescuento = crearField(contentPanel, "0%", 30, 325, 100);
 
         crearLabel(contentPanel, "Stock Venta:", 30, 370);
-        cbStockVenta = crearCombo(contentPanel, new String[]{"0", "1", "5", "10", "20"}, 30, 395, 160);
+        txtStockVenta = crearField(contentPanel, "0", 30, 395, 160);
 
         crearLabel(contentPanel, "Stock Renta:", 210, 370);
-        cbStockRenta = crearCombo(contentPanel, new String[]{"0", "1", "5", "10", "20"}, 210, 395, 160);
+        txtStockRenta = crearField(contentPanel, "0", 210, 395, 160);
 
         JLabel lblFotoTit = new JLabel("Imagen del Producto:", SwingConstants.CENTER);
         lblFotoTit.setFont(INTER_BOLD_14);

@@ -7,8 +7,8 @@ import java.net.URL;
 
 public class AñadirPelicula extends JFrame {
 
-    public JTextField txtNombre, txtId, txtVenta, txtRenta, txtDescuento;
-    public JComboBox<String> cbPlataforma, cbStockVenta, cbStockRenta, cbClasif, cbAnio;
+    public JTextField txtNombre, txtId, txtVenta, txtRenta, txtDescuento, txtStockVenta, txtStockRenta;
+    public JComboBox<String> cbPlataforma, cbClasif, cbAnio;
     public JButton btnAgregar, btnAtras;
     public JLabel btnInicio, btnOperacion, btnClientes, btnVideojuegos, btnPeliculas;
 
@@ -87,9 +87,11 @@ public class AñadirPelicula extends JFrame {
         crearLabel(panelGris, "Descuento:", 50, 360);
         txtDescuento = crearField(panelGris, "0%", 50, 385, 100);
 
-        crearLabel(panelGris, "Stock:", 50, 430);
-        cbStockVenta = crearCombo(panelGris, new String[]{"Venta", "1", "5", "10", "20"}, 50, 455, 110);
-        cbStockRenta = crearCombo(panelGris, new String[]{"Renta", "1", "5", "10", "20"}, 170, 455, 110);
+        crearLabel(panelGris, "Stock Venta:", 50, 430);
+        txtStockVenta = crearField(panelGris, "0", 50, 455, 110);
+        
+        crearLabel(panelGris, "Stock Renta:", 170, 430);
+        txtStockRenta = crearField(panelGris, "0", 170, 455, 110);
 
         JPanel panelFoto = new JPanel(new BorderLayout());
         panelFoto.setBounds(500, 105, 280, 330);
