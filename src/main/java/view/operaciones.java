@@ -191,7 +191,7 @@ public class operaciones extends JFrame
         tabla.getColumnModel().getColumn(1).setCellRenderer(new IconTextHorizontalRenderer());
         tabla.getColumnModel().getColumn(3).setCellRenderer(new IconTextVerticalRenderer());
         tabla.getColumnModel().getColumn(4).setCellRenderer(new IconTextVerticalRenderer());
-        tabla.getColumnModel().getColumn(6).setCellRenderer(new IconTextHorizontalRenderer());
+        tabla.getColumnModel().getColumn(6).setCellRenderer(new InfoButtonRenderer());
         
         sorter = new TableRowSorter<>(modeloTabla);
         tabla.setRowSorter(sorter);
@@ -455,6 +455,53 @@ public class operaciones extends JFrame
             Graphics2D g2d = (Graphics2D) g;
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2d.drawRoundRect(x, y, w - 1, h - 1, r, r);
+        }
+    }
+    
+    class InfoButtonRenderer extends JPanel implements TableCellRenderer {
+        private JButton button;
+
+        public InfoButtonRenderer() {
+            setLayout(new GridBagLayout()); 
+            
+            button = new JButton() {
+                @Override protected void paintComponent(Graphics g) {
+                    Graphics2D g2 = (Graphics2D) g.create();
+                    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                    g2.setColor(new Color(0, 150, 255)); 
+                    g2.fillRoundRect(0, 0, getWidth(), getHeight(), 10, 10); 
+                    g2.dispose();
+                    super.paintComponent(g);
+                }
+            };
+            
+            button.setPreferredSize(new Dimension(105, 28)); 
+            button.setHorizontalAlignment(SwingConstants.CENTER);
+            
+            button.setFont(new Font("Inter", Font.BOLD, 11)); 
+            button.setForeground(Color.WHITE);
+            button.setContentAreaFilled(false);
+            button.setBorderPainted(false);
+            button.setFocusPainted(false);
+            button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            
+            button.setIconTextGap(6); 
+            
+            add(button);
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
+            
+            if (value instanceof Object[]) {
+                Object[] data = (Object[]) value;
+                button.setIcon((Icon) data[0]);  
+                button.setText((String) data[1]);
+            } else if (value != null) {
+                button.setText(value.toString());
+            }
+            return this;
         }
     }
 }
