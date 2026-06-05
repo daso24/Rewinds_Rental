@@ -411,6 +411,7 @@ public class InfoPelicula extends JFrame
         txtClasif.setText(String.valueOf(datos[8]));
         txtAnio.setText(String.valueOf(datos[9]));
         txtDescuento.setText("0%");
+        txtGenero.setText("General");
         
         cargarImagenPortada((String) datos[10]);
     }
