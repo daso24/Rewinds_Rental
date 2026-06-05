@@ -243,6 +243,16 @@ public class PeliculasController
                 if (!textoDesc.isEmpty() && !textoDesc.equals("-")) {
                     descuentoFinal = Integer.parseInt(textoDesc);
                 }
+                int stockVentaVal = Integer.parseInt(vistaAdd.txtStockVenta.getText().trim());
+                int stockRentaVal = Integer.parseInt(vistaAdd.txtStockRenta.getText().trim());
+
+                if (precioBaseVentaAdd < 0 || precioBaseRentaAdd < 0 || descuentoFinal < 0 || stockVentaVal < 0 || stockRentaVal < 0) {
+                    vistaAdd.mostrarAlerta("Error: No se permiten cantidades negativas.", true);
+                    return; 
+                }
+
+                String foto = "";
+                try { foto = vistaAdd.rutaFotoActual; } catch (Exception ignored) {}
 
                 if (modelo.registrarPelicula(
                         vistaAdd.txtNombre.getText(), 
@@ -254,7 +264,7 @@ public class PeliculasController
                         Integer.parseInt(vistaAdd.txtStockRenta.getText().trim()), 
                         vistaAdd.cbClasif.getSelectedItem().toString(), 
                         Integer.parseInt(vistaAdd.cbAnio.getSelectedItem().toString()), 
-                        "")) 
+                        foto)) 
                 {
                     vistaAdd.mostrarAlerta("Registrado con éxito", false);
                     vistaAdd.dispose();

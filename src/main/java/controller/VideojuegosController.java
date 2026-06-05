@@ -403,6 +403,10 @@ public class VideojuegosController
             }
             int sVenta = Integer.parseInt(vistaAdd.txtStockVenta.getText().trim());
             int sRenta = Integer.parseInt(vistaAdd.txtStockRenta.getText().trim());
+            if (pVenta < 0 || pRenta < 0 || desc < 0 || sVenta < 0 || sRenta < 0) {
+                vistaAdd.mostrarError("Error: No se permiten<br>cantidades negativas.");
+                return; 
+            }
             String clasif = vistaAdd.cbClasif.getSelectedItem().toString();
             int anio = Integer.parseInt(vistaAdd.cbAnio.getSelectedItem().toString());
             String foto = "";
@@ -510,6 +514,10 @@ public class VideojuegosController
                         
                         int sVenta = Integer.parseInt(v.txtStock.getText().trim());
                         int sRenta = Integer.parseInt(v.txtStockRenta.getText().trim());
+                        if (pVenta < 0 || pRenta < 0 || desc < 0 || sVenta < 0 || sRenta < 0) {
+                            v.mostrarConfirmacion("Error: No se permiten cantidades negativas.", e2 -> {});
+                            return; 
+                        }
                         String clasif = v.txtClasificacion.getText().trim();
                         int anio = Integer.parseInt(v.txtAnio.getText().trim());
                         String rutaFinal = v.rutaFotoNueva.isEmpty() ? this.rutaFoto : v.rutaFotoNueva;

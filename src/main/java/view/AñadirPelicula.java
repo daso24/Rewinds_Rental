@@ -11,6 +11,8 @@ public class AñadirPelicula extends JFrame {
     public JComboBox<String> cbPlataforma, cbClasif, cbAnio;
     public JButton btnAgregar, btnAtras;
     public JLabel btnInicio, btnOperacion, btnClientes, btnVideojuegos, btnPeliculas;
+    public JLabel lblFoto;
+    public String rutaFotoActual = "";
 
     public AñadirPelicula() {
         setTitle("Añadir Película");
@@ -97,9 +99,28 @@ public class AñadirPelicula extends JFrame {
         panelFoto.setBounds(500, 105, 280, 330);
         panelFoto.setBackground(new Color(220, 220, 220));
         panelFoto.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        JLabel iconSubir = new JLabel("Subir foto", SwingConstants.CENTER);
-        iconSubir.setForeground(Color.DARK_GRAY);
-        panelFoto.add(iconSubir, BorderLayout.CENTER);
+        
+        lblFoto = new JLabel("Click para subir foto", SwingConstants.CENTER);
+        lblFoto.setFont(new Font("Inter", Font.ITALIC, 14));
+        lblFoto.setForeground(Color.DARK_GRAY);
+        lblFoto.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        
+        lblFoto.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                JFileChooser selector = new JFileChooser();
+                selector.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Imágenes", "jpg", "png", "jpeg"));
+                if (selector.showOpenDialog(AñadirPelicula.this) == JFileChooser.APPROVE_OPTION) {
+                    rutaFotoActual = selector.getSelectedFile().getAbsolutePath();
+                    ImageIcon icon = new ImageIcon(rutaFotoActual);
+                    Image img = icon.getImage().getScaledInstance(280, 330, Image.SCALE_SMOOTH);
+                    lblFoto.setIcon(new ImageIcon(img));
+                    lblFoto.setText(""); 
+                }
+            }
+        });
+        
+        panelFoto.add(lblFoto, BorderLayout.CENTER);
         panelGris.add(panelFoto);
 
         crearLabel(panelGris, "Clasificación:", 500, 450);

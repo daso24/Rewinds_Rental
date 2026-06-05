@@ -289,7 +289,6 @@ public class principal extends JFrame
         m2.setFont(new Font("Inter", Font.PLAIN, 11));
         pLabels.add(m1); pLabels.add(m2);
 
-        // Vinculamos los labels para que el controlador pueda cambiarlos
         if (titulo.equals("Películas")) {
             this.lblPeliMasComprado = m1;
             this.lblPeliMasRentado = m2;
