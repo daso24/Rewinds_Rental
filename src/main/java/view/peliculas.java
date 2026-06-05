@@ -421,10 +421,27 @@ public class peliculas extends JFrame {
     }
 
     private ImageIcon getImg(String ruta, int w, int h) {
-        try { return new ImageIcon(new ImageIcon(getClass().getResource(ruta)).getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH)); } 
-        catch (Exception e) { return null; }
+        // Evitamos errores si la ruta viene vacía
+        if (ruta == null || ruta.trim().isEmpty()) {
+            return null;
+        }
+        
+        try {
+            Image img;
+            java.net.URL url = getClass().getResource(ruta);
+            
+            if (url != null) {
+                img = new ImageIcon(url).getImage();
+            } else {
+                img = new ImageIcon(ruta).getImage();
+            }
+            
+            return new ImageIcon(img.getScaledInstance(w, h, Image.SCALE_SMOOTH));
+            
+        } catch (Exception e) {
+            return null;
+        }
     }
-
     private JButton crearBotonSimple(String texto, Color color) {
         JButton btn = new JButton(texto) {
             @Override protected void paintComponent(Graphics g) {
