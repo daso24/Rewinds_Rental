@@ -33,7 +33,13 @@ Para que el proyecto compile correctamente, es necesario agregar las siguientes 
 3. **Carpeta de PDFs:** El sistema genera reportes automáticamente. Estos se guardarán en la ruta src/main/java/pdfs.
 
 ## Ejecución
-Para iniciar el sistema, corre la clase Main. 
+**Opción 1: Desde el código fuente**
+Abre el proyecto en Eclipse y corre la clase `Main.java` (asegurándote de tener el `config.properties` en la raíz del proyecto).
+
+**Opción 2: Ejecutable (.jar)**
+1. Crea una carpeta nueva en tu computadora.
+2. Coloca el archivo `RewindsRental.jar` y el archivo `config.properties` juntos dentro de esa misma carpeta.
+3. Da doble clic sobre el archivo `.jar` para iniciar el sistema.
 
 Puedes ingresar con estas credenciales de prueba:
 * **Usuario:** prueba@gmail.com
