@@ -81,6 +81,7 @@ public class registro extends JFrame {
         phoneField = crearCampo(card, "Teléfono:", 380, 120);
         emailField = crearCampo(card, "Correo:", 50, 190);
         
+        JLabel lblGenero = new JLabel("Género:"); lblGenero.setBounds(380, 165, 150, 20); card.add(lblGenero);
         masculino = new JRadioButton("Masculino"); masculino.setBounds(380, 190, 90, 25);
         femenino = new JRadioButton("Femenino"); femenino.setBounds(470, 190, 90, 25);
         otro = new JRadioButton("Otro"); otro.setBounds(560, 190, 90, 25);
