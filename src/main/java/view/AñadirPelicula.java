@@ -127,8 +127,7 @@ public class AñadirPelicula extends JFrame {
         cbClasif = crearCombo(panelGris, new String[]{"C", "E", "E+10", "T", "M"}, 500, 475, 110);
 
         crearLabel(panelGris, "Año:", 670, 450);
-        cbAnio = crearCombo(panelGris, new String[]{"2024", "2025", "2026"}, 670, 475, 110);
-
+        cbAnio = crearCombo(panelGris, new String[]{"2026", "2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016", "2015", "2014", "2013", "2012", "2011", "2010", "2005", "2000", "1995", "1990"}, 640, 385, 110);
         btnAgregar = crearBotonRedondo("Agregar Película", new Color(0, 170, 255), Color.WHITE);
         btnAgregar.setBounds(315, 530, 220, 45);
         btnAgregar.setFont(new Font("Inter", Font.BOLD, 15));

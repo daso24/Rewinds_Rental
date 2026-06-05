@@ -366,23 +366,7 @@ public class OperacionesController
                         int idCli = Integer.parseInt(vInfo.txtIdCli.getText());
                         int idProd = Integer.parseInt(vInfo.txtIdProd.getText());
                         
-                        double precioBase = 0.0;
-                        try {
-                            for (Object[] p : modelo.obtenerTodosLosProductos()) {
-                                if (Integer.parseInt(p[0].toString()) == idProd && 
-                                    p[2].toString().equalsIgnoreCase(vInfo.txtTipoProd.getText())) {
-                                    precioBase = vInfo.rbVenta.isSelected() ? 
-                                                 Double.parseDouble(p[4].toString()) : 
-                                                 Double.parseDouble(p[5].toString());
-                                    break;
-                                }
-                            }
-                        } catch(Exception ignored) {}
-
-                        if (precioBase <= 0.0) {
-                            precioBase = Double.parseDouble(vInfo.txtMonto.getText().replace("$", "").trim());
-                        }
-
+                        double precioBase = Double.parseDouble(vInfo.txtMonto.getText().replace("$", "").trim());
                         double montoFinal = precioBase;
                         String textoDescuento = vInfo.txtDescuento.getText().replace("%", "").trim();
                         
