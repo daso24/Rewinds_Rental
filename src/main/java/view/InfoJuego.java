@@ -104,6 +104,10 @@ public class InfoJuego extends JFrame
         txtPlataforma = crearCampo(panelGris, "Plataforma:", 30, 200, 180);
         txtPrecioVenta = crearCampo(panelGris, "Precio de venta:", 30, 260, 180);
         txtDescuento = crearCampo(panelGris, "Descuento:", 30, 320, 180);
+        JLabel lblStock = new JLabel("Stock");
+        lblStock.setBounds(30, 373, 250, 20); 
+        lblStock.setFont(new Font("Arial", Font.BOLD, 13));
+        panelGris.add(lblStock);
         txtStock = crearCampo(panelGris, "Disponibles para venta:", 30, 390, 180);
         txtStockRenta = crearCampo(panelGris, "Disponibles para renta:", 250, 390, 180);
         txtPrecioRenta = crearCampo(panelGris, "Precio de renta (por 14 días):", 250, 260, 180);
